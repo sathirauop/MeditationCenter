@@ -1,0 +1,17 @@
+version: '3.8' # Specifies the file format version
+
+services:
+  postgres-db: # A friendly name for our database service
+    image: postgres:15
+    container_name: meditation-postgres
+    environment:
+      - POSTGRES_USER=sathira97 # Change this
+      - POSTGRES_PASSWORD=sathira # Change this
+      - POSTGRES_DB=meditation_db
+    ports:
+      - "5432:5432" # Map host port to container port
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes: # Defines the named volume to ensure data persists
+  pgdata:
