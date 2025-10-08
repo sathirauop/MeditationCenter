@@ -2,6 +2,7 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '3.5.5'
     id 'io.spring.dependency-management' version '1.1.7'
+    id 'org.jooq.jooq-codegen-gradle' version '3.19.15'
 }
 
 group = 'com.isipathana'
@@ -25,7 +26,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-jooq'
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.flywaydb:flyway-core'
@@ -34,6 +35,11 @@ dependencies {
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     runtimeOnly 'org.postgresql:postgresql'
     annotationProcessor 'org.projectlombok:lombok'
+
+    // jOOQ code generation dependencies
+    jooqCodegen 'org.postgresql:postgresql'
+    jooqCodegen 'org.testcontainers:postgresql:1.19.3'
+
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
@@ -41,4 +47,134 @@ dependencies {
 
 tasks.named('test') {
     useJUnitPlatform()
+}
+
+// jOOQ Configuration
+jooq {
+    version = '3.19.11'
+
+    String initSqlPath = "${layout.projectDirectory}/src/main/resources/db/init.sql"
+    String jooqGeneratedDir = "${layout.projectDirectory}/src/jooq/java"
+
+    configuration {
+        logging = org.jooq.meta.jaxb.Logging.DEBUG
+
+        jdbc {
+            driver = 'org.testcontainers.jdbc.ContainerDatabaseDriver'
+            url = "jdbc:tc:postgresql:15:///meditation_db?TC_INITSCRIPT=file:$initSqlPath"
+            user = 'test'
+            password = 'test'
+        }
+
+        generator {
+            name = 'org.jooq.codegen.JavaGenerator'
+
+            database {
+                name = 'org.jooq.meta.postgres.PostgresDatabase'
+                inputSchema = 'public'
+
+                forcedTypes {
+                    // User role enum
+                    forcedType {
+                        priority = 2
+                        name = 'enum'
+                        userType = 'com.isipathana.meditationcenter.records.user.UserRole'
+                        converter = 'com.isipathana.meditationcenter.jooq.converter.EnumColumnConverter'
+                        genericConverter = true
+                        includeExpression = 'users\\.role'
+                    }
+
+                    // Booking type enum
+                    forcedType {
+                        priority = 2
+                        name = 'enum'
+                        userType = 'com.isipathana.meditationcenter.records.booking.BookingType'
+                        converter = 'com.isipathana.meditationcenter.jooq.converter.EnumColumnConverter'
+                        genericConverter = true
+                        includeExpression = 'booking\\.booking_type'
+                    }
+
+                    // Booking status enum
+                    forcedType {
+                        priority = 2
+                        name = 'enum'
+                        userType = 'com.isipathana.meditationcenter.records.booking.BookingStatus'
+                        converter = 'com.isipathana.meditationcenter.jooq.converter.EnumColumnConverter'
+                        genericConverter = true
+                        includeExpression = 'booking\\.status'
+                    }
+
+                    // Payment status enum
+                    forcedType {
+                        priority = 2
+                        name = 'enum'
+                        userType = 'com.isipathana.meditationcenter.records.payment.PaymentStatus'
+                        converter = 'com.isipathana.meditationcenter.jooq.converter.EnumColumnConverter'
+                        genericConverter = true
+                        includeExpression = 'payment\\.status'
+                    }
+
+                    // Payment method enum
+                    forcedType {
+                        priority = 2
+                        name = 'enum'
+                        userType = 'com.isipathana.meditationcenter.records.payment.PaymentMethod'
+                        converter = 'com.isipathana.meditationcenter.jooq.converter.EnumColumnConverter'
+                        genericConverter = true
+                        includeExpression = 'payment\\.payment_method'
+                    }
+
+                    // Event registration status enum
+                    forcedType {
+                        priority = 2
+                        name = 'enum'
+                        userType = 'com.isipathana.meditationcenter.records.event.EventRegistrationStatus'
+                        converter = 'com.isipathana.meditationcenter.jooq.converter.EnumColumnConverter'
+                        genericConverter = true
+                        includeExpression = 'event_registration\\.status'
+                    }
+
+                    // Boolean type mapping
+                    forcedType {
+                        priority = 1
+                        name = 'BOOLEAN'
+                        includeTypes = '(?i:BOOLEAN)'
+                    }
+
+                    // LocalDateTime type mapping
+                    forcedType {
+                        priority = 1
+                        name = 'timestamp'
+                        userType = 'java.time.LocalDateTime'
+                        includeTypes = '(?i:TIMESTAMP)'
+                    }
+                }
+            }
+
+            target {
+                packageName = 'com.isipathana.meditationcenter.jooq'
+                directory = jooqGeneratedDir
+            }
+        }
+    }
+}
+
+// Add generated source directory
+java {
+    sourceSets {
+        main {
+            java {
+                srcDir('src/jooq/java')
+            }
+        }
+    }
+}
+
+// Task dependencies
+tasks.named('compileJava') {
+    dependsOn tasks.named('jooqCodegen')
+}
+
+tasks.named('build') {
+    dependsOn tasks.named('jooqCodegen')
 }
