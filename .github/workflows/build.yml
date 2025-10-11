@@ -14,6 +14,21 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_DB: meditation_db
+          POSTGRES_USER: test
+          POSTGRES_PASSWORD: test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -42,10 +57,18 @@ jobs:
 
       - name: Build with Gradle
         run: ./gradlew build --no-daemon
+        env:
+          SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/meditation_db
+          SPRING_DATASOURCE_USERNAME: test
+          SPRING_DATASOURCE_PASSWORD: test
 
       - name: Run Tests
         run: ./gradlew test --no-daemon
         continue-on-error: true
+        env:
+          SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/meditation_db
+          SPRING_DATASOURCE_USERNAME: test
+          SPRING_DATASOURCE_PASSWORD: test
 
       - name: Publish Test Results
         uses: EnricoMi/publish-unit-test-result-action@v2
