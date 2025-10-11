@@ -1,0 +1,40 @@
+# A name for your workflow
+name: Meditation Center Java CI with Gradle
+
+# This section defines when the workflow will run
+on:
+  # Run on pushes to the 'main' or 'master' branch
+  push:
+  # Also run on any pull request targeting the 'main' or 'master' branch
+  pull_request:
+    branches: [ "main", "master", "release/alpha" ]
+
+# This section defines the actual tasks (or 'jobs') to be run
+jobs:
+  build:
+    # The type of machine to run the job on. 'ubuntu-latest' is a common, reliable choice.
+    runs-on: ubuntu-latest
+
+    # This section lists the individual steps in the 'build' job
+    steps:
+      # Step 1: Check out your code from the repository
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Step 2: Set up the correct version of Java (JDK)
+      # Your build.gradle specifies Java 17, so we'll use that.
+      - name: Set up JDK 24
+        uses: actions/setup-java@v4
+        with:
+          java-version: '24'
+          distribution: 'temurin'
+
+      # Step 3: Grant execute permission to the gradlew script
+      # This is necessary for the script to be able to run on the Ubuntu machine
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      # Step 4: Run the build command
+      # This is the same command you would run locally to build and test your project
+      - name: Build with Gradle
+        run: ./gradlew build
