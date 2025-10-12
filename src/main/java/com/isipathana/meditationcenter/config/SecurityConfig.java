@@ -74,6 +74,9 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/events").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/events/{id}").permitAll()
 
+                        // Utility endpoints (ONLY for development - should be removed in production)
+                        .requestMatchers("/api/util/**").permitAll()
+
                         // Error endpoint (used by GlobalErrorController)
                         .requestMatchers("/error").permitAll()
 
