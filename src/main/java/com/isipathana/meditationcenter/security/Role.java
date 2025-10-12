@@ -23,17 +23,6 @@ public enum Role implements GrantedAuthority {
     )),
 
     /**
-     * Instructor - can manage assigned programs and view student information
-     */
-    INSTRUCTOR(Set.of(
-            Permission.VIEW_PROGRAMS,
-            Permission.VIEW_ASSIGNED_PROGRAMS,
-            Permission.MARK_ATTENDANCE,
-            Permission.VIEW_STUDENTS,
-            Permission.UPDATE_OWN_PROFILE
-    )),
-
-    /**
      * Administrator - full access to all system features
      */
     ADMIN(Set.of(
@@ -47,7 +36,6 @@ public enum Role implements GrantedAuthority {
             Permission.CREATE_USER,
             Permission.UPDATE_USER,
             Permission.DELETE_USER,
-            Permission.ASSIGN_INSTRUCTOR,
             Permission.VIEW_EVENTS,
             Permission.CREATE_EVENT,
             Permission.UPDATE_EVENT,

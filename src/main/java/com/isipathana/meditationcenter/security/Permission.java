@@ -16,7 +16,6 @@ public enum Permission implements GrantedAuthority {
     CREATE_PROGRAM,
     UPDATE_PROGRAM,
     DELETE_PROGRAM,
-    VIEW_ASSIGNED_PROGRAMS,
 
     // Booking permissions
     VIEW_OWN_BOOKINGS,
@@ -31,11 +30,6 @@ public enum Permission implements GrantedAuthority {
     UPDATE_USER,
     DELETE_USER,
     UPDATE_OWN_PROFILE,
-
-    // Instructor permissions
-    ASSIGN_INSTRUCTOR,
-    MARK_ATTENDANCE,
-    VIEW_STUDENTS,
 
     // Event permissions
     VIEW_EVENTS,
