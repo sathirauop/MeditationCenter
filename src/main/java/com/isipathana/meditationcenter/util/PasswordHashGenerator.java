@@ -18,6 +18,6 @@ public class PasswordHashGenerator {
 
         System.out.println("Password: " + password);
         System.out.println("BCrypt Hash: " + hash);
-        System.out.println("\nUse this hash in your database seed script (V14__seed_admin_user.sql)");
+        System.out.println("\nUse this hash in your database seed script (V15__seed_admin_user.sql)");
     }
 }
