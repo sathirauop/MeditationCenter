@@ -40,11 +40,8 @@ public class PostEventUseCase {
                 .startTime(request.startTime())
                 .endTime(request.endTime())
                 .location(request.location())
-                .maxParticipants(request.maxParticipants())
-                .currentParticipants(0)
                 .images(request.images())
                 .isActive(request.isActive() != null ? request.isActive() : true)
-                .requiresRegistration(request.requiresRegistration() != null ? request.requiresRegistration() : true)
                 .build();
 
         // Create event in database
@@ -59,11 +56,8 @@ public class PostEventUseCase {
                 createdEvent.startTime(),
                 createdEvent.endTime(),
                 createdEvent.location(),
-                createdEvent.maxParticipants(),
-                createdEvent.currentParticipants(),
                 createdEvent.images(),
                 createdEvent.isActive(),
-                createdEvent.requiresRegistration(),
                 createdEvent.createdAt(),
                 createdEvent.updatedAt()
         );

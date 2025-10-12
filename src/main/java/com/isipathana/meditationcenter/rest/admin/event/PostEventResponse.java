@@ -34,19 +34,10 @@ public record PostEventResponse(
 
         String location,
 
-        @JsonProperty("max_participants")
-        Integer maxParticipants,
-
-        @JsonProperty("current_participants")
-        Integer currentParticipants,
-
         String images,
 
         @JsonProperty("is_active")
         Boolean isActive,
-
-        @JsonProperty("requires_registration")
-        Boolean requiresRegistration,
 
         @JsonProperty("created_at")
         @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
