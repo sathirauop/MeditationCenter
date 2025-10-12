@@ -4,7 +4,6 @@ CREATE TABLE meditation_program (
     name VARCHAR(255) NOT NULL,
     description TEXT,
     max_seats INTEGER NOT NULL DEFAULT 0,
-    duration_minutes INTEGER,
     image_url VARCHAR(500),
     is_active BOOLEAN NOT NULL DEFAULT true,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -17,4 +16,3 @@ CREATE INDEX idx_meditation_program_active ON meditation_program(is_active);
 -- Add comments
 COMMENT ON TABLE meditation_program IS 'Meditation programs offered by the center';
 COMMENT ON COLUMN meditation_program.max_seats IS 'Maximum number of participants allowed';
-COMMENT ON COLUMN meditation_program.duration_minutes IS 'Typical duration of the program in minutes';
