@@ -162,6 +162,22 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     /**
+     * Handles Spring Security AuthorizationDeniedException.
+     * Thrown by @PreAuthorize when user lacks required role/authority.
+     * HTTP 403 Forbidden.
+     */
+    @ExceptionHandler(org.springframework.security.authorization.AuthorizationDeniedException.class)
+    public ResponseEntity<Object> handleAuthorizationDeniedException(
+            org.springframework.security.authorization.AuthorizationDeniedException ex, WebRequest request) {
+
+        logger.warn("Authorization denied: {}", ex.getMessage());
+
+        ForbiddenException forbiddenException = new ForbiddenException("Access denied");
+        return handleExceptionInternal(
+                forbiddenException, null, new HttpHeaders(), HttpStatus.FORBIDDEN, request);
+    }
+
+    /**
      * Handles ResourceNotFoundException - resource not found.
      * HTTP 404 Not Found.
      */
