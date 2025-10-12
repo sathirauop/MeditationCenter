@@ -15,11 +15,8 @@ public record Event(
     LocalTime startTime,
     LocalTime endTime,
     String location,
-    Integer maxParticipants,
-    Integer currentParticipants,
     String images,
     Boolean isActive,
-    Boolean requiresRegistration,
     LocalDateTime createdAt,
     LocalDateTime updatedAt
 ) {}
