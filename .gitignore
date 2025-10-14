@@ -44,3 +44,9 @@ out/
 
 # jOOQ generated code
 src/jooq/
+
+# Environment variables (NEVER commit these!)
+.env
+.env.local
+.env.*.local
+*.env
