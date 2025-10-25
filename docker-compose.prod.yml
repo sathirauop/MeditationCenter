@@ -1,0 +1,99 @@
+# Production Docker Compose Configuration
+# For AWS EC2 deployment with NGINX reverse proxy
+#
+# Usage:
+#   docker-compose -f docker-compose.prod.yml up -d --build
+#
+# Author: Sathira Basnayake
+
+version: '3.8'
+
+services:
+  # NGINX Reverse Proxy
+  # Handles HTTPS, SSL termination, and forwards requests to Spring Boot
+  nginx:
+    image: nginx:alpine
+    container_name: meditation-nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"      # HTTP (redirects to HTTPS)
+      - "443:443"    # HTTPS
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/ssl:/etc/nginx/ssl:ro
+      - /etc/letsencrypt:/etc/letsencrypt:ro  # Let's Encrypt certificates
+      - ./nginx/logs:/var/log/nginx
+    depends_on:
+      - app
+    networks:
+      - meditation-network
+
+  # Spring Boot Application
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: meditation-app
+    restart: unless-stopped
+    expose:
+      - "8080"  # Only accessible within Docker network (not to internet)
+    env_file:
+      - .env.production
+    environment:
+      # Database connection (using service name)
+      - DB_HOST=postgres-db
+      - DB_PORT=5432
+
+      # Spring Profile
+      - SPRING_PROFILES_ACTIVE=prod
+
+      # JVM Options for production
+      - JAVA_OPTS=-Xms512m -Xmx1024m -XX:+UseG1GC
+    depends_on:
+      postgres-db:
+        condition: service_healthy
+    networks:
+      - meditation-network
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8080/actuator/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+  # PostgreSQL Database
+  postgres-db:
+    image: postgres:15-alpine
+    container_name: meditation-postgres
+    restart: unless-stopped
+    env_file:
+      - .env.production
+    environment:
+      - POSTGRES_USER=${DB_USERNAME}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
+
+      # Performance tuning for production
+      - POSTGRES_SHARED_BUFFERS=256MB
+      - POSTGRES_EFFECTIVE_CACHE_SIZE=1GB
+      - POSTGRES_MAX_CONNECTIONS=100
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./backups:/backups  # Database backup location
+    networks:
+      - meditation-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME} -d ${DB_NAME}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    # Security: Do NOT expose port to host in production
+    # Only accessible within Docker network
+
+networks:
+  meditation-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+    driver: local
