@@ -1,8 +1,17 @@
 # Production Docker Compose Configuration
-# For AWS EC2 deployment with NGINX reverse proxy
+# For AWS EC2 deployment with NGINX reverse proxy + Amazon RDS
+#
+# Database: Amazon RDS (managed PostgreSQL) - NOT in this compose file
+# Frontend: React app served by NGINX from /var/www/meditation-frontend
+# Backend: Spring Boot application connecting to RDS
 #
 # Usage:
 #   docker-compose -f docker-compose.prod.yml up -d --build
+#
+# Prerequisites:
+#   1. Amazon RDS PostgreSQL instance created and running
+#   2. React app built and copied to /var/www/meditation-frontend
+#   3. .env.production configured with RDS endpoint
 #
 # Author: Sathira Basnayake
 
@@ -10,18 +19,28 @@ version: '3.8'
 
 services:
   # NGINX Reverse Proxy
-  # Handles HTTPS, SSL termination, and forwards requests to Spring Boot
+  # - Serves React frontend (static files)
+  # - Proxies /api/* requests to Spring Boot
+  # - Handles SSL termination (when domain is ready)
   nginx:
     image: nginx:alpine
     container_name: meditation-nginx
     restart: unless-stopped
     ports:
-      - "80:80"      # HTTP (redirects to HTTPS)
-      - "443:443"    # HTTPS
+      - "80:80"      # HTTP (use nginx.ip.conf for IP-based, or nginx.conf with SSL redirect)
+      - "443:443"    # HTTPS (commented out until domain + SSL ready)
     volumes:
-      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
-      - ./nginx/ssl:/etc/nginx/ssl:ro
-      - /etc/letsencrypt:/etc/letsencrypt:ro  # Let's Encrypt certificates
+      # Choose one config file:
+      - ./nginx/nginx.ip.conf:/etc/nginx/nginx.conf:ro           # For IP-based access (no domain)
+      # - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro            # For domain + SSL (uncomment when ready)
+
+      # React frontend (static files)
+      - /var/www/meditation-frontend:/var/www/meditation-frontend:ro
+
+      # SSL certificates (uncomment when domain ready)
+      # - /etc/letsencrypt:/etc/letsencrypt:ro
+
+      # Logs
       - ./nginx/logs:/var/log/nginx
     depends_on:
       - app
@@ -29,6 +48,7 @@ services:
       - meditation-network
 
   # Spring Boot Application
+  # Connects to Amazon RDS (external managed database)
   app:
     build:
       context: .
@@ -36,22 +56,25 @@ services:
     container_name: meditation-app
     restart: unless-stopped
     expose:
-      - "8080"  # Only accessible within Docker network (not to internet)
+      - "8080"  # Only accessible within Docker network (not exposed to internet)
     env_file:
       - .env.production
     environment:
-      # Database connection (using service name)
-      - DB_HOST=postgres-db
-      - DB_PORT=5432
+      # Database connection to Amazon RDS (from .env.production)
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT}
+      - DB_NAME=${DB_NAME}
+      - DB_USERNAME=${DB_USERNAME}
+      - DB_PASSWORD=${DB_PASSWORD}
 
       # Spring Profile
       - SPRING_PROFILES_ACTIVE=prod
 
-      # JVM Options for production
-      - JAVA_OPTS=-Xms512m -Xmx1024m -XX:+UseG1GC
-    depends_on:
-      postgres-db:
-        condition: service_healthy
+      # JVM Options for production (optimized for t3.micro 1GB RAM)
+      - JAVA_OPTS=-Xms512m -Xmx1024m -XX:+UseG1GC -XX:MaxGCPauseMillis=200
+
+      # Flyway migrations (will run automatically on startup)
+      - FLYWAY_ENABLED=true
     networks:
       - meditation-network
     healthcheck:
@@ -59,41 +82,11 @@ services:
       interval: 30s
       timeout: 10s
       retries: 3
-      start_period: 60s
-
-  # PostgreSQL Database
-  postgres-db:
-    image: postgres:15-alpine
-    container_name: meditation-postgres
-    restart: unless-stopped
-    env_file:
-      - .env.production
-    environment:
-      - POSTGRES_USER=${DB_USERNAME}
-      - POSTGRES_PASSWORD=${DB_PASSWORD}
-      - POSTGRES_DB=${DB_NAME}
-
-      # Performance tuning for production
-      - POSTGRES_SHARED_BUFFERS=256MB
-      - POSTGRES_EFFECTIVE_CACHE_SIZE=1GB
-      - POSTGRES_MAX_CONNECTIONS=100
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-      - ./backups:/backups  # Database backup location
-    networks:
-      - meditation-network
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME} -d ${DB_NAME}"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-    # Security: Do NOT expose port to host in production
-    # Only accessible within Docker network
+      start_period: 60s  # Give app time to start and run Flyway migrations
 
 networks:
   meditation-network:
     driver: bridge
 
-volumes:
-  postgres_data:
-    driver: local
+# No volumes section - database is managed by Amazon RDS
+# No local PostgreSQL container - production uses RDS for reliability
