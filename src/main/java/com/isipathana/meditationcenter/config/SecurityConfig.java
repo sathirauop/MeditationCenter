@@ -27,7 +27,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
  * - Stateless session management (no cookies)
  * - JWT authentication via Authorization header
  * - Role-based and permission-based authorization
- * - CORS enabled (configure as needed)
+ * - CORS enabled (configured in WebConfig.java)
  * - CSRF disabled (not needed for stateless JWT)
  * <p>
  * Public Endpoints (no authentication required):
@@ -64,6 +64,9 @@ public class SecurityConfig {
         http
                 // Disable CSRF (not needed for stateless JWT authentication)
                 .csrf(AbstractHttpConfigurer::disable)
+
+                // Enable CORS (configured in WebConfig.java)
+                .cors(cors -> {})
 
                 // Configure authorization rules
                 .authorizeHttpRequests(auth -> auth
