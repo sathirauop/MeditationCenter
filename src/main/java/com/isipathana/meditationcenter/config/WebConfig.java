@@ -29,7 +29,8 @@ public class WebConfig implements WebMvcConfigurer {
                 .allowedOrigins(
                         "http://localhost:3000",           // Local development
                         "http://localhost:3001",           // Alternative port
-                        "https://isipathana-meditation-center.onrender.com"  // Production backend (for testing)
+                        "https://isipathana-meditation-center.onrender.com",
+                        "https://isipathana-meditation-center-ui.sathira97.workers.dev/"// Production backend (for testing)
                         // Add your production frontend URL here when deployed:
                         // "https://your-frontend-domain.com"
                 )
