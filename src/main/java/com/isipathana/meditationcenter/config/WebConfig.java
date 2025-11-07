@@ -31,7 +31,8 @@ public class WebConfig implements WebMvcConfigurer {
                         "http://localhost:3001",           // Alternative port
                         "https://isipathana-meditation-center.onrender.com",
                         "https://isipathana-meditation-center-ui.sathira97.workers.dev",
-                        "https://meditationcenterui.onrender.com"// Production backend (for testing)
+                        "https://meditationcenterui.onrender.com",// Production backend (for testing)
+                        "https://iimc.lk"
                         // Add your production frontend URL here when deployed:
                         // "https://your-frontend-domain.com"
                 )
