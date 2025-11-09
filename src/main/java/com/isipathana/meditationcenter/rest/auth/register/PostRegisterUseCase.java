@@ -58,6 +58,7 @@ public class PostRegisterUseCase {
         String accessToken = jwtService.generateAccessToken(
                 savedUser.userId(),
                 savedUser.email(),
+                savedUser.name(),
                 Role.USER
         );
 

@@ -65,6 +65,7 @@ public class PostRefreshUseCase {
         String accessToken = jwtService.generateAccessToken(
                 user.userId(),
                 user.email(),
+                user.name(),
                 role
         );
 

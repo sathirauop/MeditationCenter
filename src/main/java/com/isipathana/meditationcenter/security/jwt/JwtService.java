@@ -30,18 +30,20 @@ public class JwtService {
 
     /**
      * Generate an access token for a user.
-     * Contains: userId, email, role in claims.
+     * Contains: userId, email, name, role in claims.
      * Expiration: Configured in jwt.access-token-expiration (default 15 minutes).
      *
      * @param userId User ID
      * @param email  User email
+     * @param name   User name
      * @param role   User role
      * @return JWT access token string
      */
-    public String generateAccessToken(Long userId, String email, Role role) {
+    public String generateAccessToken(Long userId, String email, String name, Role role) {
         Map<String, Object> claims = new HashMap<>();
         claims.put("userId", userId);
         claims.put("email", email);
+        claims.put("name", name);
         claims.put("role", role.name());
         claims.put("type", "ACCESS");
 
@@ -106,6 +108,17 @@ public class JwtService {
      */
     public String extractEmail(String token) {
         return extractAllClaims(token).getSubject();
+    }
+
+    /**
+     * Extract name from token.
+     *
+     * @param token JWT token string
+     * @return User name
+     */
+    public String extractName(String token) {
+        Claims claims = extractAllClaims(token);
+        return claims.get("name", String.class);
     }
 
     /**

@@ -47,6 +47,7 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
         // Extract user information from JWT
         Long userId = jwtService.extractUserId(jwt);
         String email = jwtService.extractEmail(jwt);
+        String name = jwtService.extractName(jwt);
         Role role = jwtService.extractRole(jwt);
 
         // Load user from database to verify account is still active
@@ -64,7 +65,7 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
         MeditationCenterUser principal = MeditationCenterUser.builder()
                 .userId(userId)
                 .email(email)
-                .name(user.name())
+                .name(name)
                 .role(role)
                 .isActive(user.isActive())
                 .emailVerified(user.emailVerified())
