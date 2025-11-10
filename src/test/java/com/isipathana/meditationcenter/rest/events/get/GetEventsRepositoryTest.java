@@ -9,7 +9,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.List;
 
 import static com.isipathana.meditationcenter.jooq.Tables.EVENTS;

@@ -29,9 +29,6 @@ public class GetEventsIntegrationTest extends SpringWebIntegrationSpec {
     private MockMvc mockMvc;
 
     @Autowired
-    private ObjectMapper objectMapper;
-
-    @Autowired
     private TestDSLContextWrapper dslContextWrapper;
 
     @BeforeEach

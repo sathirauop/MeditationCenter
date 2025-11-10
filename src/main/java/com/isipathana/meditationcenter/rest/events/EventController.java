@@ -4,7 +4,6 @@ import com.isipathana.meditationcenter.models.response.OffsetSearchResponse;
 import com.isipathana.meditationcenter.rest.events.get.GetEventsRequest;
 import com.isipathana.meditationcenter.rest.events.get.GetEventsResponse;
 import com.isipathana.meditationcenter.rest.events.get.GetEventsUseCase;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
