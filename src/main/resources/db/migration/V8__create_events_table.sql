@@ -7,7 +7,8 @@ CREATE TABLE events (
     start_time TIME NOT NULL,
     end_time TIME NOT NULL,
     location VARCHAR(255),
-    images TEXT,
+    cover_image_key VARCHAR(255),
+    gallery_image_keys TEXT[],
     is_active BOOLEAN NOT NULL DEFAULT true,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -25,4 +26,5 @@ COMMENT ON COLUMN events.event_date IS 'Date when the event occurs';
 COMMENT ON COLUMN events.start_time IS 'Start time of the event';
 COMMENT ON COLUMN events.end_time IS 'End time of the event';
 COMMENT ON COLUMN events.location IS 'Event location/venue';
-COMMENT ON COLUMN events.images IS 'JSON array or comma-separated URLs of event images';
+COMMENT ON COLUMN events.cover_image_key IS 'S3/R2 key for cover image';
+COMMENT ON COLUMN events.gallery_image_keys IS 'Array of S3/R2 keys for gallery images';

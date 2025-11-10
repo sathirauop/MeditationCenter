@@ -5,6 +5,7 @@ import lombok.Builder;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Set;
 
 @Builder
 public record Event(
@@ -15,7 +16,8 @@ public record Event(
     LocalTime startTime,
     LocalTime endTime,
     String location,
-    String images,
+    String coverImageKey,
+    Set<String> galleryImageKeys,
     Boolean isActive,
     LocalDateTime createdAt,
     LocalDateTime updatedAt

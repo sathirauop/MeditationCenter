@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Set;
 
 /**
  * Response DTO for event creation.
@@ -34,7 +35,11 @@ public record PostEventResponse(
 
         String location,
 
-        String images,
+        @JsonProperty("cover_image_key")
+        String coverImageKey,
+
+        @JsonProperty("gallery_image_keys")
+        Set<String> galleryImageKeys,
 
         @JsonProperty("is_active")
         Boolean isActive,

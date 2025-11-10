@@ -7,6 +7,8 @@ CREATE TABLE donation_campaign (
     current_amount DECIMAL(10,2) NOT NULL DEFAULT 0.00,
     start_date DATE,
     end_date DATE,
+    cover_image_key VARCHAR(255),
+    banner_image_key VARCHAR(255),
     is_active BOOLEAN NOT NULL DEFAULT true,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -25,3 +27,5 @@ COMMENT ON COLUMN donation_campaign.target_amount IS 'Fundraising goal (NULL for
 COMMENT ON COLUMN donation_campaign.current_amount IS 'Total amount raised so far';
 COMMENT ON COLUMN donation_campaign.start_date IS 'Campaign start date (NULL for ongoing)';
 COMMENT ON COLUMN donation_campaign.end_date IS 'Campaign end date (NULL for indefinite)';
+COMMENT ON COLUMN donation_campaign.cover_image_key IS 'S3/R2 key for campaign cover image';
+COMMENT ON COLUMN donation_campaign.banner_image_key IS 'S3/R2 key for campaign banner image';

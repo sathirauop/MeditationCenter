@@ -35,8 +35,6 @@ public record PostEventRequest(
         @Size(max = 255, message = "Location must not exceed 255 characters")
         String location,
 
-        String images,
-
         Boolean isActive
 ) {
 }

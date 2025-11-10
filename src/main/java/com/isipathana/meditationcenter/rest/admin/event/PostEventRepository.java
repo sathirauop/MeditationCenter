@@ -28,7 +28,6 @@ public class PostEventRepository implements PostEventDataAccess {
                 .set(EVENTS.START_TIME, event.startTime())
                 .set(EVENTS.END_TIME, event.endTime())
                 .set(EVENTS.LOCATION, event.location())
-                .set(EVENTS.IMAGES, event.images())
                 .set(EVENTS.IS_ACTIVE, event.isActive() != null ? event.isActive() : true)
                 .returning(
                         EVENTS.EVENT_ID,
@@ -38,7 +37,6 @@ public class PostEventRepository implements PostEventDataAccess {
                         EVENTS.START_TIME,
                         EVENTS.END_TIME,
                         EVENTS.LOCATION,
-                        EVENTS.IMAGES,
                         EVENTS.IS_ACTIVE,
                         EVENTS.CREATED_AT,
                         EVENTS.UPDATED_AT
@@ -53,7 +51,6 @@ public class PostEventRepository implements PostEventDataAccess {
                 .startTime(record.get(EVENTS.START_TIME))
                 .endTime(record.get(EVENTS.END_TIME))
                 .location(record.get(EVENTS.LOCATION))
-                .images(record.get(EVENTS.IMAGES))
                 .isActive(record.get(EVENTS.IS_ACTIVE))
                 .createdAt(record.get(EVENTS.CREATED_AT))
                 .updatedAt(record.get(EVENTS.UPDATED_AT))

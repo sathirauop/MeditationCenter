@@ -36,7 +36,7 @@ public class GetEventsRepository implements GetEventsDataAccess {
                         .startTime(record.get(EVENTS.START_TIME))
                         .endTime(record.get(EVENTS.END_TIME))
                         .location(record.get(EVENTS.LOCATION))
-                        .images(record.get(EVENTS.IMAGES))
+//                        .images(record.get(EVENTS.IMAGES))
                         .isActive(record.get(EVENTS.IS_ACTIVE))
                         .createdAt(record.get(EVENTS.CREATED_AT))
                         .updatedAt(record.get(EVENTS.UPDATED_AT))
