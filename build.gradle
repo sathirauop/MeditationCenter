@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id 'java-test-fixtures'
     id 'org.springframework.boot' version '3.5.5'
     id 'io.spring.dependency-management' version '1.1.7'
     id 'org.jooq.jooq-codegen-gradle' version '3.20.0'
@@ -59,6 +60,16 @@ dependencies {
     testImplementation 'org.testcontainers:postgresql:1.19.3'
     testImplementation 'org.testcontainers:junit-jupiter:1.19.3'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+    // Test Fixtures dependencies (for shared test utilities)
+    testFixturesAnnotationProcessor 'org.projectlombok:lombok'
+    testFixturesCompileOnly 'org.projectlombok:lombok'
+    testFixturesImplementation 'org.springframework.boot:spring-boot-starter-jooq'
+    testFixturesImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testFixturesImplementation 'org.springframework.boot:spring-boot-test'
+    testFixturesImplementation 'org.springframework.boot:spring-boot-testcontainers'
+    testFixturesImplementation 'org.testcontainers:junit-jupiter'
+    testFixturesImplementation 'org.testcontainers:postgresql'
 }
 
 tasks.named('test') {
