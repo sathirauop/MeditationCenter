@@ -82,11 +82,17 @@ public class PostEventUseCase {
                 galleryImageKeys.addAll(uploadedKeys);
             }
 
-            // TODO: Update event record in database with image keys if any were uploaded
-            // This requires an update method in PostEventDataAccess
+            // Update event record in database with image keys if any were uploaded
+            if (coverImageKey != null || !galleryImageKeys.isEmpty()) {
+                createdEvent = repository.updateImageKeys(
+                        createdEvent.eventId(),
+                        coverImageKey,
+                        galleryImageKeys.isEmpty() ? null : galleryImageKeys
+                );
+            }
         }
 
-        // Map to response (using the image keys from upload or null if R2 disabled)
+        // Map to response
         return new PostEventResponse(
                 createdEvent.eventId(),
                 createdEvent.name(),
@@ -95,8 +101,8 @@ public class PostEventUseCase {
                 createdEvent.startTime(),
                 createdEvent.endTime(),
                 createdEvent.location(),
-                coverImageKey,
-                galleryImageKeys.isEmpty() ? null : galleryImageKeys,
+                createdEvent.coverImageKey(),
+                createdEvent.galleryImageKeys(),
                 createdEvent.isActive(),
                 createdEvent.createdAt(),
                 createdEvent.updatedAt()

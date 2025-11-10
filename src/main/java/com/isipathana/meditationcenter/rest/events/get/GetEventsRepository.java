@@ -6,6 +6,7 @@ import org.jooq.DSLContext;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Set;
 
 import static com.isipathana.meditationcenter.jooq.Tables.EVENTS;
 
@@ -36,7 +37,10 @@ public class GetEventsRepository implements GetEventsDataAccess {
                         .startTime(record.get(EVENTS.START_TIME))
                         .endTime(record.get(EVENTS.END_TIME))
                         .location(record.get(EVENTS.LOCATION))
-//                        .images(record.get(EVENTS.IMAGES))
+                        .coverImageKey(record.get(EVENTS.COVER_IMAGE_KEY))
+                        .galleryImageKeys(record.get(EVENTS.GALLERY_IMAGE_KEYS) != null
+                                ? Set.of(record.get(EVENTS.GALLERY_IMAGE_KEYS))
+                                : null)
                         .isActive(record.get(EVENTS.IS_ACTIVE))
                         .createdAt(record.get(EVENTS.CREATED_AT))
                         .updatedAt(record.get(EVENTS.UPDATED_AT))
