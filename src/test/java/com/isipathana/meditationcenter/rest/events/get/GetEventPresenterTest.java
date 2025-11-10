@@ -53,7 +53,7 @@ public class GetEventPresenterTest {
                 .startTime(LocalTime.of(6, 0))
                 .endTime(LocalTime.of(20, 0))
                 .location("Main Hall")
-                .images("/images/wesak.jpg")
+//                .images("/images/wesak.jpg")
                 .isActive(true)
                 .createdAt(LocalDateTime.of(2024, 5, 21, 8, 30))
                 .updatedAt(LocalDateTime.of(2024, 5, 21, 8, 30))
@@ -67,7 +67,7 @@ public class GetEventPresenterTest {
                 .startTime(LocalTime.of(9, 0))
                 .endTime(LocalTime.of(17, 0))
                 .location("Retreat Center")
-                .images("/images/retreat.jpg")
+//                .images("/images/retreat.jpg")
                 .isActive(true)
                 .createdAt(LocalDateTime.of(2024, 5, 21, 8, 30))
                 .updatedAt(LocalDateTime.of(2024, 5, 21, 8, 30))
@@ -83,7 +83,7 @@ public class GetEventPresenterTest {
                 .startTime(LocalTime.of(6, 0))
                 .endTime(LocalTime.of(20, 0))
                 .location("Main Hall")
-                .images("/images/wesak.jpg")
+//                .images("/images/wesak.jpg")
                 .build();
 
         GetEventsResponse response2 = GetEventsResponse.builder()
@@ -94,7 +94,7 @@ public class GetEventPresenterTest {
                 .startTime(LocalTime.of(9, 0))
                 .endTime(LocalTime.of(17, 0))
                 .location("Retreat Center")
-                .images("/images/retreat.jpg")
+//                .images("/images/retreat.jpg")
                 .build();
 
         OffsetSearchResponse<GetEventsResponse> expectedResponse =
@@ -130,7 +130,7 @@ public class GetEventPresenterTest {
                 .startTime(LocalTime.of(14, 30))
                 .endTime(LocalTime.of(16, 45))
                 .location("Test Location")
-                .images("/images/test1.jpg,/images/test2.jpg")
+//                .images("/images/test1.jpg,/images/test2.jpg")
                 .isActive(true)
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())
@@ -153,7 +153,7 @@ public class GetEventPresenterTest {
         assertEquals(LocalTime.of(14, 30), mappedEvent.startTime());
         assertEquals(LocalTime.of(16, 45), mappedEvent.endTime());
         assertEquals("Test Location", mappedEvent.location());
-        assertEquals("/images/test1.jpg,/images/test2.jpg", mappedEvent.images());
+//        assertEquals("/images/test1.jpg,/images/test2.jpg", mappedEvent.images());
     }
 
     @Test
@@ -186,7 +186,7 @@ public class GetEventPresenterTest {
                         .startTime(LocalTime.now())
                         .endTime(LocalTime.now())
                         .location("Loc")
-                        .images("")
+//                        .images("")
                         .isActive(true)
                         .createdAt(LocalDateTime.now())
                         .updatedAt(LocalDateTime.now())

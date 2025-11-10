@@ -175,7 +175,7 @@ public class GetEventsUseCaseTest {
                 .startTime(LocalTime.of(9, 0))
                 .endTime(LocalTime.of(17, 0))
                 .location("Test Location")
-                .images("/images/test.jpg")
+//                .images("/images/test.jpg")
                 .isActive(true)
                 .createdAt(LocalDateTime.of(2024, 5, 21, 8, 30))
                 .updatedAt(LocalDateTime.of(2024, 5, 21, 8, 30))
@@ -191,7 +191,7 @@ public class GetEventsUseCaseTest {
                 .startTime(LocalTime.of(9, 0))
                 .endTime(LocalTime.of(17, 0))
                 .location("Test Location")
-                .images("/images/test.jpg")
+//                .images("/images/test.jpg")
                 .build();
     }
 }

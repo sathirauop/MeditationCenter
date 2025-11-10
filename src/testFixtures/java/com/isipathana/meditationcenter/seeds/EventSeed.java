@@ -31,7 +31,8 @@ public class EventSeed {
         event1.setStartTime(LocalTime.of(6, 0));
         event1.setEndTime(LocalTime.of(20, 0));
         event1.setLocation("Main Hall");
-        event1.setImages("/images/wesak1.jpg,/images/wesak2.jpg");
+        event1.setCoverImageKey("wesak2.jpg");
+//        event1.setImages("/images/wesak1.jpg,/images/wesak2.jpg");
         event1.setIsActive(true);
         event1.setCreatedAt(fixedTime);
         event1.setUpdatedAt(fixedTime);
@@ -44,7 +45,7 @@ public class EventSeed {
         event2.setStartTime(LocalTime.of(9, 0));
         event2.setEndTime(LocalTime.of(17, 0));
         event2.setLocation("Retreat Center");
-        event2.setImages("/images/retreat1.jpg");
+//        event2.setImages("/images/retreat1.jpg");
         event2.setIsActive(true);
         event2.setCreatedAt(fixedTime);
         event2.setUpdatedAt(fixedTime);
@@ -57,7 +58,7 @@ public class EventSeed {
         event3.setStartTime(LocalTime.of(18, 30));
         event3.setEndTime(LocalTime.of(20, 30));
         event3.setLocation("Conference Room");
-        event3.setImages("");
+//        event3.setImages("");
         event3.setIsActive(true);
         event3.setCreatedAt(fixedTime);
         event3.setUpdatedAt(fixedTime);
@@ -71,7 +72,7 @@ public class EventSeed {
         event4.setStartTime(LocalTime.of(10, 0));
         event4.setEndTime(LocalTime.of(12, 0));
         event4.setLocation("Workshop Hall");
-        event4.setImages("");
+//        event4.setImages("");
         event4.setIsActive(false);
         event4.setCreatedAt(fixedTime);
         event4.setUpdatedAt(fixedTime);
@@ -84,7 +85,7 @@ public class EventSeed {
         event5.setStartTime(LocalTime.of(7, 0));
         event5.setEndTime(LocalTime.of(9, 0));
         event5.setLocation("Main Hall");
-        event5.setImages("/images/newyear1.jpg,/images/newyear2.jpg,/images/newyear3.jpg");
+//        event5.setImages("/images/newyear1.jpg,/images/newyear2.jpg,/images/newyear3.jpg");
         event5.setIsActive(true);
         event5.setCreatedAt(fixedTime);
         event5.setUpdatedAt(fixedTime);
