@@ -35,13 +35,8 @@ public record PostEventRequest(
         @Size(max = 255, message = "Location must not exceed 255 characters")
         String location,
 
-        @Min(value = 1, message = "Maximum participants must be at least 1")
-        Integer maxParticipants,
-
         String images,
 
-        Boolean isActive,
-
-        Boolean requiresRegistration
+        Boolean isActive
 ) {
 }
