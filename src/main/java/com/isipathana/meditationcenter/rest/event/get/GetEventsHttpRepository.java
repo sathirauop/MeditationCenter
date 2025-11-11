@@ -1,4 +1,4 @@
-package com.isipathana.meditationcenter.rest.event;
+package com.isipathana.meditationcenter.rest.event.get;
 
 import com.isipathana.meditationcenter.cache.EventImageUrlsCache;
 import com.isipathana.meditationcenter.client.r2.R2PresignerClient;

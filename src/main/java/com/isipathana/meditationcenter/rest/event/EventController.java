@@ -1,9 +1,9 @@
-package com.isipathana.meditationcenter.rest.events;
+package com.isipathana.meditationcenter.rest.event;
 
 import com.isipathana.meditationcenter.models.response.OffsetSearchResponse;
-import com.isipathana.meditationcenter.rest.events.get.GetEventsRequest;
-import com.isipathana.meditationcenter.rest.events.get.GetEventsResponse;
-import com.isipathana.meditationcenter.rest.events.get.GetEventsUseCase;
+import com.isipathana.meditationcenter.rest.event.get.GetEventsRequest;
+import com.isipathana.meditationcenter.rest.event.get.GetEventsResponse;
+import com.isipathana.meditationcenter.rest.event.get.GetEventsUseCase;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Sathira Basnayake
  */
 @RestController
-@RequestMapping("/api/events")
+@RequestMapping("/api/event")
 @RequiredArgsConstructor
 public class EventController {
 
@@ -32,7 +32,7 @@ public class EventController {
     /**
      * Get active events with pagination.
      * <p>
-     * GET /api/events?limit=20&offset=0
+     * GET /api/event?limit=20&offset=0
      * <p>
      * Returns active events ordered by event date and start time.
      * No authentication required - public endpoint.

@@ -72,10 +72,10 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         // Public endpoints - no authentication required
                         .requestMatchers(HttpMethod.POST, "/api/auth/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/programs").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/programs/{id}").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/events").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/events/{id}").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/program").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/program/{id}").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/event").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/event/{id}").permitAll()
 
                         // Utility endpoints (ONLY for development - should be removed in production)
                         .requestMatchers("/api/util/**").permitAll()

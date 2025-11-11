@@ -1,11 +1,10 @@
-package com.isipathana.meditationcenter.rest.admin.event;
+package com.isipathana.meditationcenter.rest.admin.event.post;
 
 import com.isipathana.meditationcenter.records.event.Event;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
 import org.springframework.stereotype.Repository;
 
-import java.util.HashSet;
 import java.util.Set;
 
 import static com.isipathana.meditationcenter.jooq.Tables.EVENTS;

@@ -1,6 +1,7 @@
 package com.isipathana.meditationcenter.rest.events.get;
 
 import com.isipathana.meditationcenter.records.event.Event;
+import com.isipathana.meditationcenter.rest.event.get.GetEventsRepository;
 import com.isipathana.meditationcenter.seeds.EventSeed;
 import com.isipathana.meditationcenter.testspec.SpringPostgreSQLIntegrationSpec;
 import com.isipathana.meditationcenter.wrappers.TestDSLContextWrapper;

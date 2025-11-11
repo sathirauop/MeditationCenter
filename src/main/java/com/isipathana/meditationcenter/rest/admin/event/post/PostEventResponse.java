@@ -1,4 +1,4 @@
-package com.isipathana.meditationcenter.rest.admin.event;
+package com.isipathana.meditationcenter.rest.admin.event.post;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;

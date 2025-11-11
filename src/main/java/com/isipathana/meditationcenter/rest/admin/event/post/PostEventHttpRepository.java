@@ -1,4 +1,4 @@
-package com.isipathana.meditationcenter.rest.admin.event;
+package com.isipathana.meditationcenter.rest.admin.event.post;
 
 import com.isipathana.meditationcenter.client.r2.R2FileManagerClient;
 import com.isipathana.meditationcenter.config.properties.R2ClientProperties;

@@ -1,4 +1,4 @@
-package com.isipathana.meditationcenter.rest.events.get;
+package com.isipathana.meditationcenter.rest.event.get;
 
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;

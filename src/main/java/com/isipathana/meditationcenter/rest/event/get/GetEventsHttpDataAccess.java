@@ -1,4 +1,4 @@
-package com.isipathana.meditationcenter.rest.event;
+package com.isipathana.meditationcenter.rest.event.get;
 
 import java.util.List;
 import java.util.Map;

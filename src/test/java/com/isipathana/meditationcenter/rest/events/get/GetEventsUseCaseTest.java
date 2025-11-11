@@ -2,6 +2,7 @@ package com.isipathana.meditationcenter.rest.events.get;
 
 import com.isipathana.meditationcenter.models.response.OffsetSearchResponse;
 import com.isipathana.meditationcenter.records.event.Event;
+import com.isipathana.meditationcenter.rest.event.get.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

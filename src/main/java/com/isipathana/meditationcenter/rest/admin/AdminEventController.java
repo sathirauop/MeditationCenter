@@ -1,9 +1,13 @@
 package com.isipathana.meditationcenter.rest.admin;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.isipathana.meditationcenter.rest.admin.event.PostEventRequest;
-import com.isipathana.meditationcenter.rest.admin.event.PostEventResponse;
-import com.isipathana.meditationcenter.rest.admin.event.PostEventUseCase;
+import com.isipathana.meditationcenter.models.response.OffsetSearchResponse;
+import com.isipathana.meditationcenter.rest.admin.event.get.GetAdminEventsRequest;
+import com.isipathana.meditationcenter.rest.admin.event.get.GetAdminEventsResponse;
+import com.isipathana.meditationcenter.rest.admin.event.get.GetAdminEventsUseCase;
+import com.isipathana.meditationcenter.rest.admin.event.post.PostEventRequest;
+import com.isipathana.meditationcenter.rest.admin.event.post.PostEventResponse;
+import com.isipathana.meditationcenter.rest.admin.event.post.PostEventUseCase;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -26,6 +30,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AdminEventController {
 
+    private final GetAdminEventsUseCase getAdminEventsUseCase;
     private final PostEventUseCase postEventUseCase;
     private final ObjectMapper objectMapper;
 
@@ -77,5 +82,23 @@ public class AdminEventController {
     public ResponseEntity<PostEventResponse> createEventJson(@Valid @RequestBody PostEventRequest request) {
         PostEventResponse response = postEventUseCase.execute(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    /**
+     * GET /api/admin/events
+     * Retrieve paginated list of events for admin users.
+     *
+     * @param limit  maximum number of events to return (default: 20, max: 100)
+     * @param offset page offset for pagination (default: 0)
+     * @return paginated response with event data
+     */
+    @GetMapping
+    public ResponseEntity<OffsetSearchResponse<GetAdminEventsResponse>> getAdminEvents(
+            @RequestParam(defaultValue = "20") int limit,
+            @RequestParam(defaultValue = "0") int offset
+    ) {
+        GetAdminEventsRequest request = new GetAdminEventsRequest(limit, offset);
+        OffsetSearchResponse<GetAdminEventsResponse> response = getAdminEventsUseCase.handle(request);
+        return ResponseEntity.ok(response);
     }
 }

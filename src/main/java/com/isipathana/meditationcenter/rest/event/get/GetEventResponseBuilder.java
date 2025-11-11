@@ -1,4 +1,4 @@
-package com.isipathana.meditationcenter.rest.events.get;
+package com.isipathana.meditationcenter.rest.event.get;
 
 import com.isipathana.meditationcenter.models.response.OffsetSearchResponse;
 import com.isipathana.meditationcenter.records.event.Event;

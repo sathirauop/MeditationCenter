@@ -1,4 +1,4 @@
-package com.isipathana.meditationcenter.rest.events.admin.get;
+package com.isipathana.meditationcenter.rest.event.get;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.isipathana.meditationcenter.models.response.ApiResponse;
@@ -9,15 +9,15 @@ import java.time.LocalTime;
 import java.util.Set;
 
 /**
- * Response DTO for GetAdminEvents endpoint.
- * Represents a single event in the admin view.
+ * Response DTO for GET /api/events endpoint.
+ * Contains essential event information for a single event.
  * <p>
  * Image URLs are presigned URLs with 5-minute expiry for secure temporary access.
  *
  * @author Sathira Basnayake
  */
 @Builder
-public record GetAdminEventsResponse(
+public record GetEventsResponse(
         @JsonProperty("event_id")
         Long eventId,
 
@@ -41,5 +41,4 @@ public record GetAdminEventsResponse(
 
         @JsonProperty("gallery_image_urls")
         Set<String> galleryImageUrls
-) implements ApiResponse {
-}
+) implements ApiResponse {}

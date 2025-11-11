@@ -1,4 +1,4 @@
-package com.isipathana.meditationcenter.rest.events.admin.get;
+package com.isipathana.meditationcenter.rest.admin.event.get;
 
 import com.isipathana.meditationcenter.records.event.Event;
 import lombok.RequiredArgsConstructor;

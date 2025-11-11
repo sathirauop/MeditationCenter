@@ -1,4 +1,4 @@
-package com.isipathana.meditationcenter.rest.admin.event;
+package com.isipathana.meditationcenter.rest.admin.event.post;
 
 import org.springframework.web.multipart.MultipartFile;
 
