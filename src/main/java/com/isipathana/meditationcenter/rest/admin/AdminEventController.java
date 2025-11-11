@@ -5,6 +5,8 @@ import com.isipathana.meditationcenter.models.response.OffsetSearchResponse;
 import com.isipathana.meditationcenter.rest.admin.event.get.GetAdminEventsRequest;
 import com.isipathana.meditationcenter.rest.admin.event.get.GetAdminEventsResponse;
 import com.isipathana.meditationcenter.rest.admin.event.get.GetAdminEventsUseCase;
+import com.isipathana.meditationcenter.rest.admin.event.delete.DeleteEventResponse;
+import com.isipathana.meditationcenter.rest.admin.event.delete.DeleteEventUseCase;
 import com.isipathana.meditationcenter.rest.admin.event.post.PostEventRequest;
 import com.isipathana.meditationcenter.rest.admin.event.post.PostEventResponse;
 import com.isipathana.meditationcenter.rest.admin.event.post.PostEventUseCase;
@@ -32,6 +34,7 @@ public class AdminEventController {
 
     private final GetAdminEventsUseCase getAdminEventsUseCase;
     private final PostEventUseCase postEventUseCase;
+    private final DeleteEventUseCase deleteEventUseCase;
     private final ObjectMapper objectMapper;
 
     /**
@@ -99,6 +102,38 @@ public class AdminEventController {
     ) {
         GetAdminEventsRequest request = new GetAdminEventsRequest(limit, offset);
         OffsetSearchResponse<GetAdminEventsResponse> response = getAdminEventsUseCase.handle(request);
+        return ResponseEntity.ok(response);
+    }
+
+    /**
+     * Delete an event by ID (hard delete).
+     * <p>
+     * DELETE /api/admin/event/{eventId}
+     * <p>
+     * Requires: ADMIN role with DELETE_EVENT permission
+     * <p>
+     * IMPORTANT: This is a hard delete - the operation is irreversible.
+     * The event and all associated images in R2 storage will be permanently removed.
+     * <p>
+     * Deletion Process:
+     * 1. Verifies event exists
+     * 2. Deletes all event images from R2 (if R2 enabled)
+     * 3. Invalidates cached presigned URLs
+     * 4. Permanently deletes event from database
+     *
+     * @param eventId The ID of the event to delete
+     * @return 200 OK with deletion confirmation, or 404 Not Found if event doesn't exist
+     */
+    @DeleteMapping("/{eventId}")
+    @PreAuthorize("hasRole('ADMIN') and hasAuthority('DELETE_EVENT')")
+    public ResponseEntity<DeleteEventResponse> deleteEvent(@PathVariable Long eventId) {
+        DeleteEventResponse response = deleteEventUseCase.execute(eventId);
+
+        // Return 404 if event was not found, 200 if successfully deleted
+        if (response.message().contains("not found")) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
+
         return ResponseEntity.ok(response);
     }
 }
