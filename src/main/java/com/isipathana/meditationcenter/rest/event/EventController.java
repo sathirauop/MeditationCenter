@@ -1,5 +1,6 @@
 package com.isipathana.meditationcenter.rest.event;
 
+import com.isipathana.meditationcenter.constants.EndPoints;
 import com.isipathana.meditationcenter.models.response.OffsetSearchResponse;
 import com.isipathana.meditationcenter.rest.event.get.GetEventsRequest;
 import com.isipathana.meditationcenter.rest.event.get.GetEventsResponse;
@@ -23,7 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Sathira Basnayake
  */
 @RestController
-@RequestMapping("/api/event")
+@RequestMapping(EndPoints.Event.BASE)
 @RequiredArgsConstructor
 public class EventController {
 

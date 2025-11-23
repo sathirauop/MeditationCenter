@@ -1,5 +1,6 @@
 package com.isipathana.meditationcenter.rest;
 
+import com.isipathana.meditationcenter.constants.EndPoints;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,7 +18,7 @@ import java.util.Map;
 @RestController
 public class WelcomeController {
 
-    @GetMapping("/")
+    @GetMapping(EndPoints.ROOT)
     public ResponseEntity<Map<String, Object>> welcome() {
         Map<String, Object> response = new HashMap<>();
         response.put("application", "Isipathana International Meditation Center API");
@@ -28,9 +29,9 @@ public class WelcomeController {
         response.put("health", "/actuator/health");
 
         Map<String, String> endpoints = new HashMap<>();
-        endpoints.put("auth", "/api/auth");
-        endpoints.put("programs", "/api/programs");
-        endpoints.put("events", "/api/events");
+        endpoints.put("auth", EndPoints.Auth.BASE);
+        endpoints.put("programs", EndPoints.Program.BASE);
+        endpoints.put("events", EndPoints.Event.BASE);
         response.put("endpoints", endpoints);
 
         return ResponseEntity.ok(response);

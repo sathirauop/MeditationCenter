@@ -1,5 +1,6 @@
 package com.isipathana.meditationcenter.config;
 
+import com.isipathana.meditationcenter.constants.EndPoints;
 import com.isipathana.meditationcenter.security.JwtAccessDeniedHandler;
 import com.isipathana.meditationcenter.security.JwtAuthenticationEntryPoint;
 import com.isipathana.meditationcenter.security.jwt.JwtAuthenticationFilter;
@@ -71,20 +72,20 @@ public class SecurityConfig {
                 // Configure authorization rules
                 .authorizeHttpRequests(auth -> auth
                         // Public endpoints - no authentication required
-                        .requestMatchers(HttpMethod.POST, "/api/auth/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/program").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/program/{id}").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/event").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/event/{id}").permitAll()
+                        .requestMatchers(HttpMethod.POST, EndPoints.Auth.FULL_PATH).permitAll()
+                        .requestMatchers(HttpMethod.GET, EndPoints.Program.FULL_PATH).permitAll()
+                        .requestMatchers(HttpMethod.GET, EndPoints.Program.FULL_PATH_BY_ID).permitAll()
+                        .requestMatchers(HttpMethod.GET, EndPoints.Event.FULL_PATH).permitAll()
+                        .requestMatchers(HttpMethod.GET, EndPoints.Event.FULL_PATH_BY_ID).permitAll()
 
                         // Utility endpoints (ONLY for development - should be removed in production)
-                        .requestMatchers("/api/util/**").permitAll()
+                        .requestMatchers(EndPoints.Util.FULL_PATH).permitAll()
 
                         // Error endpoint (used by GlobalErrorController)
-                        .requestMatchers("/error").permitAll()
+                        .requestMatchers(EndPoints.ERROR).permitAll()
 
                         // All other /api/** endpoints require authentication
-                        .requestMatchers("/api/**").authenticated()
+                        .requestMatchers(EndPoints.API + "/**").authenticated()
 
                         // Allow all other requests (for now)
                         .anyRequest().permitAll()

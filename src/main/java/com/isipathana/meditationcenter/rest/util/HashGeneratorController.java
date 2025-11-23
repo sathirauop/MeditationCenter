@@ -1,5 +1,6 @@
 package com.isipathana.meditationcenter.rest.util;
 
+import com.isipathana.meditationcenter.constants.EndPoints;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Sathira Basnayake
  */
 @RestController
-@RequestMapping("/api/util")
+@RequestMapping(EndPoints.Util.BASE)
 @RequiredArgsConstructor
 public class HashGeneratorController {
 
@@ -30,7 +31,7 @@ public class HashGeneratorController {
      * @param password Plain text password to hash
      * @return BCrypt hash
      */
-    @GetMapping("/hash")
+    @GetMapping(EndPoints.Util.HASH)
     public String generateHash(@RequestParam String password) {
         return passwordEncoder.encode(password);
     }

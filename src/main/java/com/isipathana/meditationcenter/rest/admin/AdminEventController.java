@@ -1,6 +1,7 @@
 package com.isipathana.meditationcenter.rest.admin;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.isipathana.meditationcenter.constants.EndPoints;
 import com.isipathana.meditationcenter.models.response.OffsetSearchResponse;
 import com.isipathana.meditationcenter.rest.admin.event.get.GetAdminEventsRequest;
 import com.isipathana.meditationcenter.rest.admin.event.get.GetAdminEventsResponse;
@@ -28,7 +29,7 @@ import java.util.List;
  * @author Sathira Basnayake
  */
 @RestController
-@RequestMapping("/api/admin/event")
+@RequestMapping(EndPoints.Admin.Event.BASE)
 @RequiredArgsConstructor
 public class AdminEventController {
 
@@ -80,7 +81,7 @@ public class AdminEventController {
      * @param request Event creation request
      * @return 201 Created with event details
      */
-    @PostMapping(value = "/json", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = EndPoints.Admin.Event.CREATE_JSON, consumes = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('ADMIN') and hasAuthority('CREATE_EVENT')")
     public ResponseEntity<PostEventResponse> createEventJson(@Valid @RequestBody PostEventRequest request) {
         PostEventResponse response = postEventUseCase.execute(request);
@@ -124,7 +125,7 @@ public class AdminEventController {
      * @param eventId The ID of the event to delete
      * @return 200 OK with deletion confirmation, or 404 Not Found if event doesn't exist
      */
-    @DeleteMapping("/{eventId}")
+    @DeleteMapping(EndPoints.Admin.Event.DELETE)
     @PreAuthorize("hasRole('ADMIN') and hasAuthority('DELETE_EVENT')")
     public ResponseEntity<DeleteEventResponse> deleteEvent(@PathVariable Long eventId) {
         DeleteEventResponse response = deleteEventUseCase.execute(eventId);

@@ -1,5 +1,6 @@
 package com.isipathana.meditationcenter.rest.auth;
 
+import com.isipathana.meditationcenter.constants.EndPoints;
 import com.isipathana.meditationcenter.rest.auth.login.PostLoginRequest;
 import com.isipathana.meditationcenter.rest.auth.login.PostLoginResponse;
 import com.isipathana.meditationcenter.rest.auth.login.PostLoginUseCase;
@@ -29,7 +30,7 @@ import org.springframework.web.bind.annotation.RestController;
  * All business logic is delegated to UseCases.
  */
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping(EndPoints.Auth.BASE)
 @RequiredArgsConstructor
 public class AuthController {
 
@@ -46,7 +47,7 @@ public class AuthController {
      * @param request Registration request with email, password, name, mobileNumber
      * @return 201 Created with access token and refresh token
      */
-    @PostMapping("/register")
+    @PostMapping(EndPoints.Auth.REGISTER)
     public ResponseEntity<PostRegisterResponse> register(@Valid @RequestBody PostRegisterRequest request) {
         PostRegisterResponse response = postRegisterUseCase.execute(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
@@ -60,7 +61,7 @@ public class AuthController {
      * @param request Login request with email and password
      * @return 200 OK with access token and refresh token
      */
-    @PostMapping("/login")
+    @PostMapping(EndPoints.Auth.LOGIN)
     public ResponseEntity<PostLoginResponse> login(@Valid @RequestBody PostLoginRequest request) {
         PostLoginResponse response = postLoginUseCase.execute(request);
         return ResponseEntity.ok(response);
@@ -74,7 +75,7 @@ public class AuthController {
      * @param request Refresh token request
      * @return 200 OK with new access token (no refresh token)
      */
-    @PostMapping("/refresh")
+    @PostMapping(EndPoints.Auth.REFRESH)
     public ResponseEntity<PostRefreshResponse> refresh(@Valid @RequestBody PostRefreshRequest request) {
         PostRefreshResponse response = postRefreshUseCase.execute(request);
         return ResponseEntity.ok(response);
@@ -91,7 +92,7 @@ public class AuthController {
      *
      * @return 200 OK
      */
-    @PostMapping("/logout")
+    @PostMapping(EndPoints.Auth.LOGOUT)
     public ResponseEntity<Void> logout() {
         postLogoutUseCase.execute();
         return ResponseEntity.ok().build();
