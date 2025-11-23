@@ -5,9 +5,13 @@ import com.isipathana.meditationcenter.models.response.OffsetSearchResponse;
 import com.isipathana.meditationcenter.rest.event.get.GetEventsRequest;
 import com.isipathana.meditationcenter.rest.event.get.GetEventsResponse;
 import com.isipathana.meditationcenter.rest.event.get.GetEventsUseCase;
+import com.isipathana.meditationcenter.rest.event.getSingleEvent.GetSingleEventRequest;
+import com.isipathana.meditationcenter.rest.event.getSingleEvent.GetSingleEventResponse;
+import com.isipathana.meditationcenter.rest.event.getSingleEvent.GetSingleEventUseCase;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -29,6 +33,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class EventController {
 
     private final GetEventsUseCase getEventsUseCase;
+    private final GetSingleEventUseCase getSingleEventUseCase;
 
     /**
      * Get active events with pagination.
@@ -49,6 +54,24 @@ public class EventController {
     ) {
         GetEventsRequest request = new GetEventsRequest(limit, offset);
         OffsetSearchResponse<GetEventsResponse> response = getEventsUseCase.handle(request);
+        return ResponseEntity.ok(response);
+    }
+
+    /**
+     * Get a single event by ID.
+     * <p>
+     * GET /api/event/{id}
+     * <p>
+     * Returns a single active event with all details including presigned image URLs.
+     * No authentication required - public endpoint.
+     *
+     * @param id The event ID
+     * @return 200 OK with event details, or 404 if event not found or inactive
+     */
+    @GetMapping(EndPoints.Event.GET_BY_ID)
+    public ResponseEntity<GetSingleEventResponse> getSingleEvent(@PathVariable Long id) {
+        GetSingleEventRequest request = new GetSingleEventRequest(id);
+        GetSingleEventResponse response = getSingleEventUseCase.handle(request);
         return ResponseEntity.ok(response);
     }
 }

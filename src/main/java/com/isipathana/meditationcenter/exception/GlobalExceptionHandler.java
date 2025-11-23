@@ -185,7 +185,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<Object> handleNotFoundException(
             ResourceNotFoundException ex, WebRequest request) {
 
-        logger.warn("Resource not found: {}", ex.getMessage(), ex);
+        logger.warn("Resource not found: {}", ex.getMessage());
 
         return handleExceptionInternal(
                 ex, null, new HttpHeaders(), HttpStatus.NOT_FOUND, request);
