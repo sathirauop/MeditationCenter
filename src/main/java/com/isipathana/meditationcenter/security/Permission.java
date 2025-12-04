@@ -46,7 +46,20 @@ public enum Permission implements GrantedAuthority {
 
     // Reporting permissions
     VIEW_REPORTS,
-    EXPORT_DATA;
+    EXPORT_DATA,
+
+    // Activity permissions (Daily Schedule)
+    VIEW_ACTIVITIES,
+    CREATE_ACTIVITY,
+    UPDATE_ACTIVITY,
+    DELETE_ACTIVITY,
+
+    // Template permissions (Daily Schedule)
+    VIEW_TEMPLATES,
+    CREATE_TEMPLATE,
+    UPDATE_TEMPLATE,
+    DELETE_TEMPLATE,
+    ACTIVATE_TEMPLATE;
 
     /**
      * Returns the authority string for Spring Security.

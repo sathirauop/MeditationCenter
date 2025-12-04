@@ -43,7 +43,16 @@ public enum Role implements GrantedAuthority {
             Permission.VIEW_DONATIONS,
             Permission.MANAGE_PRICING,
             Permission.VIEW_REPORTS,
-            Permission.EXPORT_DATA
+            Permission.EXPORT_DATA,
+            Permission.VIEW_ACTIVITIES,
+            Permission.CREATE_ACTIVITY,
+            Permission.UPDATE_ACTIVITY,
+            Permission.DELETE_ACTIVITY,
+            Permission.VIEW_TEMPLATES,
+            Permission.CREATE_TEMPLATE,
+            Permission.UPDATE_TEMPLATE,
+            Permission.DELETE_TEMPLATE,
+            Permission.ACTIVATE_TEMPLATE
     ));
 
     private final Set<Permission> permissions;

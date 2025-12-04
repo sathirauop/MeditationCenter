@@ -6,19 +6,21 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 /**
- * Domain model representing an activity scheduled within a template.
- * Links activities to templates with specific start and end times.
+ * Domain model representing an activity scheduled for a specific override date.
+ * When an override exists for a date, all activities for that day come from this table.
+ * Activities can be marked as cancelled via the isCancelled flag.
  *
  * @author Sathira Basnayake
  */
 @Builder
-public record TemplateScheduleActivity(
+public record OverrideActivity(
     Long id,
-    Long templateId,
+    Long overrideId,
     Long activityId,
     LocalTime startTime,
     LocalTime endTime,
     String notes,
+    Boolean isCancelled,
     LocalDateTime createdAt,
     LocalDateTime updatedAt
 ) {}
