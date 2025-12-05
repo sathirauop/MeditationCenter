@@ -128,6 +128,32 @@ public final class EndPoints {
     }
 
     // ============================================================
+    // SCHEDULE ENDPOINTS (Public)
+    // ============================================================
+
+    public static final class Schedule {
+        private Schedule() {}
+
+        /**
+         * Base path for public schedule endpoints
+         */
+        public static final String BASE = API + "/schedule";
+
+        /**
+         * GET /api/schedule/today - Get today's schedule (public)
+         */
+        public static final String GET_TODAY = "/today";
+
+        /**
+         * GET /api/schedule/{date} - Get schedule by date (public)
+         */
+        public static final String GET_BY_DATE = "/{date}";
+
+        // Full paths for security configuration
+        public static final String FULL_PATH = BASE + "/**";
+    }
+
+    // ============================================================
     // ADMIN ENDPOINTS
     // ============================================================
 
@@ -288,6 +314,63 @@ public final class EndPoints {
                  * PUT /api/admin/templates/{id}/activities/bulk - Bulk update activities
                  */
                 public static final String BULK_UPDATE = "/{id}/activities/bulk";
+            }
+        }
+
+        /**
+         * Admin Override Management
+         */
+        public static final class Override {
+            private Override() {}
+
+            /**
+             * Base path for admin override endpoints
+             */
+            public static final String BASE = Admin.BASE + "/overrides";
+
+            /**
+             * POST /api/admin/overrides - Create override
+             */
+            public static final String CREATE = "";
+
+            /**
+             * GET /api/admin/overrides - Get all overrides
+             */
+            public static final String GET_ALL = "";
+
+            /**
+             * GET /api/admin/overrides/{date} - Get override by date
+             */
+            public static final String GET_BY_DATE = "/{date}";
+
+            /**
+             * PUT /api/admin/overrides/{id} - Update override
+             */
+            public static final String UPDATE = "/{id}";
+
+            /**
+             * DELETE /api/admin/overrides/{id} - Delete override
+             */
+            public static final String DELETE = "/{id}";
+
+            // Full paths for security configuration
+            public static final String FULL_PATH = BASE + "/**";
+
+            /**
+             * Override Activity Management
+             */
+            public static final class Activities {
+                private Activities() {}
+
+                /**
+                 * POST /api/admin/overrides/{id}/activities - Add activity to override
+                 */
+                public static final String ADD = "/{id}/activities";
+
+                /**
+                 * DELETE /api/admin/overrides/{overrideId}/activities/{activityId} - Remove activity
+                 */
+                public static final String DELETE = "/{overrideId}/activities/{activityId}";
             }
         }
     }

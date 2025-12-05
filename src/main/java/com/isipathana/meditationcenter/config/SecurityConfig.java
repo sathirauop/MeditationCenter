@@ -77,6 +77,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, EndPoints.Program.FULL_PATH_BY_ID).permitAll()
                         .requestMatchers(HttpMethod.GET, EndPoints.Event.FULL_PATH).permitAll()
                         .requestMatchers(HttpMethod.GET, EndPoints.Event.FULL_PATH_BY_ID).permitAll()
+                        .requestMatchers(HttpMethod.GET, EndPoints.Schedule.FULL_PATH).permitAll()
 
                         // Utility endpoints (ONLY for development - should be removed in production)
                         .requestMatchers(EndPoints.Util.FULL_PATH).permitAll()
