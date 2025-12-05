@@ -12,6 +12,51 @@ services:
       - "5432:5432" # Map host port to container port
     volumes:
       - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U sathira97 -d meditation_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  app: # Spring Boot application service
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: meditation-app
+    depends_on:
+      postgres-db:
+        condition: service_healthy # Wait for database to be ready
+    environment:
+      # Database Configuration
+      # Use 'postgres-db' as host (Docker service name, not localhost!)
+      - DB_HOST=postgres-db
+      - DB_PORT=5432
+      - DB_NAME=meditation_db
+      - DB_USERNAME=sathira97
+      - DB_PASSWORD=sathira
+
+      # JWT Security
+      # IMPORTANT: Change JWT_SECRET in production!
+      # Generate with: openssl rand -base64 32
+      - JWT_SECRET=change-this-to-a-secure-256-bit-secret-key-in-production-environment
+      - JWT_ACCESS_TOKEN_EXPIRATION=900000
+      - JWT_REFRESH_TOKEN_EXPIRATION=604800000
+      - JWT_ISSUER=meditation-center
+
+      # Application Settings
+      - SERVER_PORT=8080
+      - SPRING_PROFILES_ACTIVE=dev
+    ports:
+      - "8080:8080" # Map host port 8080 to container port 8080
+    restart: unless-stopped # Restart container if it crashes
+    # Note: Health check commented out - requires Spring Boot Actuator
+    # To enable: Add 'spring-boot-starter-actuator' dependency to build.gradle
+    # healthcheck:
+    #   test: ["CMD-SHELL", "curl -f http://localhost:8080/actuator/health || exit 1"]
+    #   interval: 30s
+    #   timeout: 10s
+    #   retries: 3
+    #   start_period: 40s
 
 volumes: # Defines the named volume to ensure data persists
   pgdata:

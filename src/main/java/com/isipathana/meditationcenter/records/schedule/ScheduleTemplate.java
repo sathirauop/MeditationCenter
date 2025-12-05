@@ -4,6 +4,13 @@ import lombok.Builder;
 
 import java.time.LocalDateTime;
 
+/**
+ * Domain model representing a reusable schedule template.
+ * Templates define the default daily schedule pattern.
+ * Only one template should be active at a time.
+ *
+ * @author Sathira Basnayake
+ */
 @Builder
 public record ScheduleTemplate(
     Long templateId,

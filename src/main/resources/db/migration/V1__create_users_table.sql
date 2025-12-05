@@ -6,6 +6,7 @@ CREATE TABLE users (
     name VARCHAR(255) NOT NULL,
     mobile_number VARCHAR(20),
     role VARCHAR(50) NOT NULL DEFAULT 'USER',
+    avatar_image_key VARCHAR(255),
     is_active BOOLEAN NOT NULL DEFAULT true,
     email_verified BOOLEAN NOT NULL DEFAULT false,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -20,5 +21,6 @@ CREATE INDEX idx_users_role ON users(role);
 
 -- Add comment to table
 COMMENT ON TABLE users IS 'User accounts for meditation center management system';
-COMMENT ON COLUMN users.role IS 'User role: USER, ADMIN, INSTRUCTOR';
+COMMENT ON COLUMN users.role IS 'User role: USER, ADMIN';
 COMMENT ON COLUMN users.mobile_number IS 'Mobile number in international format (e.g., +94771234567)';
+COMMENT ON COLUMN users.avatar_image_key IS 'S3/R2 key for user avatar/profile picture';

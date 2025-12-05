@@ -1,5 +1,6 @@
 package com.isipathana.meditationcenter.exception;
 
+import com.isipathana.meditationcenter.constants.EndPoints;
 import com.isipathana.meditationcenter.exception.response.*;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.http.HttpServletRequest;
@@ -26,7 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
  * - GlobalErrorController: Safety net for everything else (5% of errors)
  */
 @RestController
-@RequestMapping("/error")
+@RequestMapping(EndPoints.ERROR)
 @RequiredArgsConstructor
 public class GlobalErrorController implements ErrorController {
 

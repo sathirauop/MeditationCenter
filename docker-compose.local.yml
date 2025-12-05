@@ -1,0 +1,91 @@
+# Local Production Testing Docker Compose
+# Tests the full production stack (NGINX + App + DB) on your local machine
+#
+# Usage:
+#   docker-compose -f docker-compose.local.yml up -d --build
+#
+# Access at: http://localhost
+#
+# Author: Sathira Basnayake
+
+version: '3.8'
+
+services:
+  # NGINX Reverse Proxy (HTTP only - no SSL for local testing)
+  nginx:
+    image: nginx:alpine
+    container_name: meditation-nginx-local
+    restart: unless-stopped
+    ports:
+      - "80:80"      # HTTP only
+    volumes:
+      - ./nginx/nginx.local.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/logs:/var/log/nginx
+    depends_on:
+      - app
+    networks:
+      - meditation-network
+
+  # Spring Boot Application
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: meditation-app-local
+    restart: unless-stopped
+    expose:
+      - "8080"  # Only accessible within Docker network
+    env_file:
+      - .env.local
+    environment:
+      # Database connection
+      - DB_HOST=postgres-db
+      - DB_PORT=5432
+
+      # Spring Profile (use dev for local testing)
+      - SPRING_PROFILES_ACTIVE=dev
+
+      # JVM Options (lighter for local testing)
+      - JAVA_OPTS=-Xms256m -Xmx512m
+    depends_on:
+      postgres-db:
+        condition: service_healthy
+    networks:
+      - meditation-network
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8080/actuator/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # PostgreSQL Database
+  postgres-db:
+    image: postgres:15
+    container_name: meditation-postgres-local
+    restart: unless-stopped
+    env_file:
+      - .env.local
+    environment:
+      - POSTGRES_USER=${DB_USERNAME}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
+    ports:
+      - "5432:5432"  # Exposed for local development access
+    volumes:
+      - postgres_data_local:/var/lib/postgresql/data
+    networks:
+      - meditation-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME} -d ${DB_NAME}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+networks:
+  meditation-network:
+    driver: bridge
+
+volumes:
+  postgres_data_local:
+    driver: local

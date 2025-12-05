@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id 'java-test-fixtures'
     id 'org.springframework.boot' version '3.5.5'
     id 'io.spring.dependency-management' version '1.1.7'
     id 'org.jooq.jooq-codegen-gradle' version '3.20.0'
@@ -33,6 +34,9 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-jooq'
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.boot:spring-boot-starter-cache'
+    implementation 'com.github.ben-manes.caffeine:caffeine'
     implementation 'org.flywaydb:flyway-core'
     implementation 'org.flywaydb:flyway-database-postgresql'
     compileOnly 'org.projectlombok:lombok'
@@ -40,16 +44,38 @@ dependencies {
     runtimeOnly 'org.postgresql:postgresql'
     annotationProcessor 'org.projectlombok:lombok'
 
+    // JWT dependencies
+    implementation 'io.jsonwebtoken:jjwt-api:0.12.6'
+    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.6'
+    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.6'
+
+    // AWS SDK for S3 (Cloudflare R2 compatible)
+    implementation 'software.amazon.awssdk:s3:2.21.20'
+    implementation 'software.amazon.awssdk:auth:2.21.20'
+
     // Force jOOQ version to match code generation version
     implementation "org.jooq:jooq:${jooqVersion}"
 
     // jOOQ code generation dependencies
+    // DDL Database extension to generate from SQL files (no database needed!)
+    jooqCodegen "org.jooq:jooq-meta-extensions:${jooqVersion}"
     jooqCodegen 'org.postgresql:postgresql'
-    jooqCodegen 'org.testcontainers:postgresql:1.19.3'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
+    testImplementation 'org.testcontainers:postgresql:1.19.3'
+    testImplementation 'org.testcontainers:junit-jupiter:1.19.3'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+    // Test Fixtures dependencies (for shared test utilities)
+    testFixturesAnnotationProcessor 'org.projectlombok:lombok'
+    testFixturesCompileOnly 'org.projectlombok:lombok'
+    testFixturesImplementation 'org.springframework.boot:spring-boot-starter-jooq'
+    testFixturesImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testFixturesImplementation 'org.springframework.boot:spring-boot-test'
+    testFixturesImplementation 'org.springframework.boot:spring-boot-testcontainers'
+    testFixturesImplementation 'org.testcontainers:junit-jupiter'
+    testFixturesImplementation 'org.testcontainers:postgresql'
 }
 
 tasks.named('test') {
@@ -57,10 +83,12 @@ tasks.named('test') {
 }
 
 // jOOQ Configuration
+// IMPORTANT: Generates jOOQ code from Flyway SQL migrations (no database needed!)
+// This approach works perfectly in Docker builds
 jooq {
     version = '3.20.0'
 
-    String initSqlPath = "${layout.projectDirectory}/src/main/resources/db/init.sql"
+    String flywayMigrationPath = "${layout.projectDirectory}/src/main/resources/db/migration"
     String jooqGeneratedDir = "${layout.projectDirectory}/src/jooq/java"
 
     configuration {
@@ -69,25 +97,49 @@ jooq {
         // Handle metadata errors gracefully
         onError = org.jooq.meta.jaxb.OnError.LOG
 
-        jdbc {
-            driver = 'org.testcontainers.jdbc.ContainerDatabaseDriver'
-            url = "jdbc:tc:postgresql:15:///meditation_db?TC_INITSCRIPT=file:$initSqlPath"
-            user = 'test'
-            password = 'test'
-        }
+        // NO JDBC CONNECTION NEEDED!
+        // jOOQ reads SQL files directly using DDLDatabase
 
         generator {
             name = 'org.jooq.codegen.JavaGenerator'
 
             database {
-                name = 'org.jooq.meta.postgres.PostgresDatabase'
-                inputSchema = 'public'
+                // Use DDLDatabase to read from SQL files (Flyway migrations)
+                name = 'org.jooq.meta.extensions.ddl.DDLDatabase'
 
-                // Add properties to handle PostgreSQL metadata
+                // Specify the schema to use (H2 uses PUBLIC by default)
+                inputSchema = 'PUBLIC'
+
+                // Configure DDL Database to read Flyway migrations
                 properties {
+                    // Point to ALL Flyway migration files
+                    property {
+                        key = 'scripts'
+                        value = "${flywayMigrationPath}/V*create*.sql"
+                    }
+
+                    // Sort scripts by name (V1, V2, V3, etc.)
                     property {
                         key = 'sort'
-                        value = 'false'
+                        value = 'flyway'
+                    }
+
+                    // Default schema name
+                    property {
+                        key = 'defaultNameCase'
+                        value = 'lower'
+                    }
+
+                    // Unqualified schema (use 'public' as default)
+                    property {
+                        key = 'unqualifiedSchema'
+                        value = 'none'
+                    }
+
+                    // Parse ignore comments to handle seed data files better
+                    property {
+                        key = 'parseIgnoreComments'
+                        value = 'true'
                     }
                 }
 
