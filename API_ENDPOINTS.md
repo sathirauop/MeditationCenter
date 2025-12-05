@@ -550,6 +550,352 @@ This document lists all implemented endpoints for the Meditation Center Daily Sc
 
 ---
 
+## Override Management Endpoints
+
+### 17. Create Override
+**POST** `/api/admin/overrides`
+
+**Permission Required:** `ADMIN` role + `CREATE_TEMPLATE` permission
+
+**Note:** Creates a schedule override for a specific date. Only one override per date is allowed.
+
+**Request Body:**
+```json
+{
+  "overrideDate": "2025-12-25",
+  "activities": [
+    {
+      "activityId": 1,
+      "startTime": "07:00",
+      "endTime": "08:00",
+      "notes": "Special Christmas morning meditation"
+    },
+    {
+      "activityId": 3,
+      "startTime": "10:00",
+      "endTime": "11:30",
+      "notes": "Holiday dharma talk"
+    }
+  ]
+}
+```
+
+**Response:** `201 CREATED`
+```json
+{
+  "override_id": 1,
+  "override_date": "2025-12-25",
+  "activities": [
+    {
+      "activity_id": 1,
+      "activity_title": "Morning Meditation",
+      "start_time": "07:00",
+      "end_time": "08:00",
+      "notes": "Special Christmas morning meditation"
+    },
+    {
+      "activity_id": 3,
+      "activity_title": "Dharma Talk",
+      "start_time": "10:00",
+      "end_time": "11:30",
+      "notes": "Holiday dharma talk"
+    }
+  ],
+  "created_at": "2025-12-04T10:30:00"
+}
+```
+
+---
+
+### 18. Get All Overrides
+**GET** `/api/admin/overrides?page=1&limit=10&fromDate=2025-12-01&toDate=2025-12-31`
+
+**Permission Required:** `ADMIN` role + `VIEW_TEMPLATES` permission
+
+**Query Parameters:**
+- `page` (optional, default: 1) - Page number
+- `limit` (optional, default: 10) - Items per page
+- `fromDate` (optional, format: yyyy-MM-dd) - Filter overrides from this date
+- `toDate` (optional, format: yyyy-MM-dd) - Filter overrides until this date
+
+**Response:** `200 OK`
+```json
+{
+  "data": [
+    {
+      "override_id": 1,
+      "override_date": "2025-12-25",
+      "activity_count": 2,
+      "created_at": "2025-12-04T10:30:00",
+      "updated_at": "2025-12-04T10:30:00"
+    },
+    {
+      "override_id": 2,
+      "override_date": "2025-12-31",
+      "activity_count": 3,
+      "created_at": "2025-12-05T09:00:00",
+      "updated_at": "2025-12-05T09:00:00"
+    }
+  ],
+  "currentOffset": 0,
+  "maxOffset": 1
+}
+```
+
+---
+
+### 19. Get Override by Date
+**GET** `/api/admin/overrides/{date}`
+
+**Permission Required:** `ADMIN` role + `VIEW_TEMPLATES` permission
+
+**Note:** Date format in URL should be `yyyy-MM-dd` (e.g., `2025-12-25`)
+
+**Response:** `200 OK`
+```json
+{
+  "override_id": 1,
+  "override_date": "2025-12-25",
+  "activities": [
+    {
+      "override_activity_id": 1,
+      "activity_id": 1,
+      "activity_title": "Morning Meditation",
+      "activity_description": "Guided morning meditation session",
+      "start_time": "07:00",
+      "end_time": "08:00",
+      "notes": "Special Christmas morning meditation"
+    },
+    {
+      "override_activity_id": 2,
+      "activity_id": 3,
+      "activity_title": "Dharma Talk",
+      "activity_description": "Daily wisdom teachings",
+      "start_time": "10:00",
+      "end_time": "11:30",
+      "notes": "Holiday dharma talk"
+    }
+  ],
+  "created_at": "2025-12-04T10:30:00",
+  "updated_at": "2025-12-04T10:30:00"
+}
+```
+
+---
+
+### 20. Update Override
+**PUT** `/api/admin/overrides/{id}`
+
+**Permission Required:** `ADMIN` role + `UPDATE_TEMPLATE` permission
+
+**Note:** This replaces the override date and ALL activities. All existing activities will be deleted and replaced.
+
+**Request Body:**
+```json
+{
+  "overrideDate": "2025-12-25",
+  "activities": [
+    {
+      "activityId": 1,
+      "startTime": "06:30",
+      "endTime": "07:30",
+      "notes": "Updated morning meditation time"
+    },
+    {
+      "activityId": 2,
+      "startTime": "08:00",
+      "endTime": "09:00",
+      "notes": "Special breakfast"
+    }
+  ]
+}
+```
+
+**Response:** `200 OK`
+```json
+{
+  "override_id": 1,
+  "override_date": "2025-12-25",
+  "activities": [
+    {
+      "activity_id": 1,
+      "activity_title": "Morning Meditation",
+      "start_time": "06:30",
+      "end_time": "07:30",
+      "notes": "Updated morning meditation time"
+    },
+    {
+      "activity_id": 2,
+      "activity_title": "Breakfast",
+      "start_time": "08:00",
+      "end_time": "09:00",
+      "notes": "Special breakfast"
+    }
+  ],
+  "updated_at": "2025-12-04T11:00:00"
+}
+```
+
+---
+
+### 21. Delete Override
+**DELETE** `/api/admin/overrides/{id}`
+
+**Permission Required:** `ADMIN` role + `DELETE_TEMPLATE` permission
+
+**Note:** Deleting an override automatically deletes all associated activities (CASCADE).
+
+**Response:** `200 OK`
+```json
+{
+  "success": true,
+  "message": "Override for date '2025-12-25' (ID: 1) deleted successfully",
+  "override_id": 1,
+  "override_date": "2025-12-25"
+}
+```
+
+---
+
+### 22. Add Activity to Override
+**POST** `/api/admin/overrides/{id}/activities`
+
+**Permission Required:** `ADMIN` role + `UPDATE_TEMPLATE` permission
+
+**Request Body:**
+```json
+{
+  "activityId": 4,
+  "startTime": "16:00",
+  "endTime": "17:00",
+  "notes": "Evening meditation for holiday"
+}
+```
+
+**Response:** `201 CREATED`
+```json
+{
+  "override_activity_id": 3,
+  "override_id": 1,
+  "activity_id": 4,
+  "activity_title": "Evening Meditation",
+  "start_time": "16:00",
+  "end_time": "17:00",
+  "notes": "Evening meditation for holiday",
+  "created_at": "2025-12-04T11:30:00"
+}
+```
+
+---
+
+### 23. Remove Activity from Override
+**DELETE** `/api/admin/overrides/{overrideId}/activities/{activityId}`
+
+**Permission Required:** `ADMIN` role + `UPDATE_TEMPLATE` permission
+
+**Note:** The `activityId` in the URL is the `override_activity_id`, NOT the activity ID.
+
+**Response:** `200 OK`
+```json
+{
+  "success": true,
+  "message": "Activity 'Evening Meditation' removed from override successfully",
+  "override_activity_id": 3,
+  "override_id": 1,
+  "activity_title": "Evening Meditation"
+}
+```
+
+---
+
+## Public Schedule Endpoints
+
+### 24. Get Today's Schedule
+**GET** `/api/schedule/today`
+
+**Permission Required:** None (Public endpoint)
+
+**Note:** Returns today's schedule. Checks for override first, then falls back to active template. No authentication required.
+
+**Response:** `200 OK` (Override exists)
+```json
+{
+  "schedule_date": "2025-12-25",
+  "schedule_type": "OVERRIDE",
+  "schedule_name": "Special Schedule",
+  "activities": [
+    {
+      "activity_id": 1,
+      "activity_title": "Morning Meditation",
+      "activity_description": "Guided morning meditation session",
+      "start_time": "07:00",
+      "end_time": "08:00",
+      "notes": "Special Christmas morning meditation"
+    },
+    {
+      "activity_id": 3,
+      "activity_title": "Dharma Talk",
+      "activity_description": "Daily wisdom teachings",
+      "start_time": "10:00",
+      "end_time": "11:30",
+      "notes": "Holiday dharma talk"
+    }
+  ]
+}
+```
+
+**Response:** `200 OK` (Template schedule)
+```json
+{
+  "schedule_date": "2025-12-05",
+  "schedule_type": "TEMPLATE",
+  "schedule_name": "Weekday Schedule",
+  "activities": [
+    {
+      "activity_id": 1,
+      "activity_title": "Morning Meditation",
+      "activity_description": "Guided morning meditation session",
+      "start_time": "05:00",
+      "end_time": "06:00",
+      "notes": "Morning meditation session"
+    },
+    {
+      "activity_id": 2,
+      "activity_title": "Breakfast",
+      "activity_description": "Community breakfast time",
+      "start_time": "06:00",
+      "end_time": "07:00",
+      "notes": "Breakfast and community time"
+    }
+  ]
+}
+```
+
+**Response:** `200 OK` (No schedule)
+```json
+{
+  "schedule_date": "2025-12-05",
+  "schedule_type": "NONE",
+  "schedule_name": "No Schedule",
+  "activities": []
+}
+```
+
+---
+
+### 25. Get Schedule by Date
+**GET** `/api/schedule/{date}`
+
+**Permission Required:** None (Public endpoint)
+
+**Note:** Returns schedule for the specified date. Date format in URL should be `yyyy-MM-dd`. Checks for override first, then falls back to active template. No authentication required.
+
+**Example:** `GET /api/schedule/2025-12-25`
+
+**Response:** Same format as "Get Today's Schedule" above
+
+---
+
 ## Testing Workflow Example
 
 ### Step 1: Create Activities
