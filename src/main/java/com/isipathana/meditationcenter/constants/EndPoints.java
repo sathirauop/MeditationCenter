@@ -128,6 +128,32 @@ public final class EndPoints {
     }
 
     // ============================================================
+    // SCHEDULE ENDPOINTS (Public)
+    // ============================================================
+
+    public static final class Schedule {
+        private Schedule() {}
+
+        /**
+         * Base path for public schedule endpoints
+         */
+        public static final String BASE = API + "/schedule";
+
+        /**
+         * GET /api/schedule/today - Get today's schedule (public)
+         */
+        public static final String GET_TODAY = "/today";
+
+        /**
+         * GET /api/schedule/{date} - Get schedule by date (public)
+         */
+        public static final String GET_BY_DATE = "/{date}";
+
+        // Full paths for security configuration
+        public static final String FULL_PATH = BASE + "/**";
+    }
+
+    // ============================================================
     // ADMIN ENDPOINTS
     // ============================================================
 
@@ -172,6 +198,180 @@ public final class EndPoints {
 
             // Full paths for security configuration
             public static final String FULL_PATH = BASE + "/**";
+        }
+
+        /**
+         * Admin Activity Management
+         */
+        public static final class Activity {
+            private Activity() {}
+
+            /**
+             * Base path for admin activity endpoints
+             */
+            public static final String BASE = Admin.BASE + "/activities";
+
+            /**
+             * POST /api/admin/activities - Create activity
+             */
+            public static final String CREATE = "";
+
+            /**
+             * GET /api/admin/activities - Get all activities
+             */
+            public static final String GET_ALL = "";
+
+            /**
+             * GET /api/admin/activities/{id} - Get activity by ID
+             */
+            public static final String GET_BY_ID = "/{id}";
+
+            /**
+             * PATCH /api/admin/activities/{id} - Update activity
+             */
+            public static final String UPDATE = "/{id}";
+
+            /**
+             * DELETE /api/admin/activities/{id} - Delete activity
+             */
+            public static final String DELETE = "/{id}";
+
+            // Full paths for security configuration
+            public static final String FULL_PATH = BASE + "/**";
+        }
+
+        /**
+         * Admin Template Management
+         */
+        public static final class Template {
+            private Template() {}
+
+            /**
+             * Base path for admin template endpoints
+             */
+            public static final String BASE = Admin.BASE + "/templates";
+
+            /**
+             * POST /api/admin/templates - Create template
+             */
+            public static final String CREATE = "";
+
+            /**
+             * GET /api/admin/templates - Get all templates
+             */
+            public static final String GET_ALL = "";
+
+            /**
+             * GET /api/admin/templates/active - Get active template
+             */
+            public static final String GET_ACTIVE = "/active";
+
+            /**
+             * GET /api/admin/templates/{id} - Get template by ID
+             */
+            public static final String GET_BY_ID = "/{id}";
+
+            /**
+             * PUT /api/admin/templates/{id} - Update template
+             */
+            public static final String UPDATE = "/{id}";
+
+            /**
+             * PATCH /api/admin/templates/{id}/activate - Activate template
+             */
+            public static final String ACTIVATE = "/{id}/activate";
+
+            /**
+             * DELETE /api/admin/templates/{id} - Delete template
+             */
+            public static final String DELETE = "/{id}";
+
+            // Full paths for security configuration
+            public static final String FULL_PATH = BASE + "/**";
+
+            /**
+             * Template Activity Management
+             */
+            public static final class Activities {
+                private Activities() {}
+
+                /**
+                 * POST /api/admin/templates/{id}/activities - Add activity to template
+                 */
+                public static final String ADD = "/{id}/activities";
+
+                /**
+                 * PUT /api/admin/templates/{templateId}/activities/{activityId} - Update template activity
+                 */
+                public static final String UPDATE = "/{templateId}/activities/{activityId}";
+
+                /**
+                 * DELETE /api/admin/templates/{templateId}/activities/{activityId} - Remove activity
+                 */
+                public static final String DELETE = "/{templateId}/activities/{activityId}";
+
+                /**
+                 * PUT /api/admin/templates/{id}/activities/bulk - Bulk update activities
+                 */
+                public static final String BULK_UPDATE = "/{id}/activities/bulk";
+            }
+        }
+
+        /**
+         * Admin Override Management
+         */
+        public static final class Override {
+            private Override() {}
+
+            /**
+             * Base path for admin override endpoints
+             */
+            public static final String BASE = Admin.BASE + "/overrides";
+
+            /**
+             * POST /api/admin/overrides - Create override
+             */
+            public static final String CREATE = "";
+
+            /**
+             * GET /api/admin/overrides - Get all overrides
+             */
+            public static final String GET_ALL = "";
+
+            /**
+             * GET /api/admin/overrides/{date} - Get override by date
+             */
+            public static final String GET_BY_DATE = "/{date}";
+
+            /**
+             * PUT /api/admin/overrides/{id} - Update override
+             */
+            public static final String UPDATE = "/{id}";
+
+            /**
+             * DELETE /api/admin/overrides/{id} - Delete override
+             */
+            public static final String DELETE = "/{id}";
+
+            // Full paths for security configuration
+            public static final String FULL_PATH = BASE + "/**";
+
+            /**
+             * Override Activity Management
+             */
+            public static final class Activities {
+                private Activities() {}
+
+                /**
+                 * POST /api/admin/overrides/{id}/activities - Add activity to override
+                 */
+                public static final String ADD = "/{id}/activities";
+
+                /**
+                 * DELETE /api/admin/overrides/{overrideId}/activities/{activityId} - Remove activity
+                 */
+                public static final String DELETE = "/{overrideId}/activities/{activityId}";
+            }
         }
     }
 
