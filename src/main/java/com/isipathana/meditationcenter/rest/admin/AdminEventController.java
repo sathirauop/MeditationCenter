@@ -8,6 +8,9 @@ import com.isipathana.meditationcenter.rest.admin.event.get.GetAdminEventsRespon
 import com.isipathana.meditationcenter.rest.admin.event.get.GetAdminEventsUseCase;
 import com.isipathana.meditationcenter.rest.admin.event.delete.DeleteEventResponse;
 import com.isipathana.meditationcenter.rest.admin.event.delete.DeleteEventUseCase;
+import com.isipathana.meditationcenter.rest.admin.event.patch.PatchEventRequest;
+import com.isipathana.meditationcenter.rest.admin.event.patch.PatchEventResponse;
+import com.isipathana.meditationcenter.rest.admin.event.patch.PatchEventUseCase;
 import com.isipathana.meditationcenter.rest.admin.event.post.PostEventRequest;
 import com.isipathana.meditationcenter.rest.admin.event.post.PostEventResponse;
 import com.isipathana.meditationcenter.rest.admin.event.post.PostEventUseCase;
@@ -35,6 +38,7 @@ public class AdminEventController {
 
     private final GetAdminEventsUseCase getAdminEventsUseCase;
     private final PostEventUseCase postEventUseCase;
+    private final PatchEventUseCase patchEventUseCase;
     private final DeleteEventUseCase deleteEventUseCase;
     private final ObjectMapper objectMapper;
 
@@ -103,6 +107,29 @@ public class AdminEventController {
     ) {
         GetAdminEventsRequest request = new GetAdminEventsRequest(limit, offset);
         OffsetSearchResponse<GetAdminEventsResponse> response = getAdminEventsUseCase.handle(request);
+        return ResponseEntity.ok(response);
+    }
+
+    /**
+     * Update an event (partial update).
+     * <p>
+     * PATCH /api/admin/event/{eventId}
+     * <p>
+     * Requires: ADMIN role with UPDATE_EVENT permission
+     * <p>
+     * All fields in the request are optional. Only provided fields will be updated.
+     * Images cannot be updated through this endpoint - use dedicated image management endpoints.
+     *
+     * @param eventId The ID of the event to update
+     * @param request The update request with optional fields
+     * @return 200 OK with updated event details, or 404 Not Found if event doesn't exist
+     */
+    @PatchMapping(EndPoints.Admin.Event.UPDATE)
+    @PreAuthorize("hasRole('ADMIN') and hasAuthority('UPDATE_EVENT')")
+    public ResponseEntity<PatchEventResponse> updateEvent(
+            @PathVariable Long eventId,
+            @Valid @RequestBody PatchEventRequest request) {
+        PatchEventResponse response = patchEventUseCase.execute(eventId, request);
         return ResponseEntity.ok(response);
     }
 

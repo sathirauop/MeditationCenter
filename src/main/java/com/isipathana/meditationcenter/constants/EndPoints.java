@@ -192,6 +192,11 @@ public final class EndPoints {
             public static final String CREATE_JSON = "/json";
 
             /**
+             * PATCH /api/admin/event/{eventId} - Update event by ID
+             */
+            public static final String UPDATE = "/{eventId}";
+
+            /**
              * DELETE /api/admin/event/{eventId} - Delete event by ID
              */
             public static final String DELETE = "/{eventId}";

@@ -8,9 +8,402 @@ This document lists all implemented endpoints for the Meditation Center Daily Sc
 
 ---
 
-## Activity Management Endpoints
+## Table of Contents
 
-### 1. Create Activity
+1. [Authentication Endpoints](#authentication-endpoints)
+2. [Event Endpoints (Public)](#event-endpoints-public)
+3. [Schedule Endpoints (Public)](#schedule-endpoints-public)
+4. [Admin Event Management](#admin-event-management)
+5. [Admin Activity Management](#admin-activity-management)
+6. [Admin Template Management](#admin-template-management)
+7. [Admin Override Management](#admin-override-management)
+8. [Utility Endpoints (Development Only)](#utility-endpoints-development-only)
+
+---
+
+## Authentication Endpoints
+
+### 1. Register User
+**POST** `/api/auth/register`
+
+**Permission Required:** None (Public endpoint)
+
+**Request Body:**
+```json
+{
+  "email": "user@example.com",
+  "password": "SecurePass123",
+  "name": "John Doe",
+  "mobileNumber": "+94771234567"
+}
+```
+
+**Response:** `201 CREATED`
+```json
+{
+  "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "refresh_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "token_type": "Bearer",
+  "expires_in": 900000
+}
+```
+
+---
+
+### 2. Login User
+**POST** `/api/auth/login`
+
+**Permission Required:** None (Public endpoint)
+
+**Request Body:**
+```json
+{
+  "email": "user@example.com",
+  "password": "SecurePass123"
+}
+```
+
+**Response:** `200 OK`
+```json
+{
+  "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "refresh_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "token_type": "Bearer",
+  "expires_in": 900000
+}
+```
+
+---
+
+### 3. Refresh Access Token
+**POST** `/api/auth/refresh`
+
+**Permission Required:** None (Public endpoint)
+
+**Request Body:**
+```json
+{
+  "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+```
+
+**Response:** `200 OK`
+```json
+{
+  "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "token_type": "Bearer",
+  "expires_in": 900000
+}
+```
+
+**Note:** Refresh endpoint returns only a new access token, not a new refresh token.
+
+---
+
+### 4. Logout User
+**POST** `/api/auth/logout`
+
+**Permission Required:** None (Public endpoint)
+
+**Response:** `200 OK`
+
+**Note:** Since JWT is stateless, logout is primarily a client-side operation. Client should delete stored tokens. This endpoint is a placeholder for future token blacklist implementation.
+
+---
+
+## Event Endpoints (Public)
+
+### 5. Get All Events
+**GET** `/api/event?limit=20&offset=0`
+
+**Permission Required:** None (Public endpoint)
+
+**Query Parameters:**
+- `limit` (optional, default: 20, max: 100) - Number of results per page
+- `offset` (optional, default: 0) - Pagination offset
+
+**Response:** `200 OK`
+```json
+{
+  "data": [
+    {
+      "event_id": 1,
+      "name": "Full Moon Meditation",
+      "description": "Special full moon meditation ceremony",
+      "event_date": "2025-12-15",
+      "start_time": "18:00",
+      "end_time": "20:00",
+      "location": "Main Hall",
+      "cover_image_url": "https://presigned-url.cloudflare.com/...",
+      "gallery_image_urls": [
+        "https://presigned-url.cloudflare.com/...",
+        "https://presigned-url.cloudflare.com/..."
+      ]
+    }
+  ],
+  "currentOffset": 0,
+  "maxOffset": 5
+}
+```
+
+**Note:** Image URLs are presigned URLs with 5-minute expiry for secure temporary access.
+
+---
+
+### 6. Get Single Event
+**GET** `/api/event/{id}`
+
+**Permission Required:** None (Public endpoint)
+
+**Response:** `200 OK`
+```json
+{
+  "event_id": 1,
+  "name": "Full Moon Meditation",
+  "description": "Special full moon meditation ceremony",
+  "event_date": "2025-12-15",
+  "start_time": "18:00",
+  "end_time": "20:00",
+  "location": "Main Hall",
+  "cover_image_url": "https://presigned-url.cloudflare.com/...",
+  "gallery_image_urls": [
+    "https://presigned-url.cloudflare.com/...",
+    "https://presigned-url.cloudflare.com/..."
+  ]
+}
+```
+
+---
+
+## Schedule Endpoints (Public)
+
+### 7. Get Today's Schedule
+**GET** `/api/schedule/today`
+
+**Permission Required:** None (Public endpoint)
+
+**Note:** Returns today's schedule. Checks for override first, then falls back to active template. No authentication required.
+
+**Response:** `200 OK` (Override exists)
+```json
+{
+  "schedule_date": "2025-12-25",
+  "schedule_type": "OVERRIDE",
+  "schedule_name": "Special Schedule",
+  "activities": [
+    {
+      "activity_id": 1,
+      "activity_title": "Morning Meditation",
+      "activity_description": "Guided morning meditation session",
+      "start_time": "07:00",
+      "end_time": "08:00",
+      "notes": "Special Christmas morning meditation"
+    },
+    {
+      "activity_id": 3,
+      "activity_title": "Dharma Talk",
+      "activity_description": "Daily wisdom teachings",
+      "start_time": "10:00",
+      "end_time": "11:30",
+      "notes": "Holiday dharma talk"
+    }
+  ]
+}
+```
+
+**Response:** `200 OK` (Template schedule)
+```json
+{
+  "schedule_date": "2025-12-05",
+  "schedule_type": "TEMPLATE",
+  "schedule_name": "Weekday Schedule",
+  "activities": [
+    {
+      "activity_id": 1,
+      "activity_title": "Morning Meditation",
+      "activity_description": "Guided morning meditation session",
+      "start_time": "05:00",
+      "end_time": "06:00",
+      "notes": "Morning meditation session"
+    },
+    {
+      "activity_id": 2,
+      "activity_title": "Breakfast",
+      "activity_description": "Community breakfast time",
+      "start_time": "06:00",
+      "end_time": "07:00",
+      "notes": "Breakfast and community time"
+    }
+  ]
+}
+```
+
+**Response:** `200 OK` (No schedule)
+```json
+{
+  "schedule_date": "2025-12-05",
+  "schedule_type": "NONE",
+  "schedule_name": "No Schedule",
+  "activities": []
+}
+```
+
+---
+
+### 8. Get Schedule by Date
+**GET** `/api/schedule/{date}`
+
+**Permission Required:** None (Public endpoint)
+
+**Note:** Returns schedule for the specified date. Date format in URL should be `yyyy-MM-dd`. Checks for override first, then falls back to active template. No authentication required.
+
+**Example:** `GET /api/schedule/2025-12-25`
+
+**Response:** Same format as "Get Today's Schedule" above
+
+---
+
+## Admin Event Management
+
+### 9. Create Event (Multipart)
+**POST** `/api/admin/event`
+
+**Permission Required:** `ADMIN` role + `CREATE_EVENT` permission
+
+**Content-Type:** `multipart/form-data`
+
+**Request Parts:**
+- `event` (required): JSON string of event data
+- `coverImage` (optional): Cover image file (JPEG, PNG, GIF, WebP, max 5MB)
+- `galleryImages` (optional): Multiple gallery image files (JPEG, PNG, GIF, WebP, max 5MB each)
+
+**Event JSON:**
+```json
+{
+  "name": "Full Moon Meditation",
+  "description": "Special full moon meditation ceremony",
+  "eventDate": "2025-12-15",
+  "startTime": "18:00",
+  "endTime": "20:00",
+  "location": "Main Hall",
+  "isActive": true
+}
+```
+
+**Response:** `201 CREATED`
+```json
+{
+  "event_id": 1,
+  "name": "Full Moon Meditation",
+  "description": "Special full moon meditation ceremony",
+  "event_date": "2025-12-15",
+  "start_time": "18:00",
+  "end_time": "20:00",
+  "location": "Main Hall",
+  "cover_image_key": "events/1/cover-20251210.jpg",
+  "gallery_image_keys": [
+    "events/1/gallery-1-20251210.jpg",
+    "events/1/gallery-2-20251210.jpg"
+  ],
+  "is_active": true,
+  "created_at": "2025-12-10T10:30:00",
+  "updated_at": "2025-12-10T10:30:00"
+}
+```
+
+---
+
+### 10. Create Event (JSON Only)
+**POST** `/api/admin/event/json`
+
+**Permission Required:** `ADMIN` role + `CREATE_EVENT` permission
+
+**Content-Type:** `application/json`
+
+**Request Body:**
+```json
+{
+  "name": "Full Moon Meditation",
+  "description": "Special full moon meditation ceremony",
+  "eventDate": "2025-12-15",
+  "startTime": "18:00",
+  "endTime": "20:00",
+  "location": "Main Hall",
+  "isActive": true
+}
+```
+
+**Response:** `201 CREATED` (same format as multipart endpoint)
+
+**Note:** Use this endpoint for creating events without images, or for backward compatibility.
+
+---
+
+### 11. Get Admin Events
+**GET** `/api/admin/event?limit=20&offset=0`
+
+**Permission Required:** `ADMIN` role
+
+**Query Parameters:**
+- `limit` (optional, default: 20, max: 100) - Number of results per page
+- `offset` (optional, default: 0) - Pagination offset
+
+**Response:** `200 OK`
+```json
+{
+  "data": [
+    {
+      "event_id": 1,
+      "name": "Full Moon Meditation",
+      "description": "Special full moon meditation ceremony",
+      "event_date": "2025-12-15",
+      "start_time": "18:00",
+      "end_time": "20:00",
+      "location": "Main Hall",
+      "cover_image_url": "https://presigned-url.cloudflare.com/...",
+      "gallery_image_urls": [
+        "https://presigned-url.cloudflare.com/...",
+        "https://presigned-url.cloudflare.com/..."
+      ]
+    }
+  ],
+  "currentOffset": 0,
+  "maxOffset": 5
+}
+```
+
+---
+
+### 12. Delete Event
+**DELETE** `/api/admin/event/{eventId}`
+
+**Permission Required:** `ADMIN` role + `DELETE_EVENT` permission
+
+**Note:** This is a hard delete - permanently removes the event and all associated images from R2 storage.
+
+**Response:** `200 OK`
+```json
+{
+  "event_id": 1,
+  "message": "Event 'Full Moon Meditation' (ID: 1) has been successfully deleted",
+  "images_deleted": true
+}
+```
+
+**Response:** `404 NOT FOUND` (if event doesn't exist)
+```json
+{
+  "event_id": 999,
+  "message": "Event with ID 999 not found",
+  "images_deleted": false
+}
+```
+
+---
+
+## Admin Activity Management
+
+### 13. Create Activity
 **POST** `/api/admin/activities`
 
 **Permission Required:** `ADMIN` role + `CREATE_ACTIVITY` permission
@@ -37,7 +430,7 @@ This document lists all implemented endpoints for the Meditation Center Daily Sc
 
 ---
 
-### 2. Get All Activities
+### 14. Get All Activities
 **GET** `/api/admin/activities?limit=20&offset=0`
 
 **Permission Required:** `ADMIN` role + `VIEW_ACTIVITIES` permission
@@ -66,7 +459,7 @@ This document lists all implemented endpoints for the Meditation Center Daily Sc
 
 ---
 
-### 3. Get Single Activity
+### 15. Get Single Activity
 **GET** `/api/admin/activities/{id}`
 
 **Permission Required:** `ADMIN` role + `VIEW_ACTIVITIES` permission
@@ -85,7 +478,7 @@ This document lists all implemented endpoints for the Meditation Center Daily Sc
 
 ---
 
-### 4. Update Activity
+### 16. Update Activity
 **PATCH** `/api/admin/activities/{id}`
 
 **Permission Required:** `ADMIN` role + `UPDATE_ACTIVITY` permission
@@ -112,7 +505,7 @@ This document lists all implemented endpoints for the Meditation Center Daily Sc
 
 ---
 
-### 5. Delete Activity
+### 17. Delete Activity
 **DELETE** `/api/admin/activities/{id}`
 
 **Permission Required:** `ADMIN` role + `DELETE_ACTIVITY` permission
@@ -129,9 +522,9 @@ This document lists all implemented endpoints for the Meditation Center Daily Sc
 
 ---
 
-## Template Management Endpoints
+## Admin Template Management
 
-### 6. Create Template
+### 18. Create Template
 **POST** `/api/admin/templates`
 
 **Permission Required:** `ADMIN` role + `CREATE_TEMPLATE` permission
@@ -200,7 +593,7 @@ This document lists all implemented endpoints for the Meditation Center Daily Sc
 
 ---
 
-### 7. Get All Templates
+### 19. Get All Templates
 **GET** `/api/admin/templates?limit=20&offset=0`
 
 **Permission Required:** `ADMIN` role + `VIEW_TEMPLATES` permission
@@ -230,7 +623,7 @@ This document lists all implemented endpoints for the Meditation Center Daily Sc
 
 ---
 
-### 8. Get Active Template
+### 20. Get Active Template
 **GET** `/api/admin/templates/active`
 
 **Permission Required:** `ADMIN` role + `VIEW_TEMPLATES` permission
@@ -258,7 +651,7 @@ This document lists all implemented endpoints for the Meditation Center Daily Sc
 
 ---
 
-### 9. Get Template by ID
+### 21. Get Template by ID
 **GET** `/api/admin/templates/{id}`
 
 **Permission Required:** `ADMIN` role + `VIEW_TEMPLATES` permission
@@ -288,7 +681,7 @@ This document lists all implemented endpoints for the Meditation Center Daily Sc
 
 ---
 
-### 10. Update Template (Full Replacement)
+### 22. Update Template (Full Replacement)
 **PUT** `/api/admin/templates/{id}`
 
 **Permission Required:** `ADMIN` role + `UPDATE_TEMPLATE` permission
@@ -344,7 +737,7 @@ This document lists all implemented endpoints for the Meditation Center Daily Sc
 
 ---
 
-### 11. Activate Template
+### 23. Activate Template
 **PATCH** `/api/admin/templates/{id}/activate`
 
 **Permission Required:** `ADMIN` role + `ACTIVATE_TEMPLATE` permission
@@ -365,7 +758,7 @@ This document lists all implemented endpoints for the Meditation Center Daily Sc
 
 ---
 
-### 12. Delete Template
+### 24. Delete Template
 **DELETE** `/api/admin/templates/{id}`
 
 **Permission Required:** `ADMIN` role + `DELETE_TEMPLATE` permission
@@ -384,9 +777,7 @@ This document lists all implemented endpoints for the Meditation Center Daily Sc
 
 ---
 
-## Template Activity Management Endpoints
-
-### 13. Add Activity to Template
+### 25. Add Activity to Template
 **POST** `/api/admin/templates/{id}/activities`
 
 **Permission Required:** `ADMIN` role + `UPDATE_TEMPLATE` permission
@@ -417,7 +808,7 @@ This document lists all implemented endpoints for the Meditation Center Daily Sc
 
 ---
 
-### 14. Update Template Activity
+### 26. Update Template Activity
 **PUT** `/api/admin/templates/{templateId}/activities/{activityId}`
 
 **Permission Required:** `ADMIN` role + `UPDATE_TEMPLATE` permission
@@ -449,7 +840,7 @@ This document lists all implemented endpoints for the Meditation Center Daily Sc
 
 ---
 
-### 15. Remove Activity from Template
+### 27. Remove Activity from Template
 **DELETE** `/api/admin/templates/{templateId}/activities/{activityId}`
 
 **Permission Required:** `ADMIN` role + `UPDATE_TEMPLATE` permission
@@ -469,7 +860,7 @@ This document lists all implemented endpoints for the Meditation Center Daily Sc
 
 ---
 
-### 16. Bulk Update Template Activities
+### 28. Bulk Update Template Activities
 **PUT** `/api/admin/templates/{id}/activities/bulk`
 
 **Permission Required:** `ADMIN` role + `UPDATE_TEMPLATE` permission
@@ -550,9 +941,9 @@ This document lists all implemented endpoints for the Meditation Center Daily Sc
 
 ---
 
-## Override Management Endpoints
+## Admin Override Management
 
-### 17. Create Override
+### 29. Create Override
 **POST** `/api/admin/overrides`
 
 **Permission Required:** `ADMIN` role + `CREATE_TEMPLATE` permission
@@ -607,7 +998,7 @@ This document lists all implemented endpoints for the Meditation Center Daily Sc
 
 ---
 
-### 18. Get All Overrides
+### 30. Get All Overrides
 **GET** `/api/admin/overrides?page=1&limit=10&fromDate=2025-12-01&toDate=2025-12-31`
 
 **Permission Required:** `ADMIN` role + `VIEW_TEMPLATES` permission
@@ -644,7 +1035,7 @@ This document lists all implemented endpoints for the Meditation Center Daily Sc
 
 ---
 
-### 19. Get Override by Date
+### 31. Get Override by Date
 **GET** `/api/admin/overrides/{date}`
 
 **Permission Required:** `ADMIN` role + `VIEW_TEMPLATES` permission
@@ -683,7 +1074,7 @@ This document lists all implemented endpoints for the Meditation Center Daily Sc
 
 ---
 
-### 20. Update Override
+### 32. Update Override
 **PUT** `/api/admin/overrides/{id}`
 
 **Permission Required:** `ADMIN` role + `UPDATE_TEMPLATE` permission
@@ -738,7 +1129,7 @@ This document lists all implemented endpoints for the Meditation Center Daily Sc
 
 ---
 
-### 21. Delete Override
+### 33. Delete Override
 **DELETE** `/api/admin/overrides/{id}`
 
 **Permission Required:** `ADMIN` role + `DELETE_TEMPLATE` permission
@@ -757,7 +1148,7 @@ This document lists all implemented endpoints for the Meditation Center Daily Sc
 
 ---
 
-### 22. Add Activity to Override
+### 34. Add Activity to Override
 **POST** `/api/admin/overrides/{id}/activities`
 
 **Permission Required:** `ADMIN` role + `UPDATE_TEMPLATE` permission
@@ -788,7 +1179,7 @@ This document lists all implemented endpoints for the Meditation Center Daily Sc
 
 ---
 
-### 23. Remove Activity from Override
+### 35. Remove Activity from Override
 **DELETE** `/api/admin/overrides/{overrideId}/activities/{activityId}`
 
 **Permission Required:** `ADMIN` role + `UPDATE_TEMPLATE` permission
@@ -808,172 +1199,22 @@ This document lists all implemented endpoints for the Meditation Center Daily Sc
 
 ---
 
-## Public Schedule Endpoints
+## Utility Endpoints (Development Only)
 
-### 24. Get Today's Schedule
-**GET** `/api/schedule/today`
-
-**Permission Required:** None (Public endpoint)
-
-**Note:** Returns today's schedule. Checks for override first, then falls back to active template. No authentication required.
-
-**Response:** `200 OK` (Override exists)
-```json
-{
-  "schedule_date": "2025-12-25",
-  "schedule_type": "OVERRIDE",
-  "schedule_name": "Special Schedule",
-  "activities": [
-    {
-      "activity_id": 1,
-      "activity_title": "Morning Meditation",
-      "activity_description": "Guided morning meditation session",
-      "start_time": "07:00",
-      "end_time": "08:00",
-      "notes": "Special Christmas morning meditation"
-    },
-    {
-      "activity_id": 3,
-      "activity_title": "Dharma Talk",
-      "activity_description": "Daily wisdom teachings",
-      "start_time": "10:00",
-      "end_time": "11:30",
-      "notes": "Holiday dharma talk"
-    }
-  ]
-}
-```
-
-**Response:** `200 OK` (Template schedule)
-```json
-{
-  "schedule_date": "2025-12-05",
-  "schedule_type": "TEMPLATE",
-  "schedule_name": "Weekday Schedule",
-  "activities": [
-    {
-      "activity_id": 1,
-      "activity_title": "Morning Meditation",
-      "activity_description": "Guided morning meditation session",
-      "start_time": "05:00",
-      "end_time": "06:00",
-      "notes": "Morning meditation session"
-    },
-    {
-      "activity_id": 2,
-      "activity_title": "Breakfast",
-      "activity_description": "Community breakfast time",
-      "start_time": "06:00",
-      "end_time": "07:00",
-      "notes": "Breakfast and community time"
-    }
-  ]
-}
-```
-
-**Response:** `200 OK` (No schedule)
-```json
-{
-  "schedule_date": "2025-12-05",
-  "schedule_type": "NONE",
-  "schedule_name": "No Schedule",
-  "activities": []
-}
-```
-
----
-
-### 25. Get Schedule by Date
-**GET** `/api/schedule/{date}`
+### 36. Generate Password Hash
+**GET** `/api/util/hash?password=admin123`
 
 **Permission Required:** None (Public endpoint)
 
-**Note:** Returns schedule for the specified date. Date format in URL should be `yyyy-MM-dd`. Checks for override first, then falls back to active template. No authentication required.
+**Query Parameters:**
+- `password` (required) - Plain text password to hash
 
-**Example:** `GET /api/schedule/2025-12-25`
-
-**Response:** Same format as "Get Today's Schedule" above
-
----
-
-## Testing Workflow Example
-
-### Step 1: Create Activities
-```bash
-# Create Activity 1
-POST /api/admin/activities
-{
-  "title": "Morning Meditation",
-  "description": "Guided morning meditation",
-  "media_url": "https://example.com/video1.mp4"
-}
-
-# Create Activity 2
-POST /api/admin/activities
-{
-  "title": "Breakfast",
-  "description": "Community breakfast time",
-  "media_url": null
-}
-
-# Create Activity 3
-POST /api/admin/activities
-{
-  "title": "Dharma Talk",
-  "description": "Daily wisdom teachings",
-  "media_url": "https://example.com/video2.mp4"
-}
+**Response:** `200 OK`
+```
+$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy
 ```
 
-### Step 2: Create Template with Activities
-```bash
-POST /api/admin/templates
-{
-  "name": "Weekday Schedule",
-  "description": "Monday to Friday schedule",
-  "activities": [
-    {
-      "activityId": 1,
-      "startTime": "05:00",
-      "endTime": "06:00",
-      "notes": "Morning session"
-    },
-    {
-      "activityId": 2,
-      "startTime": "06:00",
-      "endTime": "07:00",
-      "notes": "Breakfast time"
-    },
-    {
-      "activityId": 3,
-      "startTime": "09:00",
-      "endTime": "10:30",
-      "notes": "Daily talk"
-    }
-  ]
-}
-```
-
-### Step 3: Activate Template
-```bash
-PATCH /api/admin/templates/1/activate
-```
-
-### Step 4: Get Active Template
-```bash
-GET /api/admin/templates/active
-```
-
-### Step 5: Add Single Activity
-```bash
-POST /api/admin/templates/1/activities
-{
-  "activityId": 4,
-  "startTime": "14:00",
-  "endTime": "15:00",
-  "notes": "Afternoon meditation"
-}
-```
+**⚠️ WARNING:** This endpoint should be REMOVED or SECURED before production! It's only for development use to generate BCrypt password hashes for testing.
 
 ---
 
@@ -1015,18 +1256,29 @@ POST /api/admin/templates/1/activities
 }
 ```
 
+### 409 Conflict
+```json
+{
+  "status": 409,
+  "message": "Schedule override already exists for date: 2025-12-25"
+}
+```
+
 ---
 
 ## Notes
 
 1. **Time Format:** All times use 24-hour format `HH:mm` (e.g., "05:00", "14:30")
-2. **Date Format:** All dates use ISO 8601 format `yyyy-MM-dd'T'HH:mm:ss`
+2. **Date Format:** All dates use ISO 8601 format `yyyy-MM-dd` or `yyyy-MM-dd'T'HH:mm:ss`
 3. **Authentication:** Include JWT token in header: `Authorization: Bearer <token>`
 4. **Only One Active Template:** The system enforces that only one template can be active at a time
-5. **CASCADE Deletion:** Deleting a template automatically deletes all its activities
-6. **Activity ID vs Template Activity ID:**
+5. **CASCADE Deletion:** Deleting a template/override automatically deletes all its activities
+6. **Activity ID vs Template/Override Activity ID:**
    - `activity_id` refers to the reusable activity definition
    - `template_activity_id` refers to a specific instance of an activity within a template
+   - `override_activity_id` refers to a specific instance of an activity within an override
+7. **Image URLs:** All image URLs in event responses are presigned URLs with 5-minute expiry
+8. **Schedule Priority:** Override schedule takes precedence over template schedule for public endpoints
 
 ---
 
@@ -1037,9 +1289,130 @@ POST /api/admin/templates/1/activities
    - `token`: Your JWT Bearer token
    - `activity_id_1`: ID of first created activity
    - `template_id`: ID of created template
+   - `override_id`: ID of created override
+   - `event_id`: ID of created event
 
 2. Set Authorization header for all admin requests:
    - Type: Bearer Token
    - Token: `{{token}}`
 
 3. Save response IDs to environment variables for chaining requests
+
+---
+
+## Testing Workflow Example
+
+### Step 1: Register and Login
+```bash
+# Register
+POST /api/auth/register
+{
+  "email": "admin@example.com",
+  "password": "SecurePass123",
+  "name": "Admin User",
+  "mobileNumber": "+94771234567"
+}
+
+# Login
+POST /api/auth/login
+{
+  "email": "admin@example.com",
+  "password": "SecurePass123"
+}
+# Save access_token for subsequent requests
+```
+
+### Step 2: Create Activities
+```bash
+# Create Activity 1
+POST /api/admin/activities
+{
+  "title": "Morning Meditation",
+  "description": "Guided morning meditation",
+  "media_url": "https://example.com/video1.mp4"
+}
+
+# Create Activity 2
+POST /api/admin/activities
+{
+  "title": "Breakfast",
+  "description": "Community breakfast time",
+  "media_url": null
+}
+
+# Create Activity 3
+POST /api/admin/activities
+{
+  "title": "Dharma Talk",
+  "description": "Daily wisdom teachings",
+  "media_url": "https://example.com/video2.mp4"
+}
+```
+
+### Step 3: Create Template with Activities
+```bash
+POST /api/admin/templates
+{
+  "name": "Weekday Schedule",
+  "description": "Monday to Friday schedule",
+  "activities": [
+    {
+      "activityId": 1,
+      "startTime": "05:00",
+      "endTime": "06:00",
+      "notes": "Morning session"
+    },
+    {
+      "activityId": 2,
+      "startTime": "06:00",
+      "endTime": "07:00",
+      "notes": "Breakfast time"
+    },
+    {
+      "activityId": 3,
+      "startTime": "09:00",
+      "endTime": "10:30",
+      "notes": "Daily talk"
+    }
+  ]
+}
+```
+
+### Step 4: Activate Template
+```bash
+PATCH /api/admin/templates/1/activate
+```
+
+### Step 5: Create Override for Special Day
+```bash
+POST /api/admin/overrides
+{
+  "overrideDate": "2025-12-25",
+  "activities": [
+    {
+      "activityId": 1,
+      "startTime": "07:00",
+      "endTime": "08:00",
+      "notes": "Christmas special meditation"
+    }
+  ]
+}
+```
+
+### Step 6: View Public Schedule
+```bash
+# Get today's schedule
+GET /api/schedule/today
+
+# Get specific date schedule
+GET /api/schedule/2025-12-25
+```
+
+### Step 7: Create Event
+```bash
+# Using multipart/form-data with Postman
+POST /api/admin/event
+- event: {"name": "Full Moon Meditation", "eventDate": "2025-12-15", ...}
+- coverImage: [file]
+- galleryImages: [file1, file2]
+```
