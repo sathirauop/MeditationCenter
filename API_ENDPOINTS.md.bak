@@ -984,7 +984,7 @@ This document lists all implemented endpoints for the Meditation Center Daily Sc
 
 ---
 
-### 27. Get All Templates
+### 20. Get All Templates
 **GET** `/api/admin/templates?limit=20&offset=0`
 
 **Permission Required:** `ADMIN` role + `VIEW_TEMPLATES` permission
@@ -1014,7 +1014,7 @@ This document lists all implemented endpoints for the Meditation Center Daily Sc
 
 ---
 
-### 28. Get Active Template
+### 21. Get Active Template
 **GET** `/api/admin/templates/active`
 
 **Permission Required:** `ADMIN` role + `VIEW_TEMPLATES` permission
@@ -1042,7 +1042,7 @@ This document lists all implemented endpoints for the Meditation Center Daily Sc
 
 ---
 
-### 29. Get Template by ID
+### 22. Get Template by ID
 **GET** `/api/admin/templates/{id}`
 
 **Permission Required:** `ADMIN` role + `VIEW_TEMPLATES` permission
@@ -1072,7 +1072,7 @@ This document lists all implemented endpoints for the Meditation Center Daily Sc
 
 ---
 
-### 30. Update Template (Full Replacement)
+### 23. Update Template (Full Replacement)
 **PUT** `/api/admin/templates/{id}`
 
 **Permission Required:** `ADMIN` role + `UPDATE_TEMPLATE` permission
@@ -1128,7 +1128,7 @@ This document lists all implemented endpoints for the Meditation Center Daily Sc
 
 ---
 
-### 31. Activate Template
+### 24. Activate Template
 **PATCH** `/api/admin/templates/{id}/activate`
 
 **Permission Required:** `ADMIN` role + `ACTIVATE_TEMPLATE` permission
@@ -1149,7 +1149,7 @@ This document lists all implemented endpoints for the Meditation Center Daily Sc
 
 ---
 
-### 32. Delete Template
+### 25. Delete Template
 **DELETE** `/api/admin/templates/{id}`
 
 **Permission Required:** `ADMIN` role + `DELETE_TEMPLATE` permission
@@ -1168,7 +1168,7 @@ This document lists all implemented endpoints for the Meditation Center Daily Sc
 
 ---
 
-### 33. Add Activity to Template
+### 26. Add Activity to Template
 **POST** `/api/admin/templates/{id}/activities`
 
 **Permission Required:** `ADMIN` role + `UPDATE_TEMPLATE` permission
@@ -1199,7 +1199,7 @@ This document lists all implemented endpoints for the Meditation Center Daily Sc
 
 ---
 
-### 34. Update Template Activity
+### 27. Update Template Activity
 **PUT** `/api/admin/templates/{templateId}/activities/{activityId}`
 
 **Permission Required:** `ADMIN` role + `UPDATE_TEMPLATE` permission
@@ -1231,7 +1231,7 @@ This document lists all implemented endpoints for the Meditation Center Daily Sc
 
 ---
 
-### 35. Remove Activity from Template
+### 28. Remove Activity from Template
 **DELETE** `/api/admin/templates/{templateId}/activities/{activityId}`
 
 **Permission Required:** `ADMIN` role + `UPDATE_TEMPLATE` permission
@@ -1251,7 +1251,7 @@ This document lists all implemented endpoints for the Meditation Center Daily Sc
 
 ---
 
-### 36. Bulk Update Template Activities
+### 29. Bulk Update Template Activities
 **PUT** `/api/admin/templates/{id}/activities/bulk`
 
 **Permission Required:** `ADMIN` role + `UPDATE_TEMPLATE` permission
@@ -1334,7 +1334,7 @@ This document lists all implemented endpoints for the Meditation Center Daily Sc
 
 ## Admin Override Management
 
-### 37. Create Override
+### 30. Create Override
 **POST** `/api/admin/overrides`
 
 **Permission Required:** `ADMIN` role + `CREATE_TEMPLATE` permission
@@ -1389,7 +1389,7 @@ This document lists all implemented endpoints for the Meditation Center Daily Sc
 
 ---
 
-### 38. Get All Overrides
+### 31. Get All Overrides
 **GET** `/api/admin/overrides?page=1&limit=10&fromDate=2025-12-01&toDate=2025-12-31`
 
 **Permission Required:** `ADMIN` role + `VIEW_TEMPLATES` permission
@@ -1426,7 +1426,7 @@ This document lists all implemented endpoints for the Meditation Center Daily Sc
 
 ---
 
-### 39. Get Override by Date
+### 32. Get Override by Date
 **GET** `/api/admin/overrides/{date}`
 
 **Permission Required:** `ADMIN` role + `VIEW_TEMPLATES` permission
@@ -1465,7 +1465,7 @@ This document lists all implemented endpoints for the Meditation Center Daily Sc
 
 ---
 
-### 40. Update Override
+### 33. Update Override
 **PUT** `/api/admin/overrides/{id}`
 
 **Permission Required:** `ADMIN` role + `UPDATE_TEMPLATE` permission
@@ -1520,7 +1520,7 @@ This document lists all implemented endpoints for the Meditation Center Daily Sc
 
 ---
 
-### 41. Delete Override
+### 34. Delete Override
 **DELETE** `/api/admin/overrides/{id}`
 
 **Permission Required:** `ADMIN` role + `DELETE_TEMPLATE` permission
@@ -1539,7 +1539,7 @@ This document lists all implemented endpoints for the Meditation Center Daily Sc
 
 ---
 
-### 42. Add Activity to Override
+### 35. Add Activity to Override
 **POST** `/api/admin/overrides/{id}/activities`
 
 **Permission Required:** `ADMIN` role + `UPDATE_TEMPLATE` permission
@@ -1570,7 +1570,7 @@ This document lists all implemented endpoints for the Meditation Center Daily Sc
 
 ---
 
-### 43. Remove Activity from Override
+### 36. Remove Activity from Override
 **DELETE** `/api/admin/overrides/{overrideId}/activities/{activityId}`
 
 **Permission Required:** `ADMIN` role + `UPDATE_TEMPLATE` permission
@@ -1592,7 +1592,7 @@ This document lists all implemented endpoints for the Meditation Center Daily Sc
 
 ## Utility Endpoints (Development Only)
 
-### 44. Generate Password Hash
+### 37. Generate Password Hash
 **GET** `/api/util/hash?password=admin123`
 
 **Permission Required:** None (Public endpoint)

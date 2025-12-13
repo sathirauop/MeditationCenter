@@ -1,4 +1,4 @@
-package com.isipathana.meditationcenter.rest.admin;
+package com.isipathana.meditationcenter.rest.admin.event;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.isipathana.meditationcenter.constants.EndPoints;

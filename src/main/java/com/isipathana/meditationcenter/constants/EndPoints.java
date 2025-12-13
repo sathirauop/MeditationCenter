@@ -104,27 +104,33 @@ public final class EndPoints {
     // PROGRAM ENDPOINTS (Public)
     // ============================================================
 
-    public static final class Program {
-        private Program() {}
+    public static final class Public {
+        private Public() {}
 
         /**
-         * Base path for public program endpoints
+         * Public Program Management
          */
-        public static final String BASE = API + "/program";
+        public static final class Program {
+            private Program() {}
 
-        /**
-         * GET /api/program - Get all programs (public)
-         */
-        public static final String GET_ALL = "";
+            /**
+             * Base path for public program endpoints
+             */
+            public static final String BASE = API + "/programs";
 
-        /**
-         * GET /api/program/{id} - Get program by ID (public)
-         */
-        public static final String GET_BY_ID = "/{id}";
+            /**
+             * GET /api/programs/active - Get the currently active program (public)
+             */
+            public static final String GET_ACTIVE = "/active";
 
-        // Full paths for security configuration
-        public static final String FULL_PATH = BASE;
-        public static final String FULL_PATH_BY_ID = BASE + "/{id}";
+            /**
+             * GET /api/programs/{id} - Get active program by ID (public)
+             */
+            public static final String GET_BY_ID = "/{id}";
+
+            // Full paths for security configuration
+            public static final String FULL_PATH = BASE + "/**";
+        }
     }
 
     // ============================================================
@@ -203,6 +209,47 @@ public final class EndPoints {
 
             // Full paths for security configuration
             public static final String FULL_PATH = BASE + "/**";
+        }
+
+        /**
+         * Admin Program Management
+         */
+        public static final class Program {
+            private Program() {}
+
+            /**
+             * Base path for admin program endpoints
+             */
+            public static final String BASE = Admin.BASE + "/programs";
+
+            /**
+             * POST /api/admin/program - Create program with multipart/form-data
+             */
+            public static final String CREATE = "";
+
+            /**
+             * POST /api/admin/program/json - Create program with JSON
+             */
+            public static final String CREATE_JSON = "/json";
+
+            /**
+             * GET /api/admin/programs/active - Get the currently active program
+             */
+            public static final String GET_ACTIVE = "/active";
+
+            /**
+             * GET /api/admin/programs/{programId} - Get program by ID
+             */
+            public static final String GET_BY_ID = "/{programId}";
+
+            /**
+             * PATCH /api/admin/programs/{programId} - Update program by ID
+             */
+            public static final String UPDATE = "/{programId}";
+
+            // Full paths for security configuration
+            public static final String FULL_PATH = BASE + "/**";
+            public static final String FULL_PATH_PROGRAMS = Admin.BASE + "/programs/**";
         }
 
         /**

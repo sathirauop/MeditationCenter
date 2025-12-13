@@ -73,8 +73,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         // Public endpoints - no authentication required
                         .requestMatchers(HttpMethod.POST, EndPoints.Auth.FULL_PATH).permitAll()
-                        .requestMatchers(HttpMethod.GET, EndPoints.Program.FULL_PATH).permitAll()
-                        .requestMatchers(HttpMethod.GET, EndPoints.Program.FULL_PATH_BY_ID).permitAll()
+                        .requestMatchers(HttpMethod.GET, EndPoints.Public.Program.FULL_PATH).permitAll()
                         .requestMatchers(HttpMethod.GET, EndPoints.Event.FULL_PATH).permitAll()
                         .requestMatchers(HttpMethod.GET, EndPoints.Event.FULL_PATH_BY_ID).permitAll()
                         .requestMatchers(HttpMethod.GET, EndPoints.Schedule.FULL_PATH).permitAll()

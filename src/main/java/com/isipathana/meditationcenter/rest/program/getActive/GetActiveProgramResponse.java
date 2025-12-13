@@ -1,0 +1,34 @@
+package com.isipathana.meditationcenter.rest.program.getActive;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Builder;
+
+import java.util.Set;
+
+/**
+ * Response DTO for getting the active meditation program (public).
+ * Returns presigned image URLs, not keys.
+ * Excludes isActive and createdAt fields (cleaner public response).
+ *
+ * @author Sathira Basnayake
+ */
+@Builder
+public record GetActiveProgramResponse(
+        @JsonProperty("meditation_program_id")
+        Long meditationProgramId,
+
+        @JsonProperty("name")
+        String name,
+
+        @JsonProperty("description")
+        String description,
+
+        @JsonProperty("max_seats")
+        Integer maxSeats,
+
+        @JsonProperty("cover_image_url")
+        String coverImageUrl,
+
+        @JsonProperty("gallery_image_urls")
+        Set<String> galleryImageUrls
+) {}

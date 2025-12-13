@@ -30,7 +30,7 @@ public class WelcomeController {
 
         Map<String, String> endpoints = new HashMap<>();
         endpoints.put("auth", EndPoints.Auth.BASE);
-        endpoints.put("programs", EndPoints.Program.BASE);
+        endpoints.put("programs", EndPoints.Public.Program.BASE);
         endpoints.put("events", EndPoints.Event.BASE);
         response.put("endpoints", endpoints);
 
