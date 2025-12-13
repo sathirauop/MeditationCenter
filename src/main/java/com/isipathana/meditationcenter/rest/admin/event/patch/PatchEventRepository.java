@@ -4,7 +4,6 @@ import com.isipathana.meditationcenter.records.event.Event;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jooq.DSLContext;
-import org.jooq.UpdateSetFirstStep;
 import org.jooq.UpdateSetMoreStep;
 import org.springframework.stereotype.Repository;
 

@@ -4,7 +4,6 @@ import com.isipathana.meditationcenter.exception.ResourceNotFoundException;
 import com.isipathana.meditationcenter.records.program.MeditationProgram;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
-import org.jooq.UpdateSetFirstStep;
 import org.jooq.UpdateSetMoreStep;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Repository;
