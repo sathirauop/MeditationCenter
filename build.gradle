@@ -22,6 +22,14 @@ configurations {
     }
 }
 
+// Ensure Lombok is available for all compilation tasks
+compileJava {
+    options.compilerArgs += ['-parameters']
+    // Enable annotation processing explicitly
+    options.annotationProcessorPath = configurations.annotationProcessor
+    options.compilerArgs += ['-proc:full']
+}
+
 repositories {
     mavenCentral()
 }
@@ -238,11 +246,6 @@ java {
             }
         }
     }
-}
-
-// Lombok annotation processing configuration
-tasks.withType(JavaCompile).configureEach {
-    options.annotationProcessorPath = configurations.annotationProcessor
 }
 
 // Task dependencies

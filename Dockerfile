@@ -18,6 +18,7 @@ COPY gradle gradle/
 # Copy build configuration files
 COPY build.gradle .
 COPY settings.gradle .
+COPY lombok.config .
 
 # Download dependencies (this layer is cached unless build.gradle changes)
 RUN ./gradlew dependencies --no-daemon || true
