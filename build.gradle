@@ -240,12 +240,21 @@ java {
     }
 }
 
+// Lombok annotation processing configuration
+tasks.withType(JavaCompile).configureEach {
+    options.annotationProcessorPath = configurations.annotationProcessor
+}
+
 // Task dependencies
 tasks.named('compileJava') {
     dependsOn tasks.named('jooqCodegen')
 }
 
 tasks.named('build') {
+    dependsOn tasks.named('jooqCodegen')
+}
+
+tasks.named('bootJar') {
     dependsOn tasks.named('jooqCodegen')
 }
 

@@ -28,9 +28,10 @@ COPY src src/
 # Build the application
 # --no-daemon: Don't start Gradle daemon (saves memory in containers)
 # -x test: Skip tests for faster builds (run tests separately in CI/CD)
+# clean: Ensure fresh build (important for Lombok annotation processing)
 # jOOQ code generation happens automatically from Flyway SQL files!
 # No database connection needed - reads SQL files directly
-RUN ./gradlew bootJar --no-daemon -x test
+RUN ./gradlew clean bootJar --no-daemon -x test
 
 # ============================================
 # Stage 2: RUNTIME
