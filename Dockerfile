@@ -5,7 +5,7 @@
 # ============================================
 # Stage 1: BUILD
 # ============================================
-FROM eclipse-temurin:24-jdk AS build
+FROM eclipse-temurin:21-jdk AS build
 
 # Set working directory inside the container
 WORKDIR /app
@@ -37,7 +37,7 @@ RUN ./gradlew clean bootJar --no-daemon -x test
 # ============================================
 # Stage 2: RUNTIME
 # ============================================
-FROM eclipse-temurin:24-jre
+FROM eclipse-temurin:21-jre
 
 # Set working directory
 WORKDIR /app
