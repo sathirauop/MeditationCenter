@@ -80,12 +80,109 @@ This would allow:
 
 ---
 
+## Admin User Management - Remaining Endpoints
+
+**Status:** Deferred for future implementation
+
+The following user management endpoints were planned but not yet implemented:
+
+### 1. Update User Role
+**PATCH** `/api/admin/users/{userId}/role`
+
+**Purpose:** Change a user's role (USER ↔ ADMIN)
+
+**Request Body:**
+```json
+{
+  "role": "ADMIN"
+}
+```
+
+**Features:**
+- Updates only the `role` field
+- Separate endpoint for security and audit purposes
+- Should log role changes for compliance
+- Requires: `ADMIN` role + `UPDATE_USER_ROLE` permission
+
+**Implementation Notes:**
+- Create dedicated endpoint for role changes
+- Consider logging role changes to an audit table
+- Validate role enum values
+- Return updated user details
+
+---
+
+### 2. Activate User Account
+**PATCH** `/api/admin/users/{userId}/activate`
+
+**Purpose:** Reactivate a deactivated user account
+
+**Request Body:** None (or empty JSON `{}`)
+
+**Features:**
+- Sets `is_active = true`
+- Allows previously deactivated users to log in again
+- Separate from general update for clarity and auditing
+- Requires: `ADMIN` role + `MANAGE_USER_STATUS` permission
+
+**Implementation Notes:**
+- Simple update to set is_active flag
+- Consider sending reactivation email notification
+- Log activation event for audit trail
+
+---
+
+### 3. Deactivate User Account
+**PATCH** `/api/admin/users/{userId}/deactivate`
+
+**Purpose:** Deactivate a user account (soft delete)
+
+**Request Body:**
+```json
+{
+  "reason": "Policy violation - inappropriate behavior"
+}
+```
+
+**Features:**
+- Sets `is_active = false`
+- Prevents user login without deleting data
+- Soft delete alternative (preserves booking/donation history)
+- Optional reason field for documentation
+- Requires: `ADMIN` role + `MANAGE_USER_STATUS` permission
+
+**Implementation Notes:**
+- Consider adding `deactivation_reason` and `deactivated_at` columns
+- Prevent deactivating yourself (current admin user)
+- Log deactivation event with reason
+- Consider email notification to user
+
+---
+
+### Additional User Management Features (Lower Priority)
+
+**Not Planned for Immediate Implementation:**
+
+- ❌ **DELETE /api/admin/users/{userId}** - Hard delete user
+  - Decided to skip in favor of deactivation
+  - Would need to handle cascading deletes for bookings/donations
+
+- ❌ **POST /api/admin/users/{userId}/reset-password** - Admin-initiated password reset
+  - Decided to skip for now
+  - Would generate reset token and send email
+
+- ❌ **PATCH /api/admin/users/{userId}/avatar** - Avatar upload/management
+  - Noted as TODO in existing code (GetUsersPresenter.java:46)
+  - Requires R2 integration for image storage
+  - Should generate presigned URLs for avatar access
+
+---
+
 ## Other Future Enhancements
 
 _(Add additional future features here as they are identified)_
 
-
-
--- we cant edit the programs images / we can only add images when creating the program
--- same scenario for events as well
--- need a way to properly handle the singleton nature of the meditation programs
+**Media Management Issues:**
+- We can't edit program images - can only add when creating
+- Same scenario for events as well
+- Need a way to properly handle the singleton nature of meditation programs

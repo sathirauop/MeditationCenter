@@ -425,6 +425,56 @@ public final class EndPoints {
                 public static final String DELETE = "/{overrideId}/activities/{activityId}";
             }
         }
+
+        /**
+         * Admin User Management
+         */
+        public static final class User {
+            private User() {}
+
+            /**
+             * Base path for admin user endpoints
+             */
+            public static final String BASE = Admin.BASE + "/users";
+
+            /**
+             * GET /api/admin/users - Get all users (paginated)
+             */
+            public static final String GET_ALL = "";
+
+            /**
+             * GET /api/admin/users/{userId} - Get user by ID
+             */
+            public static final String GET_BY_ID = "/{userId}";
+
+            /**
+             * POST /api/admin/users - Create new user
+             */
+            public static final String CREATE = "";
+
+            /**
+             * PATCH /api/admin/users/{userId} - Update user information
+             */
+            public static final String UPDATE = "/{userId}";
+
+            /**
+             * PATCH /api/admin/users/{userId}/role - Update user role
+             */
+            public static final String UPDATE_ROLE = "/{userId}/role";
+
+            /**
+             * PATCH /api/admin/users/{userId}/activate - Activate user
+             */
+            public static final String ACTIVATE = "/{userId}/activate";
+
+            /**
+             * PATCH /api/admin/users/{userId}/deactivate - Deactivate user
+             */
+            public static final String DEACTIVATE = "/{userId}/deactivate";
+
+            // Full paths for security configuration
+            public static final String FULL_PATH = BASE + "/**";
+        }
     }
 
     // ============================================================

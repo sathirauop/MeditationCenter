@@ -792,9 +792,276 @@ This document lists all implemented endpoints for the Meditation Center Daily Sc
 
 ---
 
+## Admin User Management
+
+### 21. Get All Users
+**GET** `/api/admin/users?limit=20&offset=0&role=USER&isActive=true&search=john`
+
+**Permission Required:** `ADMIN` role + `VIEW_USERS` permission
+
+**Query Parameters:**
+- `limit` (optional, default: 20, max: 100) - Number of results per page
+- `offset` (optional, default: 0) - Pagination offset
+- `role` (optional: USER, ADMIN) - Filter by user role
+- `isActive` (optional: true/false) - Filter by active status
+- `search` (optional) - Search by name or email (case-insensitive)
+
+**Response:** `200 OK`
+```json
+{
+  "data": [
+    {
+      "user_id": 1,
+      "email": "user@example.com",
+      "name": "John Doe",
+      "mobile_number": "+94771234567",
+      "role": "USER",
+      "is_active": true,
+      "email_verified": true,
+      "avatar_url": null,
+      "created_at": "2025-01-01T10:00:00",
+      "updated_at": "2025-01-15T14:30:00"
+    },
+    {
+      "user_id": 2,
+      "email": "admin@meditationcenter.com",
+      "name": "System Administrator",
+      "mobile_number": "+94771234568",
+      "role": "ADMIN",
+      "is_active": true,
+      "email_verified": true,
+      "avatar_url": null,
+      "created_at": "2024-12-01T09:00:00",
+      "updated_at": "2025-01-10T11:20:00"
+    }
+  ],
+  "currentOffset": 0,
+  "maxOffset": 80
+}
+```
+
+**Error Responses:**
+- `401 UNAUTHORIZED` - Not authenticated
+- `403 FORBIDDEN` - Missing VIEW_USERS permission
+
+**Important Notes:**
+- Results are ordered by `created_at` descending (newest first)
+- Search is case-insensitive and searches both name and email fields
+- Avatar URL will be `null` until avatar management is implemented
+- Pagination follows standard offset-based pattern
+
+---
+
+### 22. Get User Details
+**GET** `/api/admin/users/{userId}`
+
+**Permission Required:** `ADMIN` role + `VIEW_USERS` permission
+
+**Path Parameters:**
+- `userId` (Long) - User ID
+
+**Response:** `200 OK`
+```json
+{
+  "user_id": 1,
+  "email": "user@example.com",
+  "name": "John Doe",
+  "mobile_number": "+94771234567",
+  "role": "USER",
+  "is_active": true,
+  "email_verified": true,
+  "avatar_url": null,
+  "created_at": "2025-01-01T10:00:00",
+  "updated_at": "2025-01-15T14:30:00",
+  "statistics": {
+    "totalBookings": 5,
+    "activeBookings": 2,
+    "totalDonations": 15000.00,
+    "eventRegistrations": 3
+  }
+}
+```
+
+**Error Responses:**
+- `404 NOT FOUND` - User not found
+```json
+{
+  "timestamp": "2025-12-13T11:00:00.123+00:00",
+  "status": 404,
+  "error": "Not Found",
+  "message": "User not found with ID: 999",
+  "path": "/api/admin/users/999"
+}
+```
+- `401 UNAUTHORIZED` - Not authenticated
+- `403 FORBIDDEN` - Missing VIEW_USERS permission
+
+**Important Notes:**
+- Includes user statistics aggregated from multiple tables:
+  - `totalBookings`: Count from `booking` table
+  - `activeBookings`: Count of bookings with status CONFIRMED or PENDING
+  - `totalDonations`: Sum of amounts from `donation` table
+  - `eventRegistrations`: Count from `event_registration` table (currently 0 - table not yet implemented)
+- Statistics are calculated in real-time
+- All statistics default to 0/zero if no data exists
+
+---
+
+### 23. Create User
+**POST** `/api/admin/users`
+
+**Permission Required:** `ADMIN` role + `CREATE_USER` permission
+
+**Request Body:**
+```json
+{
+  "email": "newuser@example.com",
+  "password": "SecurePass123!",
+  "name": "Jane Smith",
+  "mobile_number": "+94771234569",
+  "role": "USER",
+  "is_active": true,
+  "email_verified": false
+}
+```
+
+**Field Validations:**
+- `email` (required) - Must be a valid email format
+- `password` (required) - Minimum 8 characters
+- `name` (required) - User's full name
+- `mobile_number` (optional) - Contact number
+- `role` (required) - USER or ADMIN
+- `is_active` (optional, default: true) - Account status
+- `email_verified` (optional, default: false) - Email verification status
+
+**Response:** `201 CREATED`
+```json
+{
+  "user_id": 3,
+  "email": "newuser@example.com",
+  "name": "Jane Smith",
+  "mobile_number": "+94771234569",
+  "role": "USER",
+  "is_active": true,
+  "email_verified": false,
+  "created_at": "2025-12-14T10:00:00",
+  "updated_at": "2025-12-14T10:00:00"
+}
+```
+
+**Error Responses:**
+- `400 BAD REQUEST` - Validation errors
+```json
+{
+  "timestamp": "2025-12-14T10:00:00.123+00:00",
+  "status": 400,
+  "error": "Bad Request",
+  "message": "Validation failed",
+  "errors": {
+    "email": "Email must be valid",
+    "password": "Password must be at least 8 characters"
+  }
+}
+```
+- `409 CONFLICT` - Email already exists
+```json
+{
+  "timestamp": "2025-12-14T10:00:00.123+00:00",
+  "status": 409,
+  "error": "Conflict",
+  "message": "User with email newuser@example.com already exists",
+  "path": "/api/admin/users"
+}
+```
+- `401 UNAUTHORIZED` - Not authenticated
+- `403 FORBIDDEN` - Missing CREATE_USER permission
+
+**Important Notes:**
+- Password is automatically hashed before storage (using BCrypt)
+- Email must be unique across all users
+- Default values apply if `is_active` or `email_verified` are not provided
+- Created user does NOT receive a welcome email (must be implemented separately)
+- User ID is auto-generated
+
+---
+
+### 24. Update User
+**PATCH** `/api/admin/users/{userId}`
+
+**Permission Required:** `ADMIN` role + `UPDATE_USER` permission
+
+**Path Parameters:**
+- `userId` (Long) - User ID to update
+
+**Request Body:** (All fields optional - only provided fields will be updated)
+```json
+{
+  "email": "updatedemail@example.com",
+  "password": "NewSecurePass456!",
+  "name": "Jane Smith Updated",
+  "mobile_number": "+94771234570"
+}
+```
+
+**Field Validations:**
+- `email` (optional) - Must be a valid email format if provided
+- `password` (optional) - Minimum 8 characters if provided
+- `name` (optional) - User's full name
+- `mobile_number` (optional) - Contact number
+
+**Response:** `200 OK`
+```json
+{
+  "user_id": 3,
+  "email": "updatedemail@example.com",
+  "name": "Jane Smith Updated",
+  "mobile_number": "+94771234570",
+  "role": "USER",
+  "is_active": true,
+  "email_verified": false,
+  "created_at": "2025-12-14T10:00:00",
+  "updated_at": "2025-12-14T11:30:00"
+}
+```
+
+**Error Responses:**
+- `404 NOT FOUND` - User not found
+```json
+{
+  "timestamp": "2025-12-14T11:30:00.123+00:00",
+  "status": 404,
+  "error": "Not Found",
+  "message": "User not found with ID: 999",
+  "path": "/api/admin/users/999"
+}
+```
+- `409 CONFLICT` - Email already exists for another user
+```json
+{
+  "timestamp": "2025-12-14T11:30:00.123+00:00",
+  "status": 409,
+  "error": "Conflict",
+  "message": "Email updatedemail@example.com already exists",
+  "path": "/api/admin/users/3"
+}
+```
+- `400 BAD REQUEST` - Validation errors
+- `401 UNAUTHORIZED` - Not authenticated
+- `403 FORBIDDEN` - Missing UPDATE_USER permission
+
+**Important Notes:**
+- This is a PATCH endpoint - only fields included in the request will be updated
+- Password is automatically hashed if provided
+- Email uniqueness is validated (cannot change to an email already in use)
+- Role and account status (is_active, email_verified) cannot be changed via this endpoint
+  - Use dedicated endpoints for role management and activation/deactivation
+- Updated timestamp is automatically set
+
+---
+
 ## Admin Activity Management
 
-### 21. Create Activity
+### 25. Create Activity
 **POST** `/api/admin/activities`
 
 **Permission Required:** `ADMIN` role + `CREATE_ACTIVITY` permission
