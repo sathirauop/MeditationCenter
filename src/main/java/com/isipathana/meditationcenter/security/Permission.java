@@ -59,7 +59,14 @@ public enum Permission implements GrantedAuthority {
     CREATE_TEMPLATE,
     UPDATE_TEMPLATE,
     DELETE_TEMPLATE,
-    ACTIVATE_TEMPLATE;
+    ACTIVATE_TEMPLATE,
+
+    // Book permissions
+    VIEW_BOOKS,
+    CREATE_BOOK,
+    UPDATE_BOOK,
+    DELETE_BOOK,
+    DOWNLOAD_BOOK;
 
     /**
      * Returns the authority string for Spring Security.

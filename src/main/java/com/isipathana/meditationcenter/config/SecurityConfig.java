@@ -37,6 +37,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
  * - POST /api/auth/refresh
  * - GET /api/programs (view programs)
  * - GET /api/events (view events)
+ * - GET /api/books (view books)
+ * - GET /api/schedule (view schedule)
  * <p>
  * Protected Endpoints (authentication required):
  * - All other /api/** endpoints
@@ -77,6 +79,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, EndPoints.Event.FULL_PATH).permitAll()
                         .requestMatchers(HttpMethod.GET, EndPoints.Event.FULL_PATH_BY_ID).permitAll()
                         .requestMatchers(HttpMethod.GET, EndPoints.Schedule.FULL_PATH).permitAll()
+                        .requestMatchers(HttpMethod.GET, EndPoints.Book.FULL_PATH).permitAll()
 
                         // Utility endpoints (ONLY for development - should be removed in production)
                         .requestMatchers(EndPoints.Util.FULL_PATH).permitAll()

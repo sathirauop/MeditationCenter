@@ -19,7 +19,9 @@ public enum Role implements GrantedAuthority {
             Permission.CANCEL_OWN_BOOKING,
             Permission.UPDATE_OWN_PROFILE,
             Permission.VIEW_EVENTS,
-            Permission.REGISTER_FOR_EVENT
+            Permission.REGISTER_FOR_EVENT,
+            Permission.VIEW_BOOKS,
+            Permission.DOWNLOAD_BOOK
     )),
 
     /**
@@ -52,7 +54,12 @@ public enum Role implements GrantedAuthority {
             Permission.CREATE_TEMPLATE,
             Permission.UPDATE_TEMPLATE,
             Permission.DELETE_TEMPLATE,
-            Permission.ACTIVATE_TEMPLATE
+            Permission.ACTIVATE_TEMPLATE,
+            Permission.VIEW_BOOKS,
+            Permission.CREATE_BOOK,
+            Permission.UPDATE_BOOK,
+            Permission.DELETE_BOOK,
+            Permission.DOWNLOAD_BOOK
     ));
 
     private final Set<Permission> permissions;

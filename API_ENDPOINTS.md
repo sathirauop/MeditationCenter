@@ -14,12 +14,15 @@ This document lists all implemented endpoints for the Meditation Center Daily Sc
 2. [Event Endpoints (Public)](#event-endpoints-public)
 3. [Program Endpoints (Public)](#program-endpoints-public)
 4. [Schedule Endpoints (Public)](#schedule-endpoints-public)
-5. [Admin Event Management](#admin-event-management)
-6. [Admin Program Management](#admin-program-management)
-7. [Admin Activity Management](#admin-activity-management)
-8. [Admin Template Management](#admin-template-management)
-9. [Admin Override Management](#admin-override-management)
-10. [Utility Endpoints (Development Only)](#utility-endpoints-development-only)
+5. [Book Endpoints (Public)](#book-endpoints-public)
+6. [Admin Event Management](#admin-event-management)
+7. [Admin Program Management](#admin-program-management)
+8. [Admin Activity Management](#admin-activity-management)
+9. [Admin Template Management](#admin-template-management)
+10. [Admin Override Management](#admin-override-management)
+11. [Admin Book Management](#admin-book-management)
+12. [Admin User Management](#admin-user-management)
+13. [Utility Endpoints (Development Only)](#utility-endpoints-development-only)
 
 ---
 
@@ -352,9 +355,57 @@ This document lists all implemented endpoints for the Meditation Center Daily Sc
 
 ---
 
+## Book Endpoints (Public)
+
+### 11. Get Books
+**GET** `/api/books?limit=20&offset=0`
+
+**Permission Required:** None (Public endpoint)
+
+**Query Parameters:**
+- `limit` (optional, default: 20, max: 100) - Number of results per page
+- `offset` (optional, default: 0) - Page offset for pagination
+
+**Response:** `200 OK`
+```json
+{
+  "data": [
+    {
+      "book_id": 1,
+      "title": "The Art of Meditation",
+      "author": "Venerable Narada Thera",
+      "description": "A comprehensive guide to Buddhist meditation practices and techniques for beginners and advanced practitioners.",
+      "pdf_url": "https://r2.example.com/meditation-center-books/books/1/pdf/a1b2c3d4-e5f6-7890-abcd-ef1234567890.pdf?X-Amz-Algorithm=...",
+      "cover_image_url": "https://r2.example.com/meditation-center-books/books/1/cover/b2c3d4e5-f6a7-8901-bcde-f12345678901.jpg?X-Amz-Algorithm=..."
+    },
+    {
+      "book_id": 2,
+      "title": "Mindfulness in Plain English",
+      "author": "Bhante Henepola Gunaratana",
+      "description": "A practical guide to mindfulness meditation.",
+      "pdf_url": "https://r2.example.com/meditation-center-books/books/2/pdf/c3d4e5f6-a7b8-9012-cdef-123456789012.pdf?X-Amz-Algorithm=...",
+      "cover_image_url": null
+    }
+  ],
+  "currentOffset": 0,
+  "maxOffset": 25
+}
+```
+
+**Important Notes:**
+- Returns only **active** books (`is_active = true`)
+- Books ordered by `created_at` descending (newest first)
+- `pdf_url` and `cover_image_url` are presigned URLs with **15-minute expiry**
+- URLs must be used immediately or refreshed by re-fetching
+- `cover_image_url` is `null` if no cover image uploaded
+- Pagination: `offset` is page-based, multiply by `limit` for row offset
+- No authentication required
+
+---
+
 ## Admin Event Management
 
-### 11. Create Event (Multipart)
+### 12. Create Event (Multipart)
 **POST** `/api/admin/event`
 
 **Permission Required:** `ADMIN` role + `CREATE_EVENT` permission
@@ -792,9 +843,380 @@ This document lists all implemented endpoints for the Meditation Center Daily Sc
 
 ---
 
+## Admin Book Management
+
+### 21. Create Book
+**POST** `/api/admin/book`
+
+**Permission Required:** `ADMIN` role + `CREATE_BOOK` permission
+
+**Content-Type:** `multipart/form-data`
+
+**Request Parts:**
+- `book` (required) - JSON string containing book metadata
+- `pdfFile` (required) - PDF file (max 50MB)
+- `coverImage` (optional) - Cover image file (JPEG, PNG, GIF, WebP, max 5MB)
+
+**Book JSON Structure:**
+```json
+{
+  "title": "The Art of Meditation",
+  "author": "Venerable Narada Thera",
+  "description": "A comprehensive guide to Buddhist meditation practices and techniques for beginners and advanced practitioners."
+}
+```
+
+**Example using cURL:**
+```bash
+curl -X POST http://localhost:8080/api/admin/book \
+  -H "Authorization: Bearer eyJhbGci..." \
+  -F 'book={"title":"The Art of Meditation","author":"Venerable Narada Thera","description":"A comprehensive guide to Buddhist meditation practices"}' \
+  -F 'pdfFile=@/path/to/meditation-guide.pdf' \
+  -F 'coverImage=@/path/to/cover.jpg'
+```
+
+**Response:** `201 CREATED`
+```json
+{
+  "book_id": 1,
+  "title": "The Art of Meditation",
+  "author": "Venerable Narada Thera",
+  "description": "A comprehensive guide to Buddhist meditation practices and techniques for beginners and advanced practitioners.",
+  "pdf_file_key": "books/1/pdf/a1b2c3d4-e5f6-7890-abcd-ef1234567890.pdf",
+  "cover_image_key": "books/1/cover/b2c3d4e5-f6a7-8901-bcde-f12345678901.jpg",
+  "pdf_url": "https://r2.example.com/meditation-center-books/books/1/pdf/a1b2c3d4-e5f6-7890-abcd-ef1234567890.pdf?X-Amz-Algorithm=...",
+  "cover_image_url": "https://r2.example.com/meditation-center-books/books/1/cover/b2c3d4e5-f6a7-8901-bcde-f12345678901.jpg?X-Amz-Algorithm=...",
+  "is_active": true,
+  "created_at": "2025-12-14T10:30:00",
+  "updated_at": "2025-12-14T10:30:00"
+}
+```
+
+**Error Responses:**
+
+**400 BAD REQUEST** - Validation errors
+```json
+{
+  "timestamp": "2025-12-14T10:30:00.123+00:00",
+  "status": 400,
+  "error": "Bad Request",
+  "message": "PDF file is required",
+  "path": "/api/admin/book"
+}
+```
+
+**400 BAD REQUEST** - Invalid PDF file
+```json
+{
+  "timestamp": "2025-12-14T10:30:00.123+00:00",
+  "status": 400,
+  "error": "Bad Request",
+  "message": "Invalid PDF file: File is not a valid PDF (magic byte verification failed)",
+  "path": "/api/admin/book"
+}
+```
+
+**400 BAD REQUEST** - File size exceeded
+```json
+{
+  "timestamp": "2025-12-14T10:30:00.123+00:00",
+  "status": 400,
+  "error": "Bad Request",
+  "message": "Invalid PDF file: File size exceeds maximum allowed size of 50MB",
+  "path": "/api/admin/book"
+}
+```
+
+**400 BAD REQUEST** - Invalid cover image
+```json
+{
+  "timestamp": "2025-12-14T10:30:00.123+00:00",
+  "status": 400,
+  "error": "Bad Request",
+  "message": "Invalid cover image: File is not a valid image (magic byte verification failed)",
+  "path": "/api/admin/book"
+}
+```
+
+**401 UNAUTHORIZED** - Not authenticated
+```json
+{
+  "timestamp": "2025-12-14T10:30:00.123+00:00",
+  "status": 401,
+  "error": "Unauthorized",
+  "message": "Full authentication is required to access this resource",
+  "path": "/api/admin/book"
+}
+```
+
+**403 FORBIDDEN** - Missing CREATE_BOOK permission
+```json
+{
+  "timestamp": "2025-12-14T10:30:00.123+00:00",
+  "status": 403,
+  "error": "Forbidden",
+  "message": "Access Denied",
+  "path": "/api/admin/book"
+}
+```
+
+**500 INTERNAL SERVER ERROR** - File upload failed
+```json
+{
+  "timestamp": "2025-12-14T10:30:00.123+00:00",
+  "status": 500,
+  "error": "Internal Server Error",
+  "message": "Failed to upload book files: Connection timeout",
+  "path": "/api/admin/book"
+}
+```
+
+**Important Notes:**
+- **PDF Validation:** Files are validated using magic byte verification (%PDF- header)
+- **File Size Limits:** PDF max 50MB, cover image max 5MB
+- **Presigned URLs:** Generated with 15-minute expiry for downloads
+- **File Organization:** PDFs stored at `books/{bookId}/pdf/{uuid}.pdf`, covers at `books/{bookId}/cover/{uuid}.{ext}`
+- **R2 Storage:** If R2 is disabled, book will be created without file keys (for testing only)
+- **Transactional:** Book creation and file upload are wrapped in a transaction
+- **Security:** All files validated before upload to prevent malicious content
+- **Books are free:** All authenticated users can view and download books (VIEW_BOOKS, DOWNLOAD_BOOK permissions)
+
+---
+
+### 22. Create Book (JSON-only)
+**POST** `/api/admin/book/json`
+
+**Permission Required:** `ADMIN` role + `CREATE_BOOK` permission
+
+**Content-Type:** `application/json`
+
+**Note:** This endpoint is primarily for testing when R2 is disabled. In production, use the multipart endpoint above.
+
+**Request Body:**
+```json
+{
+  "title": "The Art of Meditation",
+  "author": "Venerable Narada Thera",
+  "description": "A comprehensive guide to Buddhist meditation practices and techniques for beginners and advanced practitioners."
+}
+```
+
+**Response:** `201 CREATED`
+```json
+{
+  "book_id": 1,
+  "title": "The Art of Meditation",
+  "author": "Venerable Narada Thera",
+  "description": "A comprehensive guide to Buddhist meditation practices and techniques for beginners and advanced practitioners.",
+  "pdf_file_key": null,
+  "cover_image_key": null,
+  "pdf_url": null,
+  "cover_image_url": null,
+  "is_active": true,
+  "created_at": "2025-12-14T10:30:00",
+  "updated_at": "2025-12-14T10:30:00"
+}
+```
+
+**Important Notes:**
+- File keys and URLs will be `null` when created without files
+- Primarily used for testing purposes
+- Production should use multipart endpoint with actual PDF files
+
+---
+
+### 23. Get All Books (Admin)
+**GET** `/api/admin/book?limit=20&offset=0`
+
+**Permission Required:** `ADMIN` role + `VIEW_BOOKS` permission
+
+**Query Parameters:**
+- `limit` (optional, default: 20, max: 100) - Number of results per page
+- `offset` (optional, default: 0) - Page offset for pagination
+
+**Response:** `200 OK`
+```json
+{
+  "data": [
+    {
+      "book_id": 1,
+      "title": "The Art of Meditation",
+      "author": "Venerable Narada Thera",
+      "description": "A comprehensive guide to Buddhist meditation practices and techniques for beginners and advanced practitioners.",
+      "pdf_url": "https://r2.example.com/meditation-center-books/books/1/pdf/a1b2c3d4-e5f6-7890-abcd-ef1234567890.pdf?X-Amz-Algorithm=...",
+      "cover_image_url": "https://r2.example.com/meditation-center-books/books/1/cover/b2c3d4e5-f6a7-8901-bcde-f12345678901.jpg?X-Amz-Algorithm=...",
+      "is_active": true
+    },
+    {
+      "book_id": 2,
+      "title": "Mindfulness in Plain English",
+      "author": "Bhante Henepola Gunaratana",
+      "description": "A practical guide to mindfulness meditation.",
+      "pdf_url": "https://r2.example.com/meditation-center-books/books/2/pdf/c3d4e5f6-a7b8-9012-cdef-123456789012.pdf?X-Amz-Algorithm=...",
+      "cover_image_url": null,
+      "is_active": true
+    },
+    {
+      "book_id": 3,
+      "title": "Archived Book",
+      "author": "Test Author",
+      "description": "This book has been deactivated.",
+      "pdf_url": "https://r2.example.com/meditation-center-books/books/3/pdf/d4e5f6a7-b8c9-0123-def4-567890123456.pdf?X-Amz-Algorithm=...",
+      "cover_image_url": null,
+      "is_active": false
+    }
+  ],
+  "currentOffset": 0,
+  "maxOffset": 35
+}
+```
+
+**Important Notes:**
+- Returns **all** books (active and inactive) - unlike public endpoint
+- Includes `is_active` field to distinguish active/inactive books
+- Books ordered by `created_at` descending (newest first)
+- `pdf_url` and `cover_image_url` are presigned URLs with **15-minute expiry**
+- URLs must be used immediately or refreshed by re-fetching
+- `cover_image_url` is `null` if no cover image uploaded
+- Pagination: `offset` is page-based, multiply by `limit` for row offset
+- Requires ADMIN role and VIEW_BOOKS permission
+
+---
+
+### 24. Update Book
+**PATCH** `/api/admin/book/{bookId}`
+
+**Permission Required:** `ADMIN` role + `UPDATE_BOOK` permission
+
+**Content-Type:** `application/json`
+
+**Path Parameters:**
+- `bookId` (required) - The ID of the book to update
+
+**Request Body (all fields optional):**
+```json
+{
+  "title": "Updated Title",
+  "author": "Updated Author Name",
+  "description": "Updated description text.",
+  "is_active": false
+}
+```
+
+**Example - Update only title:**
+```json
+{
+  "title": "The New Art of Meditation"
+}
+```
+
+**Example - Toggle active status:**
+```json
+{
+  "is_active": false
+}
+```
+
+**Example - Update multiple fields:**
+```json
+{
+  "title": "Mindfulness for Beginners",
+  "description": "An updated comprehensive guide for those starting their mindfulness journey.",
+  "is_active": true
+}
+```
+
+**Response:** `200 OK`
+```json
+{
+  "book_id": 1,
+  "title": "The New Art of Meditation",
+  "author": "Venerable Narada Thera",
+  "description": "A comprehensive guide to Buddhist meditation practices and techniques for beginners and advanced practitioners.",
+  "pdf_url": "https://r2.example.com/meditation-center-books/books/1/pdf/a1b2c3d4-e5f6-7890-abcd-ef1234567890.pdf?X-Amz-Algorithm=...",
+  "cover_image_url": "https://r2.example.com/meditation-center-books/books/1/cover/b2c3d4e5-f6a7-8901-bcde-f12345678901.jpg?X-Amz-Algorithm=...",
+  "is_active": true,
+  "message": "Book updated successfully"
+}
+```
+
+**Error Responses:**
+
+**400 BAD REQUEST** - No fields provided
+```json
+{
+  "timestamp": "2025-12-14T10:30:00.123+00:00",
+  "status": 400,
+  "error": "Bad Request",
+  "message": "At least one field must be provided for update",
+  "path": "/api/admin/book/1"
+}
+```
+
+**400 BAD REQUEST** - Validation error
+```json
+{
+  "timestamp": "2025-12-14T10:30:00.123+00:00",
+  "status": 400,
+  "error": "Bad Request",
+  "message": "Title must be between 1 and 255 characters",
+  "path": "/api/admin/book/1"
+}
+```
+
+**401 UNAUTHORIZED** - Not authenticated
+```json
+{
+  "timestamp": "2025-12-14T10:30:00.123+00:00",
+  "status": 401,
+  "error": "Unauthorized",
+  "message": "Full authentication is required to access this resource",
+  "path": "/api/admin/book/1"
+}
+```
+
+**403 FORBIDDEN** - Missing UPDATE_BOOK permission
+```json
+{
+  "timestamp": "2025-12-14T10:30:00.123+00:00",
+  "status": 403,
+  "error": "Forbidden",
+  "message": "Access Denied",
+  "path": "/api/admin/book/1"
+}
+```
+
+**404 NOT FOUND** - Book doesn't exist
+```json
+{
+  "timestamp": "2025-12-14T10:30:00.123+00:00",
+  "status": 404,
+  "error": "Not Found",
+  "message": "Book not found with bookId: 999",
+  "path": "/api/admin/book/999"
+}
+```
+
+**Important Notes:**
+- **Partial Update:** Only fields provided in the request will be updated
+- **At least one field required:** You must provide at least one field to update
+- **Validation:** Each field is validated according to its constraints (e.g., title max 255 characters)
+- **Files cannot be updated:** This endpoint only updates metadata (title, author, description, is_active)
+- **To update PDF or cover image:** Delete the book and create a new one (or use a future dedicated file update endpoint)
+- **is_active toggle:** Use this to activate/deactivate books for public visibility
+- **Presigned URLs:** Generated fresh with 15-minute expiry for the updated book
+- **Transactional:** Update is wrapped in a transaction for data consistency
+- **Common use cases:**
+  - Deactivate book: `{"is_active": false}` - Hide from public
+  - Reactivate book: `{"is_active": true}` - Make visible to public
+  - Fix typos: `{"title": "Corrected Title"}`
+  - Update descriptions: `{"description": "New detailed description"}`
+
+---
+
 ## Admin User Management
 
-### 21. Get All Users
+### 26. Get All Users
 **GET** `/api/admin/users?limit=20&offset=0&role=USER&isActive=true&search=john`
 
 **Permission Required:** `ADMIN` role + `VIEW_USERS` permission
@@ -1061,7 +1483,7 @@ This document lists all implemented endpoints for the Meditation Center Daily Sc
 
 ## Admin Activity Management
 
-### 25. Create Activity
+### 26. Create Activity
 **POST** `/api/admin/activities`
 
 **Permission Required:** `ADMIN` role + `CREATE_ACTIVITY` permission
@@ -1163,7 +1585,7 @@ This document lists all implemented endpoints for the Meditation Center Daily Sc
 
 ---
 
-### 25. Delete Activity
+### 26. Delete Activity
 **DELETE** `/api/admin/activities/{id}`
 
 **Permission Required:** `ADMIN` role + `DELETE_ACTIVITY` permission
@@ -1182,7 +1604,7 @@ This document lists all implemented endpoints for the Meditation Center Daily Sc
 
 ## Admin Template Management
 
-### 26. Create Template
+### 27. Create Template
 **POST** `/api/admin/templates`
 
 **Permission Required:** `ADMIN` role + `CREATE_TEMPLATE` permission
@@ -1251,7 +1673,7 @@ This document lists all implemented endpoints for the Meditation Center Daily Sc
 
 ---
 
-### 27. Get All Templates
+### 28. Get All Templates
 **GET** `/api/admin/templates?limit=20&offset=0`
 
 **Permission Required:** `ADMIN` role + `VIEW_TEMPLATES` permission
@@ -1281,7 +1703,7 @@ This document lists all implemented endpoints for the Meditation Center Daily Sc
 
 ---
 
-### 28. Get Active Template
+### 29. Get Active Template
 **GET** `/api/admin/templates/active`
 
 **Permission Required:** `ADMIN` role + `VIEW_TEMPLATES` permission
@@ -1309,7 +1731,7 @@ This document lists all implemented endpoints for the Meditation Center Daily Sc
 
 ---
 
-### 29. Get Template by ID
+### 30. Get Template by ID
 **GET** `/api/admin/templates/{id}`
 
 **Permission Required:** `ADMIN` role + `VIEW_TEMPLATES` permission
@@ -1339,7 +1761,7 @@ This document lists all implemented endpoints for the Meditation Center Daily Sc
 
 ---
 
-### 30. Update Template (Full Replacement)
+### 31. Update Template (Full Replacement)
 **PUT** `/api/admin/templates/{id}`
 
 **Permission Required:** `ADMIN` role + `UPDATE_TEMPLATE` permission
@@ -1395,7 +1817,7 @@ This document lists all implemented endpoints for the Meditation Center Daily Sc
 
 ---
 
-### 31. Activate Template
+### 32. Activate Template
 **PATCH** `/api/admin/templates/{id}/activate`
 
 **Permission Required:** `ADMIN` role + `ACTIVATE_TEMPLATE` permission
@@ -1416,7 +1838,7 @@ This document lists all implemented endpoints for the Meditation Center Daily Sc
 
 ---
 
-### 32. Delete Template
+### 33. Delete Template
 **DELETE** `/api/admin/templates/{id}`
 
 **Permission Required:** `ADMIN` role + `DELETE_TEMPLATE` permission
@@ -1435,7 +1857,7 @@ This document lists all implemented endpoints for the Meditation Center Daily Sc
 
 ---
 
-### 33. Add Activity to Template
+### 34. Add Activity to Template
 **POST** `/api/admin/templates/{id}/activities`
 
 **Permission Required:** `ADMIN` role + `UPDATE_TEMPLATE` permission
@@ -1466,7 +1888,7 @@ This document lists all implemented endpoints for the Meditation Center Daily Sc
 
 ---
 
-### 34. Update Template Activity
+### 35. Update Template Activity
 **PUT** `/api/admin/templates/{templateId}/activities/{activityId}`
 
 **Permission Required:** `ADMIN` role + `UPDATE_TEMPLATE` permission
@@ -1498,7 +1920,7 @@ This document lists all implemented endpoints for the Meditation Center Daily Sc
 
 ---
 
-### 35. Remove Activity from Template
+### 36. Remove Activity from Template
 **DELETE** `/api/admin/templates/{templateId}/activities/{activityId}`
 
 **Permission Required:** `ADMIN` role + `UPDATE_TEMPLATE` permission
@@ -1518,7 +1940,7 @@ This document lists all implemented endpoints for the Meditation Center Daily Sc
 
 ---
 
-### 36. Bulk Update Template Activities
+### 37. Bulk Update Template Activities
 **PUT** `/api/admin/templates/{id}/activities/bulk`
 
 **Permission Required:** `ADMIN` role + `UPDATE_TEMPLATE` permission
@@ -1601,7 +2023,7 @@ This document lists all implemented endpoints for the Meditation Center Daily Sc
 
 ## Admin Override Management
 
-### 37. Create Override
+### 38. Create Override
 **POST** `/api/admin/overrides`
 
 **Permission Required:** `ADMIN` role + `CREATE_TEMPLATE` permission
@@ -1656,7 +2078,7 @@ This document lists all implemented endpoints for the Meditation Center Daily Sc
 
 ---
 
-### 38. Get All Overrides
+### 39. Get All Overrides
 **GET** `/api/admin/overrides?page=1&limit=10&fromDate=2025-12-01&toDate=2025-12-31`
 
 **Permission Required:** `ADMIN` role + `VIEW_TEMPLATES` permission
@@ -1693,7 +2115,7 @@ This document lists all implemented endpoints for the Meditation Center Daily Sc
 
 ---
 
-### 39. Get Override by Date
+### 40. Get Override by Date
 **GET** `/api/admin/overrides/{date}`
 
 **Permission Required:** `ADMIN` role + `VIEW_TEMPLATES` permission
@@ -1732,7 +2154,7 @@ This document lists all implemented endpoints for the Meditation Center Daily Sc
 
 ---
 
-### 40. Update Override
+### 41. Update Override
 **PUT** `/api/admin/overrides/{id}`
 
 **Permission Required:** `ADMIN` role + `UPDATE_TEMPLATE` permission
@@ -1787,7 +2209,7 @@ This document lists all implemented endpoints for the Meditation Center Daily Sc
 
 ---
 
-### 41. Delete Override
+### 42. Delete Override
 **DELETE** `/api/admin/overrides/{id}`
 
 **Permission Required:** `ADMIN` role + `DELETE_TEMPLATE` permission
@@ -1806,7 +2228,7 @@ This document lists all implemented endpoints for the Meditation Center Daily Sc
 
 ---
 
-### 42. Add Activity to Override
+### 43. Add Activity to Override
 **POST** `/api/admin/overrides/{id}/activities`
 
 **Permission Required:** `ADMIN` role + `UPDATE_TEMPLATE` permission
@@ -1837,7 +2259,7 @@ This document lists all implemented endpoints for the Meditation Center Daily Sc
 
 ---
 
-### 43. Remove Activity from Override
+### 44. Remove Activity from Override
 **DELETE** `/api/admin/overrides/{overrideId}/activities/{activityId}`
 
 **Permission Required:** `ADMIN` role + `UPDATE_TEMPLATE` permission
@@ -1859,7 +2281,7 @@ This document lists all implemented endpoints for the Meditation Center Daily Sc
 
 ## Utility Endpoints (Development Only)
 
-### 44. Generate Password Hash
+### 45. Generate Password Hash
 **GET** `/api/util/hash?password=admin123`
 
 **Permission Required:** None (Public endpoint)

@@ -160,6 +160,27 @@ public final class EndPoints {
     }
 
     // ============================================================
+    // BOOK ENDPOINTS (Public)
+    // ============================================================
+
+    public static final class Book {
+        private Book() {}
+
+        /**
+         * Base path for public book endpoints
+         */
+        public static final String BASE = API + "/books";
+
+        /**
+         * GET /api/books - Get all active books (public)
+         */
+        public static final String GET_ALL = "";
+
+        // Full paths for security configuration
+        public static final String FULL_PATH = BASE + "/**";
+    }
+
+    // ============================================================
     // ADMIN ENDPOINTS
     // ============================================================
 
@@ -424,6 +445,41 @@ public final class EndPoints {
                  */
                 public static final String DELETE = "/{overrideId}/activities/{activityId}";
             }
+        }
+
+        /**
+         * Admin Book Management
+         */
+        public static final class Book {
+            private Book() {}
+
+            /**
+             * Base path for admin book endpoints
+             */
+            public static final String BASE = Admin.BASE + "/book";
+
+            /**
+             * GET /api/admin/book - Get all books (admin)
+             */
+            public static final String GET_ALL = "";
+
+            /**
+             * POST /api/admin/book - Create book with multipart/form-data
+             */
+            public static final String CREATE = "";
+
+            /**
+             * POST /api/admin/book/json - Create book with JSON (testing)
+             */
+            public static final String CREATE_JSON = "/json";
+
+            /**
+             * PATCH /api/admin/book/{bookId} - Update book by ID
+             */
+            public static final String UPDATE = "/{bookId}";
+
+            // Full paths for security configuration
+            public static final String FULL_PATH = BASE + "/**";
         }
 
         /**

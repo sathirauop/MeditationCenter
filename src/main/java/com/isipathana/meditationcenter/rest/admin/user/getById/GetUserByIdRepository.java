@@ -11,6 +11,7 @@ import java.math.BigDecimal;
 import java.util.Optional;
 
 import static com.isipathana.meditationcenter.jooq.Tables.*;
+import static org.jooq.impl.DSL.sum;
 
 /**
  * Repository implementation for fetching user details with statistics.
@@ -67,7 +68,7 @@ public class GetUserByIdRepository implements GetUserByIdDataAccess {
 
         // Sum total donations (using donation_amount column)
         BigDecimal totalDonations = dslContext
-                .select(DONATION.DONATION_AMOUNT.sum())
+                .select(sum(DONATION.DONATION_AMOUNT))
                 .from(DONATION)
                 .where(DONATION.USER_ID.eq(userId))
                 .fetchOne(0, BigDecimal.class);
