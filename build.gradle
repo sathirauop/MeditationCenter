@@ -26,7 +26,7 @@ configurations {
 compileJava {
     options.compilerArgs += ['-parameters']
     // Enable annotation processing explicitly
-    options.annotationProcessorPath = configurations.annotationProcessor
+//    options.annotationProcessorPath = configurations.annotationProcessor
     options.compilerArgs += ['-proc:full']
 }
 
