@@ -1,4 +1,4 @@
-package com.isipathana.meditationcenter.rest.admin;
+package com.isipathana.meditationcenter.rest.admin.user;
 
 import com.isipathana.meditationcenter.constants.EndPoints;
 import com.isipathana.meditationcenter.records.user.UserRole;

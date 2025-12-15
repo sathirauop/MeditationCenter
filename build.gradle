@@ -12,7 +12,7 @@ description = 'MeditationCenter'
 
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(21)
+        languageVersion = JavaLanguageVersion.of(24)
     }
 }
 
@@ -23,12 +23,12 @@ configurations {
 }
 
 // Ensure Lombok is available for all compilation tasks
-compileJava {
-    options.compilerArgs += ['-parameters']
-    // Enable annotation processing explicitly
-//    options.annotationProcessorPath = configurations.annotationProcessor
-    options.compilerArgs += ['-proc:full']
-}
+//compileJava {
+//    options.compilerArgs += ['-parameters']
+//    // Enable annotation processing explicitly
+////    options.annotationProcessorPath = configurations.annotationProcessor
+//    options.compilerArgs += ['-proc:full']
+//}
 
 repositories {
     mavenCentral()
