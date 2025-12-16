@@ -2028,7 +2028,7 @@ curl -X POST http://localhost:8080/api/admin/book \
 
 **Permission Required:** `ADMIN` role + `CREATE_TEMPLATE` permission
 
-**Note:** Creates a schedule override for a specific date. Only one override per date is allowed.
+**Note:** Creates a schedule override for a specific date. If an override already exists for the date, it will be completely replaced with the new override (all old activities are deleted and replaced with the new ones).
 
 **Request Body:**
 ```json
@@ -2209,12 +2209,12 @@ curl -X POST http://localhost:8080/api/admin/book \
 
 ---
 
-### 42. Delete Override
+### 42. Delete Override by ID
 **DELETE** `/api/admin/overrides/{id}`
 
 **Permission Required:** `ADMIN` role + `DELETE_TEMPLATE` permission
 
-**Note:** Deleting an override automatically deletes all associated activities (CASCADE).
+**Note:** Deleting an override automatically deletes all associated activities (CASCADE). This endpoint requires the override ID.
 
 **Response:** `200 OK`
 ```json
@@ -2223,6 +2223,49 @@ curl -X POST http://localhost:8080/api/admin/book \
   "message": "Override for date '2025-12-25' (ID: 1) deleted successfully",
   "override_id": 1,
   "override_date": "2025-12-25"
+}
+```
+
+**Error Response:** `404 NOT FOUND`
+```json
+{
+  "timestamp": "2025-12-16T05:30:00",
+  "status": 404,
+  "error": "Not Found",
+  "message": "Override not found",
+  "path": "/api/admin/overrides/999"
+}
+```
+
+---
+
+### 42a. Delete Override by Date
+**DELETE** `/api/admin/overrides/by-date/{date}`
+
+**Permission Required:** `ADMIN` role + `DELETE_TEMPLATE` permission
+
+**Note:** Deletes an override by date instead of ID. This is more convenient for frontends since they work with dates. Automatically deletes all associated activities (CASCADE). Date format: `yyyy-MM-dd`
+
+**Example:** `DELETE /api/admin/overrides/by-date/2025-12-25`
+
+**Response:** `200 OK`
+```json
+{
+  "success": true,
+  "message": "Override for date '2025-12-25' (ID: 1) deleted successfully",
+  "override_id": 1,
+  "override_date": "2025-12-25"
+}
+```
+
+**Error Response:** `404 NOT FOUND`
+```json
+{
+  "timestamp": "2025-12-16T05:30:00",
+  "status": 404,
+  "error": "Not Found",
+  "message": "No override found for date: 2025-12-26",
+  "path": "/api/admin/overrides/by-date/2025-12-26"
 }
 ```
 

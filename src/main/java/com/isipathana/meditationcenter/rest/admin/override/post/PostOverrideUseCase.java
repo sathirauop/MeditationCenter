@@ -1,6 +1,5 @@
 package com.isipathana.meditationcenter.rest.admin.override.post;
 
-import com.isipathana.meditationcenter.exception.ConflictException;
 import com.isipathana.meditationcenter.exception.ResourceNotFoundException;
 import com.isipathana.meditationcenter.records.schedule.Activity;
 import com.isipathana.meditationcenter.records.schedule.OverrideActivity;
@@ -36,9 +35,8 @@ public class PostOverrideUseCase implements UseCase<PostOverrideRequest, PostOve
 
         // Check if override already exists for this date
         if (repository.overrideExistsForDate(request.overrideDate())) {
-            throw new ConflictException(
-                    "Schedule override already exists for date: " + request.overrideDate()
-            );
+            log.info("Override already exists for date: {}. Replacing with new override.", request.overrideDate());
+            repository.deleteOverrideByDate(request.overrideDate());
         }
 
         // Validate that all activities exist

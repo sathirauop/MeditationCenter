@@ -118,7 +118,7 @@ public class AdminOverrideController {
     }
 
     /**
-     * Delete a schedule override.
+     * Delete a schedule override by ID.
      * Requires ADMIN role and DELETE_TEMPLATE permission.
      *
      * @param id the override ID
@@ -128,6 +128,21 @@ public class AdminOverrideController {
     @PreAuthorize("hasRole('ADMIN') and hasAuthority('DELETE_TEMPLATE')")
     public ResponseEntity<DeleteOverrideResponse> deleteOverride(@PathVariable Long id) {
         DeleteOverrideResponse response = deleteOverrideUseCase.execute(id);
+        return ResponseEntity.ok(response);
+    }
+
+    /**
+     * Delete a schedule override by date.
+     * Requires ADMIN role and DELETE_TEMPLATE permission.
+     *
+     * @param date the override date (format: yyyy-MM-dd)
+     * @return deletion confirmation
+     */
+    @DeleteMapping(EndPoints.Admin.Override.DELETE_BY_DATE)
+    @PreAuthorize("hasRole('ADMIN') and hasAuthority('DELETE_TEMPLATE')")
+    public ResponseEntity<DeleteOverrideResponse> deleteOverrideByDate(
+            @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
+        DeleteOverrideResponse response = deleteOverrideUseCase.executeByDate(date);
         return ResponseEntity.ok(response);
     }
 }

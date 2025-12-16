@@ -422,9 +422,14 @@ public final class EndPoints {
             public static final String UPDATE = "/{id}";
 
             /**
-             * DELETE /api/admin/overrides/{id} - Delete override
+             * DELETE /api/admin/overrides/{id} - Delete override by ID
              */
             public static final String DELETE = "/{id}";
+
+            /**
+             * DELETE /api/admin/overrides/by-date/{date} - Delete override by date
+             */
+            public static final String DELETE_BY_DATE = "/by-date/{date}";
 
             // Full paths for security configuration
             public static final String FULL_PATH = BASE + "/**";

@@ -104,4 +104,25 @@ public class PostOverrideRepository implements PostOverrideDataAccess {
                         .updatedAt(record.getUpdatedAt())
                         .build());
     }
+
+    @Override
+    public void deleteOverrideByDate(LocalDate date) {
+        // First, get the override ID for this date
+        Long overrideId = dslContext.select(SCHEDULE_OVERRIDE.OVERRIDE_ID)
+                .from(SCHEDULE_OVERRIDE)
+                .where(SCHEDULE_OVERRIDE.OVERRIDE_DATE.eq(date))
+                .fetchOne(SCHEDULE_OVERRIDE.OVERRIDE_ID);
+
+        if (overrideId != null) {
+            // Delete all override activities first (foreign key constraint)
+            dslContext.deleteFrom(OVERRIDE_ACTIVITY)
+                    .where(OVERRIDE_ACTIVITY.OVERRIDE_ID.eq(overrideId))
+                    .execute();
+
+            // Then delete the override itself
+            dslContext.deleteFrom(SCHEDULE_OVERRIDE)
+                    .where(SCHEDULE_OVERRIDE.OVERRIDE_ID.eq(overrideId))
+                    .execute();
+        }
+    }
 }

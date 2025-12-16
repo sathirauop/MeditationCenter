@@ -7,6 +7,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+
 /**
  * UseCase for deleting an override.
  *
@@ -36,6 +38,27 @@ public class DeleteOverrideUseCase {
                         override.overrideDate(), overrideId),
                 overrideId,
                 override.overrideDate()
+        );
+    }
+
+    @Transactional
+    public DeleteOverrideResponse executeByDate(LocalDate date) {
+        log.info("Deleting override for date: {}", date);
+
+        ScheduleOverride override = repository.findOverrideByDate(date)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        String.format("No override found for date: %s", date)));
+
+        repository.deleteOverrideByDate(date);
+
+        log.info("Successfully deleted override for date: {} (ID: {})", date, override.overrideId());
+
+        return new DeleteOverrideResponse(
+                true,
+                String.format("Override for date '%s' (ID: %d) deleted successfully",
+                        date, override.overrideId()),
+                override.overrideId(),
+                date
         );
     }
 }

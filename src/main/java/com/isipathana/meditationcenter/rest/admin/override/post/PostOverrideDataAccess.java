@@ -37,4 +37,9 @@ public interface PostOverrideDataAccess {
      * Find activities by IDs.
      */
     List<Activity> findActivitiesByIds(List<Long> activityIds);
+
+    /**
+     * Delete override and all its activities for the given date.
+     */
+    void deleteOverrideByDate(java.time.LocalDate date);
 }

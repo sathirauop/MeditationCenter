@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.util.Optional;
 
 import static com.isipathana.meditationcenter.jooq.Tables.*;
@@ -37,6 +38,26 @@ public class DeleteOverrideRepository implements DeleteOverrideDataAccess {
         // Activities will be cascade deleted by database
         dslContext.deleteFrom(SCHEDULE_OVERRIDE)
                 .where(SCHEDULE_OVERRIDE.OVERRIDE_ID.eq(overrideId))
+                .execute();
+    }
+
+    @Override
+    public Optional<ScheduleOverride> findOverrideByDate(LocalDate date) {
+        return dslContext.selectFrom(SCHEDULE_OVERRIDE)
+                .where(SCHEDULE_OVERRIDE.OVERRIDE_DATE.eq(date))
+                .fetchOptional(record -> ScheduleOverride.builder()
+                        .overrideId(record.getOverrideId())
+                        .overrideDate(record.getOverrideDate())
+                        .createdAt(record.getCreatedAt())
+                        .updatedAt(record.getUpdatedAt())
+                        .build());
+    }
+
+    @Override
+    public void deleteOverrideByDate(LocalDate date) {
+        // Activities will be cascade deleted by database
+        dslContext.deleteFrom(SCHEDULE_OVERRIDE)
+                .where(SCHEDULE_OVERRIDE.OVERRIDE_DATE.eq(date))
                 .execute();
     }
 }
