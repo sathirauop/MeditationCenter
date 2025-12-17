@@ -40,6 +40,8 @@ public class PatchProgramRepository implements PatchProgramDataAccess {
                 .meditationProgramId(record.get(MEDITATION_PROGRAM.MEDITATION_PROGRAM_ID))
                 .name(record.get(MEDITATION_PROGRAM.NAME))
                 .description(record.get(MEDITATION_PROGRAM.DESCRIPTION))
+                .nameSi(record.get(MEDITATION_PROGRAM.NAME_SI))
+                .descriptionSi(record.get(MEDITATION_PROGRAM.DESCRIPTION_SI))
                 .maxSeats(record.get(MEDITATION_PROGRAM.MAX_SEATS))
                 .coverImageKey(record.get(MEDITATION_PROGRAM.COVER_IMAGE_KEY))
                 .galleryImageKeys(record.get(MEDITATION_PROGRAM.GALLERY_IMAGE_KEYS) != null
@@ -65,6 +67,18 @@ public class PatchProgramRepository implements PatchProgramDataAccess {
             query = query != null
                     ? query.set(MEDITATION_PROGRAM.DESCRIPTION, program.description())
                     : updateStep.set(MEDITATION_PROGRAM.DESCRIPTION, program.description());
+        }
+
+        if (program.nameSi() != null) {
+            query = query != null
+                    ? query.set(MEDITATION_PROGRAM.NAME_SI, program.nameSi())
+                    : updateStep.set(MEDITATION_PROGRAM.NAME_SI, program.nameSi());
+        }
+
+        if (program.descriptionSi() != null) {
+            query = query != null
+                    ? query.set(MEDITATION_PROGRAM.DESCRIPTION_SI, program.descriptionSi())
+                    : updateStep.set(MEDITATION_PROGRAM.DESCRIPTION_SI, program.descriptionSi());
         }
 
         if (program.maxSeats() != null) {

@@ -41,6 +41,8 @@ public class PatchProgramPresenter implements PatchProgramResponseBuilder {
                 .meditationProgramId(program.meditationProgramId())
                 .name(program.name())
                 .description(program.description())
+                .nameSi(program.nameSi())
+                .descriptionSi(program.descriptionSi())
                 .maxSeats(program.maxSeats())
                 .coverImageUrl(coverImageUrl)
                 .galleryImageUrls(galleryImageUrls.isEmpty() ? null : galleryImageUrls)

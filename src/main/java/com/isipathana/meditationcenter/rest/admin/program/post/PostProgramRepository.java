@@ -27,6 +27,8 @@ public class PostProgramRepository implements PostProgramDataAccess {
                 .insertInto(MEDITATION_PROGRAM)
                 .set(MEDITATION_PROGRAM.NAME, program.name())
                 .set(MEDITATION_PROGRAM.DESCRIPTION, program.description())
+                .set(MEDITATION_PROGRAM.NAME_SI, program.nameSi())
+                .set(MEDITATION_PROGRAM.DESCRIPTION_SI, program.descriptionSi())
                 .set(MEDITATION_PROGRAM.MAX_SEATS, program.maxSeats())
                 .set(MEDITATION_PROGRAM.COVER_IMAGE_KEY, program.coverImageKey())
                 .set(MEDITATION_PROGRAM.GALLERY_IMAGE_KEYS, program.galleryImageKeys() != null
@@ -44,6 +46,8 @@ public class PostProgramRepository implements PostProgramDataAccess {
                 .meditationProgramId(record.get(MEDITATION_PROGRAM.MEDITATION_PROGRAM_ID))
                 .name(record.get(MEDITATION_PROGRAM.NAME))
                 .description(record.get(MEDITATION_PROGRAM.DESCRIPTION))
+                .nameSi(record.get(MEDITATION_PROGRAM.NAME_SI))
+                .descriptionSi(record.get(MEDITATION_PROGRAM.DESCRIPTION_SI))
                 .maxSeats(record.get(MEDITATION_PROGRAM.MAX_SEATS))
                 .coverImageKey(record.get(MEDITATION_PROGRAM.COVER_IMAGE_KEY))
                 .galleryImageKeys(record.get(MEDITATION_PROGRAM.GALLERY_IMAGE_KEYS) != null
@@ -82,6 +86,8 @@ public class PostProgramRepository implements PostProgramDataAccess {
                 .meditationProgramId(record.get(MEDITATION_PROGRAM.MEDITATION_PROGRAM_ID))
                 .name(record.get(MEDITATION_PROGRAM.NAME))
                 .description(record.get(MEDITATION_PROGRAM.DESCRIPTION))
+                .nameSi(record.get(MEDITATION_PROGRAM.NAME_SI))
+                .descriptionSi(record.get(MEDITATION_PROGRAM.DESCRIPTION_SI))
                 .maxSeats(record.get(MEDITATION_PROGRAM.MAX_SEATS))
                 .coverImageKey(record.get(MEDITATION_PROGRAM.COVER_IMAGE_KEY))
                 .galleryImageKeys(record.get(MEDITATION_PROGRAM.GALLERY_IMAGE_KEYS) != null

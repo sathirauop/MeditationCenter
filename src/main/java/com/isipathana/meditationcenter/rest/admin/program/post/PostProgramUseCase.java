@@ -44,6 +44,8 @@ public class PostProgramUseCase {
         MeditationProgram program = MeditationProgram.builder()
                 .name(request.name())
                 .description(request.description())
+                .nameSi(request.nameSi())
+                .descriptionSi(request.descriptionSi())
                 .maxSeats(request.maxSeats() != null ? request.maxSeats() : 0)
                 .isActive(request.isActive() != null ? request.isActive() : true)
                 .build();
@@ -90,6 +92,8 @@ public class PostProgramUseCase {
                 .meditationProgramId(createdProgram.meditationProgramId())
                 .name(createdProgram.name())
                 .description(createdProgram.description())
+                .nameSi(createdProgram.nameSi())
+                .descriptionSi(createdProgram.descriptionSi())
                 .maxSeats(createdProgram.maxSeats())
                 .coverImageKey(createdProgram.coverImageKey())
                 .galleryImageKeys(createdProgram.galleryImageKeys())

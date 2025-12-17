@@ -25,6 +25,12 @@ public record GetEventsResponse(
 
         String description,
 
+        @JsonProperty("name_si")
+        String nameSi,
+
+        @JsonProperty("description_si")
+        String descriptionSi,
+
         @JsonProperty("event_date")
         LocalDate eventDate,
 

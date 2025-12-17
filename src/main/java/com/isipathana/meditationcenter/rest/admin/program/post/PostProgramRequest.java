@@ -17,6 +17,12 @@ public record PostProgramRequest(
         @Size(max = 5000, message = "Description must not exceed 5000 characters")
         String description,
 
+        @Size(min = 3, max = 255, message = "Sinhala name must be between 3 and 255 characters")
+        String nameSi,
+
+        @Size(max = 5000, message = "Sinhala description must not exceed 5000 characters")
+        String descriptionSi,
+
         @Min(value = 0, message = "Max seats must be at least 0")
         Integer maxSeats,
 

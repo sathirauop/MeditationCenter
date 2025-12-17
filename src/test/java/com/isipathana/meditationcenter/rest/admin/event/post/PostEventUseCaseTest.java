@@ -52,6 +52,8 @@ public class PostEventUseCaseTest {
         PostEventRequest request = new PostEventRequest(
                 "Wesak Celebration",
                 "Annual Wesak ceremony",
+                null, // nameSi
+                null, // descriptionSi
                 LocalDate.of(2025, 5, 15),
                 LocalTime.of(6, 0),
                 LocalTime.of(20, 0),
@@ -102,6 +104,8 @@ public class PostEventUseCaseTest {
         PostEventRequest request = new PostEventRequest(
                 "Invalid Event",
                 "End time before start time",
+                null, // nameSi
+                null, // descriptionSi
                 LocalDate.of(2025, 5, 15),
                 LocalTime.of(20, 0),  // Start time
                 LocalTime.of(6, 0),   // End time (before start time!)
@@ -124,6 +128,8 @@ public class PostEventUseCaseTest {
         PostEventRequest request = new PostEventRequest(
                 "Invalid Event",
                 "Same start and end time",
+                null, // nameSi
+                null, // descriptionSi
                 LocalDate.of(2025, 5, 15),
                 LocalTime.of(10, 0),
                 LocalTime.of(10, 0),  // Same as start time
@@ -144,6 +150,8 @@ public class PostEventUseCaseTest {
         PostEventRequest request = new PostEventRequest(
                 "Event",
                 "Description",
+                null, // nameSi
+                null, // descriptionSi
                 LocalDate.of(2025, 5, 15),
                 LocalTime.of(6, 0),
                 LocalTime.of(20, 0),
@@ -386,6 +394,8 @@ public class PostEventUseCaseTest {
         PostEventRequest request = new PostEventRequest(
                 "Event",
                 "Description",
+                null, // nameSi
+                null, // descriptionSi
                 LocalDate.of(2025, 5, 15),
                 LocalTime.of(6, 0),
                 LocalTime.of(20, 0),
@@ -459,6 +469,8 @@ public class PostEventUseCaseTest {
         PostEventRequest request = new PostEventRequest(
                 "Event",
                 "Description",
+                null, // nameSi
+                null, // descriptionSi
                 LocalDate.of(2025, 5, 15),
                 LocalTime.of(6, 0),
                 LocalTime.of(20, 0),
@@ -492,6 +504,8 @@ public class PostEventUseCaseTest {
         PostEventRequest request = new PostEventRequest(
                 "Event",
                 "Description",
+                null, // nameSi
+                null, // descriptionSi
                 LocalDate.of(2025, 5, 15),
                 LocalTime.of(6, 0),
                 LocalTime.of(20, 0),
@@ -525,6 +539,8 @@ public class PostEventUseCaseTest {
         PostEventRequest request = new PostEventRequest(
                 "Event",
                 "Description",
+                null, // nameSi
+                null, // descriptionSi
                 LocalDate.of(2025, 5, 15),
                 LocalTime.of(6, 0),
                 LocalTime.of(20, 0),

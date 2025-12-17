@@ -21,6 +21,12 @@ public record PatchEventResponse(
 
         String description,
 
+        @JsonProperty("name_si")
+        String nameSi,
+
+        @JsonProperty("description_si")
+        String descriptionSi,
+
         @JsonProperty("event_date")
         @JsonFormat(pattern = "yyyy-MM-dd")
         LocalDate eventDate,

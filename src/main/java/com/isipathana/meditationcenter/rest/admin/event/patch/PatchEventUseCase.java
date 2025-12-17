@@ -47,6 +47,8 @@ public class PatchEventUseCase implements UseCase<PatchEventRequest, PatchEventR
                 .eventId(eventId)
                 .name(request.name())
                 .description(request.description())
+                .nameSi(request.nameSi())
+                .descriptionSi(request.descriptionSi())
                 .eventDate(request.eventDate())
                 .startTime(request.startTime())
                 .endTime(request.endTime())

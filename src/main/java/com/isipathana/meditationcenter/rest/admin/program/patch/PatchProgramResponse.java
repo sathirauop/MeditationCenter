@@ -23,6 +23,12 @@ public record PatchProgramResponse(
         @JsonProperty("description")
         String description,
 
+        @JsonProperty("name_si")
+        String nameSi,
+
+        @JsonProperty("description_si")
+        String descriptionSi,
+
         @JsonProperty("max_seats")
         Integer maxSeats,
 

@@ -18,6 +18,8 @@ public class PatchEventPresenter implements PatchEventResponseBuilder {
                 event.eventId(),
                 event.name(),
                 event.description(),
+                event.nameSi(),
+                event.descriptionSi(),
                 event.eventDate(),
                 event.startTime(),
                 event.endTime(),

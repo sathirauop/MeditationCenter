@@ -54,6 +54,8 @@ public class PostEventUseCase {
         Event eventToCreate = Event.builder()
                 .name(request.name())
                 .description(request.description())
+                .nameSi(request.nameSi())
+                .descriptionSi(request.descriptionSi())
                 .eventDate(request.eventDate())
                 .startTime(request.startTime())
                 .endTime(request.endTime())
@@ -97,6 +99,8 @@ public class PostEventUseCase {
                 createdEvent.eventId(),
                 createdEvent.name(),
                 createdEvent.description(),
+                createdEvent.nameSi(),
+                createdEvent.descriptionSi(),
                 createdEvent.eventDate(),
                 createdEvent.startTime(),
                 createdEvent.endTime(),

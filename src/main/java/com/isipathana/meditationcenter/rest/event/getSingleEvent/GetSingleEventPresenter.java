@@ -47,6 +47,8 @@ public class GetSingleEventPresenter implements GetSingleEventResponseBuilder {
                 .eventId(event.eventId())
                 .name(event.name())
                 .description(event.description())
+                .nameSi(event.nameSi())
+                .descriptionSi(event.descriptionSi())
                 .eventDate(event.eventDate())
                 .startTime(event.startTime())
                 .endTime(event.endTime())

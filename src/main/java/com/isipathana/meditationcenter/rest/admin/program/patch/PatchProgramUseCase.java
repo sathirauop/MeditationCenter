@@ -36,6 +36,8 @@ public class PatchProgramUseCase {
                 .meditationProgramId(programId)
                 .name(request.name())
                 .description(request.description())
+                .nameSi(request.nameSi())
+                .descriptionSi(request.descriptionSi())
                 .maxSeats(request.maxSeats())
                 .isActive(request.isActive())
                 .build();

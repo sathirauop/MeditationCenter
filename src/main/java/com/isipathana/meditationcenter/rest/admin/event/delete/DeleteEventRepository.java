@@ -38,6 +38,8 @@ public class DeleteEventRepository implements DeleteEventDataAccess {
                 .eventId(record.get(EVENTS.EVENT_ID))
                 .name(record.get(EVENTS.NAME))
                 .description(record.get(EVENTS.DESCRIPTION))
+                .nameSi(record.get(EVENTS.NAME_SI))
+                .descriptionSi(record.get(EVENTS.DESCRIPTION_SI))
                 .eventDate(record.get(EVENTS.EVENT_DATE))
                 .startTime(record.get(EVENTS.START_TIME))
                 .endTime(record.get(EVENTS.END_TIME))

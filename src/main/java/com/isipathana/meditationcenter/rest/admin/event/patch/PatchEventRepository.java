@@ -49,6 +49,8 @@ public class PatchEventRepository implements PatchEventDataAccess {
                 .eventId(record.getEventId())
                 .name(record.getName())
                 .description(record.getDescription())
+                .nameSi(record.getNameSi())
+                .descriptionSi(record.getDescriptionSi())
                 .eventDate(record.getEventDate())
                 .startTime(record.getStartTime())
                 .endTime(record.getEndTime())
@@ -80,6 +82,18 @@ public class PatchEventRepository implements PatchEventDataAccess {
             query = query != null
                     ? query.set(EVENTS.DESCRIPTION, event.description())
                     : updateStep.set(EVENTS.DESCRIPTION, event.description());
+        }
+
+        if (event.nameSi() != null) {
+            query = query != null
+                    ? query.set(EVENTS.NAME_SI, event.nameSi())
+                    : updateStep.set(EVENTS.NAME_SI, event.nameSi());
+        }
+
+        if (event.descriptionSi() != null) {
+            query = query != null
+                    ? query.set(EVENTS.DESCRIPTION_SI, event.descriptionSi())
+                    : updateStep.set(EVENTS.DESCRIPTION_SI, event.descriptionSi());
         }
 
         if (event.eventDate() != null) {

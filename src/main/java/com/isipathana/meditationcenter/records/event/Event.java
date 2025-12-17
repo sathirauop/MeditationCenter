@@ -12,6 +12,8 @@ public record Event(
     Long eventId,
     String name,
     String description,
+    String nameSi,
+    String descriptionSi,
     LocalDate eventDate,
     LocalTime startTime,
     LocalTime endTime,

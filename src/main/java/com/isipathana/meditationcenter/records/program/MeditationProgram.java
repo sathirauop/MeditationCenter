@@ -16,6 +16,8 @@ public record MeditationProgram(
     Long meditationProgramId,
     String name,
     String description,
+    String nameSi,
+    String descriptionSi,
     Integer maxSeats,
     String coverImageKey,
     Set<String> galleryImageKeys,

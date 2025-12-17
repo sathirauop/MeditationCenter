@@ -26,6 +26,8 @@ public class PostEventRepository implements PostEventDataAccess {
                 .insertInto(EVENTS)
                 .set(EVENTS.NAME, event.name())
                 .set(EVENTS.DESCRIPTION, event.description())
+                .set(EVENTS.NAME_SI, event.nameSi())
+                .set(EVENTS.DESCRIPTION_SI, event.descriptionSi())
                 .set(EVENTS.EVENT_DATE, event.eventDate())
                 .set(EVENTS.START_TIME, event.startTime())
                 .set(EVENTS.END_TIME, event.endTime())
@@ -39,6 +41,8 @@ public class PostEventRepository implements PostEventDataAccess {
                         EVENTS.EVENT_ID,
                         EVENTS.NAME,
                         EVENTS.DESCRIPTION,
+                        EVENTS.NAME_SI,
+                        EVENTS.DESCRIPTION_SI,
                         EVENTS.EVENT_DATE,
                         EVENTS.START_TIME,
                         EVENTS.END_TIME,
@@ -55,6 +59,8 @@ public class PostEventRepository implements PostEventDataAccess {
                 .eventId(record.get(EVENTS.EVENT_ID))
                 .name(record.get(EVENTS.NAME))
                 .description(record.get(EVENTS.DESCRIPTION))
+                .nameSi(record.get(EVENTS.NAME_SI))
+                .descriptionSi(record.get(EVENTS.DESCRIPTION_SI))
                 .eventDate(record.get(EVENTS.EVENT_DATE))
                 .startTime(record.get(EVENTS.START_TIME))
                 .endTime(record.get(EVENTS.END_TIME))
@@ -82,6 +88,8 @@ public class PostEventRepository implements PostEventDataAccess {
                         EVENTS.EVENT_ID,
                         EVENTS.NAME,
                         EVENTS.DESCRIPTION,
+                        EVENTS.NAME_SI,
+                        EVENTS.DESCRIPTION_SI,
                         EVENTS.EVENT_DATE,
                         EVENTS.START_TIME,
                         EVENTS.END_TIME,
@@ -98,6 +106,8 @@ public class PostEventRepository implements PostEventDataAccess {
                 .eventId(record.get(EVENTS.EVENT_ID))
                 .name(record.get(EVENTS.NAME))
                 .description(record.get(EVENTS.DESCRIPTION))
+                .nameSi(record.get(EVENTS.NAME_SI))
+                .descriptionSi(record.get(EVENTS.DESCRIPTION_SI))
                 .eventDate(record.get(EVENTS.EVENT_DATE))
                 .startTime(record.get(EVENTS.START_TIME))
                 .endTime(record.get(EVENTS.END_TIME))
