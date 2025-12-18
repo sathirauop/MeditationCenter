@@ -10,8 +10,8 @@ import java.util.Set;
  * Request DTO for GET /api/admin/blog endpoint.
  * Supports offset-based pagination and filtering for all blog posts (admin view).
  *
- * @param limit      Maximum number of posts to return (1-100)
- * @param offset     Page offset for pagination (0-based)
+ * @param limit      Maximum number of posts to return (1-100, default: 20)
+ * @param offset     Page offset for pagination (0-based, default: 0)
  * @param status     Filter by post status (optional - DRAFT, PUBLISHED)
  * @param authorId   Filter by author ID (optional)
  * @param tagIds     Filter by tag IDs (optional)
@@ -19,17 +19,18 @@ import java.util.Set;
  * @author Sathira Basnayake
  */
 public record GetAdminBlogPostsRequest(
-        @Min(1) @Max(100) int limit,
-        @Min(0) int offset,
+        @Min(1) @Max(100) Integer limit,
+        @Min(0) Integer offset,
         BlogPostStatus status,
         Long authorId,
         Set<Long> tagIds,
         String search
 ) {
     /**
-     * Default constructor with sensible defaults.
+     * Compact constructor to apply default values for null pagination parameters.
      */
-    public GetAdminBlogPostsRequest() {
-        this(20, 0, null, null, null, null);
+    public GetAdminBlogPostsRequest {
+        limit = (limit == null) ? 20 : limit;
+        offset = (offset == null) ? 0 : offset;
     }
 }

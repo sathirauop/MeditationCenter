@@ -47,7 +47,7 @@ public class AdminBlogController {
      * GET /api/admin/blog - Get all blog posts including drafts (admin)
      */
     @GetMapping(EndPoints.Admin.Blog.GET_ALL)
-    @PreAuthorize("hasAuthority('VIEW_BLOG_POSTS')")
+    @PreAuthorize("hasAuthority('VIEW_ALL_BLOG_POSTS')")
     public ResponseEntity<OffsetSearchResponse<GetAdminBlogPostsResponse>> getAllBlogPosts(
             @Valid GetAdminBlogPostsRequest request
     ) {
@@ -58,7 +58,7 @@ public class AdminBlogController {
      * GET /api/admin/blog/{postId} - Get blog post by ID for editing
      */
     @GetMapping(EndPoints.Admin.Blog.GET_BY_ID)
-    @PreAuthorize("hasAuthority('VIEW_BLOG_POSTS')")
+    @PreAuthorize("hasAuthority('VIEW_ALL_BLOG_POSTS')")
     public ResponseEntity<GetAdminBlogPostResponse> getBlogPostById(
             @PathVariable Long postId
     ) {

@@ -87,7 +87,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, EndPoints.Blog.FULL_PATH + "/**").permitAll()
 
                         // Admin blog endpoints - require authentication (permissions checked at controller level)
-                        .requestMatchers(EndPoints.Admin.Blog.FULL_PATH + "/**").authenticated()
+                        .requestMatchers(EndPoints.Admin.Blog.FULL_PATH).authenticated()
 
                         // Utility endpoints (ONLY for development - should be removed in production)
                         .requestMatchers(EndPoints.Util.FULL_PATH).permitAll()

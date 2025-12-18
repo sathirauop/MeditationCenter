@@ -10,8 +10,8 @@ import java.util.Set;
  * Request DTO for GET /api/blog endpoint.
  * Supports offset-based pagination and filtering for published blog posts.
  *
- * @param limit      Maximum number of posts to return (1-100)
- * @param offset     Page offset for pagination (0-based)
+ * @param limit      Maximum number of posts to return (1-100, default: 20)
+ * @param offset     Page offset for pagination (0-based, default: 0)
  * @param tagIds     Filter by tag IDs (optional)
  * @param search     Search query for title/content (optional)
  * @param startDate  Filter posts published after this date (optional)
@@ -20,8 +20,8 @@ import java.util.Set;
  * @author Sathira Basnayake
  */
 public record GetBlogPostsRequest(
-        @Min(1) @Max(100) int limit,
-        @Min(0) int offset,
+        @Min(1) @Max(100) Integer limit,
+        @Min(0) Integer offset,
         Set<Long> tagIds,
         String search,
         LocalDate startDate,
@@ -29,10 +29,12 @@ public record GetBlogPostsRequest(
         SortOrder sortBy
 ) {
     /**
-     * Default constructor with sensible defaults.
+     * Compact constructor to apply default values for null parameters.
      */
-    public GetBlogPostsRequest() {
-        this(20, 0, null, null, null, null, SortOrder.NEWEST);
+    public GetBlogPostsRequest {
+        limit = (limit == null) ? 20 : limit;
+        offset = (offset == null) ? 0 : offset;
+        sortBy = (sortBy == null) ? SortOrder.NEWEST : sortBy;
     }
 
     /**

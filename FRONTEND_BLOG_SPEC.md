@@ -52,7 +52,7 @@ The blog supports:
 
 | Permission | Endpoints |
 |------------|-----------|
-| `VIEW_BLOG_POSTS` | GET /api/admin/blog, GET /api/admin/blog/{postId} |
+| `VIEW_ALL_BLOG_POSTS` | GET /api/admin/blog, GET /api/admin/blog/{postId} |
 | `CREATE_BLOG_POST` | POST /api/admin/blog |
 | `PUBLISH_BLOG_POST` | POST /api/admin/blog/{postId}/publish, POST /api/admin/blog/{postId}/unpublish |
 | `DELETE_BLOG_POST` | DELETE /api/admin/blog/{postId} |
@@ -218,7 +218,7 @@ GET /api/blog/tags
 
 **Endpoint**: `GET /api/admin/blog`
 
-**Authentication**: Required (`VIEW_BLOG_POSTS` permission)
+**Authentication**: Required (`VIEW_ALL_BLOG_POSTS` permission)
 
 **Query Parameters**:
 ```typescript
@@ -275,7 +275,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 
 **Endpoint**: `GET /api/admin/blog/{postId}`
 
-**Authentication**: Required (`VIEW_BLOG_POSTS` permission)
+**Authentication**: Required (`VIEW_ALL_BLOG_POSTS` permission)
 
 **Path Parameters**:
 - `postId`: Numeric post ID (not slug)
