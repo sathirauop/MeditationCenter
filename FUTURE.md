@@ -178,6 +178,146 @@ The following user management endpoints were planned but not yet implemented:
 
 ---
 
+## Blog Admin Endpoints - Remaining Implementation
+
+**Status:** Deferred for future implementation
+
+The following blog admin endpoints were planned but not yet implemented:
+
+### 1. Update Blog Post
+**PATCH** `/api/admin/blog/{postId}`
+
+**Purpose:** Update existing blog post with optional image replacement
+
+**Request (Multipart):**
+- `request` part (JSON): PatchBlogPostRequest with all optional fields
+- `coverImage` part (optional): New cover image file
+- `galleryImages` part (optional): New gallery images
+- `deleteCoverImage` (boolean): Whether to delete existing cover image
+- `deleteGalleryImages` (Set<String>): Keys of gallery images to delete
+
+**Request Body Example:**
+```json
+{
+  "title": "Updated Title",
+  "excerpt": "Updated excerpt",
+  "content": "Updated content...",
+  "slug": "updated-slug",
+  "tagIds": [1, 2, 3],
+  "metaTitle": "Updated SEO title",
+  "version": 5
+}
+```
+
+**Features:**
+- Dynamic UPDATE (only non-null fields updated)
+- Optional image replacement:
+  - Upload new cover image → deletes old, uploads new
+  - Upload new gallery images → adds to existing or replaces all
+  - Delete specific gallery images by key
+- Tag association updates (replaces entire tag set)
+- Slug uniqueness validation (if slug changed)
+- Optimistic locking using version field
+- Returns updated post with new version number
+
+**Implementation Notes:**
+- Use PatchBlogTagRepository pattern for dynamic UPDATE
+- Handle image replacement carefully:
+  - Delete old R2 objects before uploading new ones
+  - Update image_keys array in database
+- Version conflict should return 409 Conflict
+- Validate slug uniqueness if slug is changed
+- Requires: `UPDATE_BLOG_POST` permission
+
+**Components Needed (9 files):**
+- PatchBlogPostRequest.java
+- PatchBlogPostResponse.java
+- PatchBlogPostDataAccess.java
+- PatchBlogPostRepository.java
+- PatchBlogPostHttpDataAccess.java (delete + upload images)
+- PatchBlogPostHttpRepository.java (R2FileManagerClient)
+- PatchBlogPostResponseBuilder.java
+- PatchBlogPostPresenter.java
+- PatchBlogPostUseCase.java
+
+---
+
+### 2. Auto-Save Draft
+**PATCH** `/api/admin/blog/drafts/{postId}`
+
+**Purpose:** Periodic auto-save from editor (no validation, optimistic locking only)
+
+**Request Body (JSON only - no multipart):**
+```json
+{
+  "title": "Partially written title",
+  "content": "Incomplete content...",
+  "version": 3
+}
+```
+
+**Features:**
+- **NO validation** - allows saving incomplete drafts
+- JSON only (no file uploads during auto-save)
+- Only works on DRAFT status posts
+- Optimistic locking using version field
+- Returns 409 Conflict if version mismatch
+- Returns updated post with new version number
+- Fast, lightweight operation for frequent auto-saves
+
+**Implementation Notes:**
+- Skip all validation that PostBlogPost has
+- Allow null/empty fields
+- Only check: post exists, is DRAFT, version matches
+- Simple UPDATE query with version check
+- Return minimal response (just version + updated_at)
+- Requires: `UPDATE_BLOG_POST` permission
+
+**Components Needed (7 files):**
+- AutoSaveBlogPostRequest.java
+- AutoSaveBlogPostResponse.java (minimal - just version)
+- AutoSaveBlogPostDataAccess.java
+- AutoSaveBlogPostRepository.java (dynamic UPDATE + version check)
+- AutoSaveBlogPostResponseBuilder.java
+- AutoSaveBlogPostPresenter.java
+- AutoSaveBlogPostUseCase.java
+
+---
+
+### Additional Blog Features (Lower Priority)
+
+**Optional Enhancements Not Planned:**
+
+- ❌ **Scheduled Publishing** - publishedAt in future = scheduled post
+  - Would need background job to auto-publish at scheduled time
+  - Can be added later with scheduler
+
+- ❌ **Post Analytics** - Track views over time, popular tags
+  - Would need analytics table (post_views with date/count)
+  - Could generate charts of views over time
+
+- ❌ **Related Posts** - Suggest related posts by tags
+  - Algorithm to find posts with overlapping tags
+  - Could be added to GET /api/blog/{slug} response
+
+- ❌ **Draft Preview** - Preview draft posts before publishing
+  - Generate temporary preview link for drafts
+  - Would need separate public preview endpoint
+
+- ❌ **Comment System** - User comments on blog posts
+  - Would need new tables: comments, comment_likes
+  - Moderation features for admins
+
+- ❌ **RSS Feed Generation** - Auto-generate RSS feed
+  - Endpoint: GET /api/blog/feed.xml
+  - Standard RSS 2.0 format
+
+- ❌ **Sitemap Generation** - Auto-generate sitemap for SEO
+  - Endpoint: GET /sitemap.xml
+  - Include all published blog posts
+
+---
+
 ## Other Future Enhancements
 
 _(Add additional future features here as they are identified)_
@@ -186,3 +326,4 @@ _(Add additional future features here as they are identified)_
 - We can't edit program images - can only add when creating
 - Same scenario for events as well
 - Need a way to properly handle the singleton nature of meditation programs
+- Blog post image editing is also not yet implemented (PATCH endpoint needed)

@@ -39,9 +39,11 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
  * - GET /api/events (view events)
  * - GET /api/books (view books)
  * - GET /api/schedule (view schedule)
+ * - GET /api/blog/** (view published blog posts)
  * <p>
  * Protected Endpoints (authentication required):
  * - All other /api/** endpoints
+ * - /api/admin/blog/** (ADMIN only - blog management)
  * <p>
  * Method-level security enabled via @PreAuthorize:
  * - @PreAuthorize("hasRole('ADMIN')")
@@ -80,6 +82,12 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, EndPoints.Event.FULL_PATH_BY_ID).permitAll()
                         .requestMatchers(HttpMethod.GET, EndPoints.Schedule.FULL_PATH).permitAll()
                         .requestMatchers(HttpMethod.GET, EndPoints.Book.FULL_PATH).permitAll()
+
+                        // Public blog endpoints - no authentication required
+                        .requestMatchers(HttpMethod.GET, EndPoints.Blog.FULL_PATH + "/**").permitAll()
+
+                        // Admin blog endpoints - require authentication (permissions checked at controller level)
+                        .requestMatchers(EndPoints.Admin.Blog.FULL_PATH + "/**").authenticated()
 
                         // Utility endpoints (ONLY for development - should be removed in production)
                         .requestMatchers(EndPoints.Util.FULL_PATH).permitAll()

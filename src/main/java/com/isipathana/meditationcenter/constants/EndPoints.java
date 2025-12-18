@@ -181,6 +181,37 @@ public final class EndPoints {
     }
 
     // ============================================================
+    // BLOG ENDPOINTS (Public)
+    // ============================================================
+
+    public static final class Blog {
+        private Blog() {}
+
+        /**
+         * Base path for public blog endpoints
+         */
+        public static final String BASE = API + "/blog";
+
+        /**
+         * GET /api/blog - Get all published blog posts (public, paginated, filterable)
+         */
+        public static final String GET_ALL = "";
+
+        /**
+         * GET /api/blog/{slug} - Get single published blog post by slug (public)
+         */
+        public static final String GET_BY_SLUG = "/{slug}";
+
+        /**
+         * GET /api/blog/tags - Get all tags (public)
+         */
+        public static final String GET_TAGS = "/tags";
+
+        // Full paths for security configuration
+        public static final String FULL_PATH = BASE;
+    }
+
+    // ============================================================
     // ADMIN ENDPOINTS
     // ============================================================
 
@@ -485,6 +516,88 @@ public final class EndPoints {
 
             // Full paths for security configuration
             public static final String FULL_PATH = BASE + "/**";
+        }
+
+        /**
+         * Admin Blog Management (ADMIN only)
+         */
+        public static final class Blog {
+            private Blog() {}
+
+            /**
+             * Base path for admin blog endpoints
+             */
+            public static final String BASE = Admin.BASE + "/blog";
+
+            /**
+             * GET /api/admin/blog - Get all blog posts including drafts (admin)
+             */
+            public static final String GET_ALL = "";
+
+            /**
+             * GET /api/admin/blog/{postId} - Get blog post by ID (for editing)
+             */
+            public static final String GET_BY_ID = "/{postId}";
+
+            /**
+             * POST /api/admin/blog - Create blog post with multipart/form-data
+             */
+            public static final String CREATE = "";
+
+            /**
+             * PATCH /api/admin/blog/{postId} - Update blog post
+             */
+            public static final String UPDATE = "/{postId}";
+
+            /**
+             * PATCH /api/admin/blog/drafts/{postId} - Auto-save draft (no validation)
+             */
+            public static final String AUTO_SAVE_DRAFT = "/drafts/{postId}";
+
+            /**
+             * DELETE /api/admin/blog/{postId} - Soft delete blog post
+             */
+            public static final String DELETE = "/{postId}";
+
+            /**
+             * POST /api/admin/blog/{postId}/publish - Publish draft post
+             */
+            public static final String PUBLISH = "/{postId}/publish";
+
+            /**
+             * POST /api/admin/blog/{postId}/unpublish - Unpublish post (revert to draft)
+             */
+            public static final String UNPUBLISH = "/{postId}/unpublish";
+
+            // Full paths for security configuration
+            public static final String FULL_PATH = BASE + "/**";
+
+            /**
+             * Admin Blog Tag Management
+             */
+            public static final class Tags {
+                private Tags() {}
+
+                /**
+                 * GET /api/admin/blog/tags - Get all tags (admin view)
+                 */
+                public static final String GET_ALL = "/tags";
+
+                /**
+                 * POST /api/admin/blog/tags - Create new tag
+                 */
+                public static final String CREATE = "/tags";
+
+                /**
+                 * PATCH /api/admin/blog/tags/{tagId} - Update tag
+                 */
+                public static final String UPDATE = "/tags/{tagId}";
+
+                /**
+                 * DELETE /api/admin/blog/tags/{tagId} - Delete tag
+                 */
+                public static final String DELETE = "/tags/{tagId}";
+            }
         }
 
         /**

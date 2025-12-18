@@ -59,7 +59,14 @@ public enum Role implements GrantedAuthority {
             Permission.CREATE_BOOK,
             Permission.UPDATE_BOOK,
             Permission.DELETE_BOOK,
-            Permission.DOWNLOAD_BOOK
+            Permission.DOWNLOAD_BOOK,
+            // Blog permissions (ADMIN only)
+            Permission.VIEW_ALL_BLOG_POSTS,
+            Permission.CREATE_BLOG_POST,
+            Permission.UPDATE_BLOG_POST,
+            Permission.DELETE_BLOG_POST,
+            Permission.PUBLISH_BLOG_POST,
+            Permission.MANAGE_BLOG_TAGS
     ));
 
     private final Set<Permission> permissions;

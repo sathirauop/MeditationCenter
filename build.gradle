@@ -212,6 +212,16 @@ jooq {
                         includeExpression = 'event_registration\\.status'
                     }
 
+                    // Blog post status enum
+                    forcedType {
+                        priority = 2
+                        name = 'enum'
+                        userType = 'com.isipathana.meditationcenter.records.blog.BlogPostStatus'
+                        converter = 'com.isipathana.meditationcenter.jooq.converter.EnumColumnConverter'
+                        genericConverter = true
+                        includeExpression = 'blog_posts\\.status'
+                    }
+
                     // Boolean type mapping
                     forcedType {
                         priority = 1

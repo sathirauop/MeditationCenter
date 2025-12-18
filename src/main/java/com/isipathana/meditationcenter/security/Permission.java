@@ -66,7 +66,15 @@ public enum Permission implements GrantedAuthority {
     CREATE_BOOK,
     UPDATE_BOOK,
     DELETE_BOOK,
-    DOWNLOAD_BOOK;
+    DOWNLOAD_BOOK,
+
+    // Blog permissions (ADMIN only)
+    VIEW_ALL_BLOG_POSTS,      // View drafts + published (admin view)
+    CREATE_BLOG_POST,         // Create new blog posts
+    UPDATE_BLOG_POST,         // Edit existing posts (including drafts)
+    DELETE_BLOG_POST,         // Soft delete posts
+    PUBLISH_BLOG_POST,        // Publish/unpublish posts
+    MANAGE_BLOG_TAGS;         // Create/edit/delete tags
 
     /**
      * Returns the authority string for Spring Security.
