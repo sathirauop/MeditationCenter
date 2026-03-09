@@ -42,7 +42,8 @@ public final class EndPoints {
     // ============================================================
 
     public static final class Auth {
-        private Auth() {}
+        private Auth() {
+        }
 
         /**
          * Base path for authentication endpoints
@@ -78,7 +79,8 @@ public final class EndPoints {
     // ============================================================
 
     public static final class Event {
-        private Event() {}
+        private Event() {
+        }
 
         /**
          * Base path for public event endpoints
@@ -105,13 +107,15 @@ public final class EndPoints {
     // ============================================================
 
     public static final class Public {
-        private Public() {}
+        private Public() {
+        }
 
         /**
          * Public Program Management
          */
         public static final class Program {
-            private Program() {}
+            private Program() {
+            }
 
             /**
              * Base path for public program endpoints
@@ -138,7 +142,8 @@ public final class EndPoints {
     // ============================================================
 
     public static final class Schedule {
-        private Schedule() {}
+        private Schedule() {
+        }
 
         /**
          * Base path for public schedule endpoints
@@ -164,7 +169,8 @@ public final class EndPoints {
     // ============================================================
 
     public static final class Book {
-        private Book() {}
+        private Book() {
+        }
 
         /**
          * Base path for public book endpoints
@@ -185,7 +191,8 @@ public final class EndPoints {
     // ============================================================
 
     public static final class Blog {
-        private Blog() {}
+        private Blog() {
+        }
 
         /**
          * Base path for public blog endpoints
@@ -212,11 +219,39 @@ public final class EndPoints {
     }
 
     // ============================================================
+    // GALLERY ENDPOINTS (Public)
+    // ============================================================
+
+    public static final class Gallery {
+        private Gallery() {
+        }
+
+        /**
+         * Base path for public gallery endpoints
+         */
+        public static final String BASE = API + "/gallery";
+
+        /**
+         * GET /api/gallery - Get all active gallery groups with photos (public)
+         */
+        public static final String GET_ALL = "";
+
+        /**
+         * GET /api/gallery/{groupId} - Get single gallery group with photos (public)
+         */
+        public static final String GET_BY_ID = "/{groupId}";
+
+        // Full paths for security configuration
+        public static final String FULL_PATH = BASE + "/**";
+    }
+
+    // ============================================================
     // ADMIN ENDPOINTS
     // ============================================================
 
     public static final class Admin {
-        private Admin() {}
+        private Admin() {
+        }
 
         /**
          * Base path for admin endpoints
@@ -227,7 +262,8 @@ public final class EndPoints {
          * Admin Event Management
          */
         public static final class Event {
-            private Event() {}
+            private Event() {
+            }
 
             /**
              * Base path for admin event endpoints
@@ -267,7 +303,8 @@ public final class EndPoints {
          * Admin Program Management
          */
         public static final class Program {
-            private Program() {}
+            private Program() {
+            }
 
             /**
              * Base path for admin program endpoints
@@ -308,7 +345,8 @@ public final class EndPoints {
          * Admin Activity Management
          */
         public static final class Activity {
-            private Activity() {}
+            private Activity() {
+            }
 
             /**
              * Base path for admin activity endpoints
@@ -348,7 +386,8 @@ public final class EndPoints {
          * Admin Template Management
          */
         public static final class Template {
-            private Template() {}
+            private Template() {
+            }
 
             /**
              * Base path for admin template endpoints
@@ -397,7 +436,8 @@ public final class EndPoints {
              * Template Activity Management
              */
             public static final class Activities {
-                private Activities() {}
+                private Activities() {
+                }
 
                 /**
                  * POST /api/admin/templates/{id}/activities - Add activity to template
@@ -405,12 +445,14 @@ public final class EndPoints {
                 public static final String ADD = "/{id}/activities";
 
                 /**
-                 * PUT /api/admin/templates/{templateId}/activities/{activityId} - Update template activity
+                 * PUT /api/admin/templates/{templateId}/activities/{activityId} - Update
+                 * template activity
                  */
                 public static final String UPDATE = "/{templateId}/activities/{activityId}";
 
                 /**
-                 * DELETE /api/admin/templates/{templateId}/activities/{activityId} - Remove activity
+                 * DELETE /api/admin/templates/{templateId}/activities/{activityId} - Remove
+                 * activity
                  */
                 public static final String DELETE = "/{templateId}/activities/{activityId}";
 
@@ -425,7 +467,8 @@ public final class EndPoints {
          * Admin Override Management
          */
         public static final class Override {
-            private Override() {}
+            private Override() {
+            }
 
             /**
              * Base path for admin override endpoints
@@ -469,7 +512,8 @@ public final class EndPoints {
              * Override Activity Management
              */
             public static final class Activities {
-                private Activities() {}
+                private Activities() {
+                }
 
                 /**
                  * POST /api/admin/overrides/{id}/activities - Add activity to override
@@ -477,7 +521,8 @@ public final class EndPoints {
                 public static final String ADD = "/{id}/activities";
 
                 /**
-                 * DELETE /api/admin/overrides/{overrideId}/activities/{activityId} - Remove activity
+                 * DELETE /api/admin/overrides/{overrideId}/activities/{activityId} - Remove
+                 * activity
                  */
                 public static final String DELETE = "/{overrideId}/activities/{activityId}";
             }
@@ -487,7 +532,8 @@ public final class EndPoints {
          * Admin Book Management
          */
         public static final class Book {
-            private Book() {}
+            private Book() {
+            }
 
             /**
              * Base path for admin book endpoints
@@ -522,7 +568,8 @@ public final class EndPoints {
          * Admin Blog Management (ADMIN only)
          */
         public static final class Blog {
-            private Blog() {}
+            private Blog() {
+            }
 
             /**
              * Base path for admin blog endpoints
@@ -576,7 +623,8 @@ public final class EndPoints {
              * Admin Blog Tag Management
              */
             public static final class Tags {
-                private Tags() {}
+                private Tags() {
+                }
 
                 /**
                  * GET /api/admin/blog/tags - Get all tags (admin view)
@@ -601,10 +649,70 @@ public final class EndPoints {
         }
 
         /**
+         * Admin Gallery Management (ADMIN only)
+         */
+        public static final class Gallery {
+            private Gallery() {
+            }
+
+            /**
+             * Base path for admin gallery endpoints
+             */
+            public static final String BASE = Admin.BASE + "/gallery";
+
+            /**
+             * GET /api/admin/gallery - Get all gallery groups (admin)
+             */
+            public static final String GET_ALL = "";
+
+            /**
+             * GET /api/admin/gallery/{groupId} - Get gallery group with photos (admin)
+             */
+            public static final String GET_BY_ID = "/{groupId}";
+
+            /**
+             * POST /api/admin/gallery - Create gallery group
+             */
+            public static final String CREATE = "";
+
+            /**
+             * PATCH /api/admin/gallery/{groupId} - Update gallery group
+             */
+            public static final String UPDATE = "/{groupId}";
+
+            /**
+             * DELETE /api/admin/gallery/{groupId} - Delete gallery group
+             */
+            public static final String DELETE = "/{groupId}";
+
+            // Full paths for security configuration
+            public static final String FULL_PATH = BASE + "/**";
+
+            /**
+             * Gallery Photo Management
+             */
+            public static final class Photos {
+                private Photos() {
+                }
+
+                /**
+                 * POST /api/admin/gallery/{groupId}/photos - Add photos to group
+                 */
+                public static final String ADD = "/{groupId}/photos";
+
+                /**
+                 * DELETE /api/admin/gallery/{groupId}/photos/{photoId} - Delete photo
+                 */
+                public static final String DELETE = "/{groupId}/photos/{photoId}";
+            }
+        }
+
+        /**
          * Admin User Management
          */
         public static final class User {
-            private User() {}
+            private User() {
+            }
 
             /**
              * Base path for admin user endpoints
@@ -656,7 +764,8 @@ public final class EndPoints {
     // ============================================================
 
     public static final class Util {
-        private Util() {}
+        private Util() {
+        }
 
         /**
          * Base path for utility endpoints

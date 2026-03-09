@@ -56,97 +56,107 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final JwtAuthenticationProvider jwtAuthenticationProvider;
-    private final JwtAuthenticationEntryPoint authenticationEntryPoint;
-    private final JwtAccessDeniedHandler accessDeniedHandler;
+        private final JwtAuthenticationProvider jwtAuthenticationProvider;
+        private final JwtAuthenticationEntryPoint authenticationEntryPoint;
+        private final JwtAccessDeniedHandler accessDeniedHandler;
 
-    /**
-     * Configure HTTP security.
-     * Defines which endpoints are public, which require authentication.
-     */
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-                // Disable CSRF (not needed for stateless JWT authentication)
-                .csrf(AbstractHttpConfigurer::disable)
+        /**
+         * Configure HTTP security.
+         * Defines which endpoints are public, which require authentication.
+         */
+        @Bean
+        public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+                http
+                                // Disable CSRF (not needed for stateless JWT authentication)
+                                .csrf(AbstractHttpConfigurer::disable)
 
-                // Enable CORS (configured in WebConfig.java)
-                .cors(cors -> {})
+                                // Enable CORS (configured in WebConfig.java)
+                                .cors(cors -> {
+                                })
 
-                // Configure authorization rules
-                .authorizeHttpRequests(auth -> auth
-                        // Public endpoints - no authentication required
-                        .requestMatchers(HttpMethod.POST, EndPoints.Auth.FULL_PATH).permitAll()
-                        .requestMatchers(HttpMethod.GET, EndPoints.Public.Program.FULL_PATH).permitAll()
-                        .requestMatchers(HttpMethod.GET, EndPoints.Event.FULL_PATH).permitAll()
-                        .requestMatchers(HttpMethod.GET, EndPoints.Event.FULL_PATH_BY_ID).permitAll()
-                        .requestMatchers(HttpMethod.GET, EndPoints.Schedule.FULL_PATH).permitAll()
-                        .requestMatchers(HttpMethod.GET, EndPoints.Book.FULL_PATH).permitAll()
+                                // Configure authorization rules
+                                .authorizeHttpRequests(auth -> auth
+                                                // Public endpoints - no authentication required
+                                                .requestMatchers(HttpMethod.POST, EndPoints.Auth.FULL_PATH).permitAll()
+                                                .requestMatchers(HttpMethod.GET, EndPoints.Public.Program.FULL_PATH)
+                                                .permitAll()
+                                                .requestMatchers(HttpMethod.GET, EndPoints.Event.FULL_PATH).permitAll()
+                                                .requestMatchers(HttpMethod.GET, EndPoints.Event.FULL_PATH_BY_ID)
+                                                .permitAll()
+                                                .requestMatchers(HttpMethod.GET, EndPoints.Schedule.FULL_PATH)
+                                                .permitAll()
+                                                .requestMatchers(HttpMethod.GET, EndPoints.Book.FULL_PATH).permitAll()
 
-                        // Public blog endpoints - no authentication required
-                        .requestMatchers(HttpMethod.GET, EndPoints.Blog.FULL_PATH + "/**").permitAll()
+                                                // Public blog endpoints - no authentication required
+                                                .requestMatchers(HttpMethod.GET, EndPoints.Blog.FULL_PATH + "/**")
+                                                .permitAll()
 
-                        // Admin blog endpoints - require authentication (permissions checked at controller level)
-                        .requestMatchers(EndPoints.Admin.Blog.FULL_PATH).authenticated()
+                                                // Public gallery endpoints - no authentication required
+                                                .requestMatchers(HttpMethod.GET, EndPoints.Gallery.FULL_PATH)
+                                                .permitAll()
 
-                        // Utility endpoints (ONLY for development - should be removed in production)
-                        .requestMatchers(EndPoints.Util.FULL_PATH).permitAll()
+                                                // Admin blog endpoints - require authentication (permissions checked at
+                                                // controller level)
+                                                .requestMatchers(EndPoints.Admin.Blog.FULL_PATH).authenticated()
 
-                        // Error endpoint (used by GlobalErrorController)
-                        .requestMatchers(EndPoints.ERROR).permitAll()
+                                                // Admin gallery endpoints - require authentication
+                                                .requestMatchers(EndPoints.Admin.Gallery.FULL_PATH).authenticated()
 
-                        // All other /api/** endpoints require authentication
-                        .requestMatchers(EndPoints.API + "/**").authenticated()
+                                                // Utility endpoints (ONLY for development - should be removed in
+                                                // production)
+                                                .requestMatchers(EndPoints.Util.FULL_PATH).permitAll()
 
-                        // Allow all other requests (for now)
-                        .anyRequest().permitAll()
-                )
+                                                // Error endpoint (used by GlobalErrorController)
+                                                .requestMatchers(EndPoints.ERROR).permitAll()
 
-                // Stateless session management (no sessions, no cookies)
-                .sessionManagement(session ->
-                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                )
+                                                // All other /api/** endpoints require authentication
+                                                .requestMatchers(EndPoints.API + "/**").authenticated()
 
-                // Exception handling
-                .exceptionHandling(exception -> exception
-                        .authenticationEntryPoint(authenticationEntryPoint) // 401 Unauthorized
-                        .accessDeniedHandler(accessDeniedHandler)           // 403 Forbidden
-                )
+                                                // Allow all other requests (for now)
+                                                .anyRequest().permitAll())
 
-                // Add JWT authentication filter before UsernamePasswordAuthenticationFilter
-                .addFilterBefore(
-                        jwtAuthenticationFilter(),
-                        UsernamePasswordAuthenticationFilter.class
-                );
+                                // Stateless session management (no sessions, no cookies)
+                                .sessionManagement(session -> session
+                                                .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 
-        return http.build();
-    }
+                                // Exception handling
+                                .exceptionHandling(exception -> exception
+                                                .authenticationEntryPoint(authenticationEntryPoint) // 401 Unauthorized
+                                                .accessDeniedHandler(accessDeniedHandler) // 403 Forbidden
+                                )
 
-    /**
-     * Create JWT authentication filter bean.
-     */
-    @Bean
-    public JwtAuthenticationFilter jwtAuthenticationFilter() {
-        return new JwtAuthenticationFilter(
-                authenticationManager(),
-                authenticationEntryPoint
-        );
-    }
+                                // Add JWT authentication filter before UsernamePasswordAuthenticationFilter
+                                .addFilterBefore(
+                                                jwtAuthenticationFilter(),
+                                                UsernamePasswordAuthenticationFilter.class);
 
-    /**
-     * Create authentication manager with JWT authentication provider.
-     */
-    @Bean
-    public AuthenticationManager authenticationManager() {
-        return new ProviderManager(jwtAuthenticationProvider);
-    }
+                return http.build();
+        }
 
-    /**
-     * Password encoder for hashing passwords.
-     * Uses BCrypt with default strength (10).
-     */
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+        /**
+         * Create JWT authentication filter bean.
+         */
+        @Bean
+        public JwtAuthenticationFilter jwtAuthenticationFilter() {
+                return new JwtAuthenticationFilter(
+                                authenticationManager(),
+                                authenticationEntryPoint);
+        }
+
+        /**
+         * Create authentication manager with JWT authentication provider.
+         */
+        @Bean
+        public AuthenticationManager authenticationManager() {
+                return new ProviderManager(jwtAuthenticationProvider);
+        }
+
+        /**
+         * Password encoder for hashing passwords.
+         * Uses BCrypt with default strength (10).
+         */
+        @Bean
+        public PasswordEncoder passwordEncoder() {
+                return new BCryptPasswordEncoder();
+        }
 }
