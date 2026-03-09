@@ -3,6 +3,8 @@ package com.isipathana.meditationcenter.rest.admin.program.patch;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Size;
 
+import java.util.List;
+
 /**
  * Request DTO for updating a meditation program.
  * All fields are optional for partial updates.
@@ -10,20 +12,21 @@ import jakarta.validation.constraints.Size;
  * @author Sathira Basnayake
  */
 public record PatchProgramRequest(
-        @Size(min = 3, max = 255, message = "Program name must be between 3 and 255 characters")
-        String name,
+                @Size(min = 3, max = 255, message = "Program name must be between 3 and 255 characters") String name,
 
-        @Size(max = 5000, message = "Description must not exceed 5000 characters")
-        String description,
+                @Size(max = 5000, message = "Description must not exceed 5000 characters") String description,
 
-        @Size(min = 3, max = 255, message = "Sinhala name must be between 3 and 255 characters")
-        String nameSi,
+                @Size(min = 3, max = 255, message = "Sinhala name must be between 3 and 255 characters") String nameSi,
 
-        @Size(max = 5000, message = "Sinhala description must not exceed 5000 characters")
-        String descriptionSi,
+                @Size(max = 5000, message = "Sinhala description must not exceed 5000 characters") String descriptionSi,
 
-        @Min(value = 0, message = "Max seats must be at least 0")
-        Integer maxSeats,
+                @Min(value = 0, message = "Max seats must be at least 0") Integer maxSeats,
 
-        Boolean isActive
-) {}
+                Boolean isActive,
+
+                /**
+                 * List of R2 image keys to remove from gallery.
+                 * Each key identifies an existing gallery image to be deleted.
+                 */
+                List<String> removeGalleryImageKeys) {
+}

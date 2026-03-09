@@ -9,9 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * UseCase for getting the active meditation program (admin).
@@ -41,6 +39,7 @@ public class GetAdminActiveProgramUseCase {
         // Generate presigned URLs
         String coverImageUrl = null;
         Set<String> galleryImageUrls = new HashSet<>();
+        List<GetAdminActiveProgramResponse.GalleryImage> galleryImages = new ArrayList<>();
 
         if (httpRepository != null) {
             if (program.coverImageKey() != null) {
@@ -50,6 +49,14 @@ public class GetAdminActiveProgramUseCase {
             if (program.galleryImageKeys() != null && !program.galleryImageKeys().isEmpty()) {
                 Map<String, String> urlMap = httpRepository.generatePresignedUrls(program.galleryImageKeys());
                 galleryImageUrls.addAll(urlMap.values());
+
+                // Build gallery images list with key-url pairs for admin UI
+                for (Map.Entry<String, String> entry : urlMap.entrySet()) {
+                    galleryImages.add(GetAdminActiveProgramResponse.GalleryImage.builder()
+                            .key(entry.getKey())
+                            .url(entry.getValue())
+                            .build());
+                }
             }
         }
 
@@ -57,9 +64,12 @@ public class GetAdminActiveProgramUseCase {
                 .meditationProgramId(program.meditationProgramId())
                 .name(program.name())
                 .description(program.description())
+                .nameSi(program.nameSi())
+                .descriptionSi(program.descriptionSi())
                 .maxSeats(program.maxSeats())
                 .coverImageUrl(coverImageUrl)
                 .galleryImageUrls(galleryImageUrls.isEmpty() ? null : galleryImageUrls)
+                .galleryImages(galleryImages.isEmpty() ? null : galleryImages)
                 .isActive(program.isActive())
                 .createdAt(program.createdAt())
                 .updatedAt(program.updatedAt())

@@ -50,7 +50,8 @@ public class AdminProgramController {
      * Accepts multipart/form-data with:
      * - program: JSON string of PostProgramRequest
      * - coverImage (optional): Cover image file (JPEG, PNG, GIF, WebP, max 5MB)
-     * - galleryImages (optional): Multiple gallery image files (JPEG, PNG, GIF, WebP, max 5MB each)
+     * - galleryImages (optional): Multiple gallery image files (JPEG, PNG, GIF,
+     * WebP, max 5MB each)
      *
      * @param programJson   Program creation request as JSON string
      * @param coverImage    Optional cover image file
@@ -62,8 +63,8 @@ public class AdminProgramController {
     public ResponseEntity<PostProgramResponse> createProgram(
             @RequestPart("program") String programJson,
             @RequestPart(value = "coverImage", required = false) MultipartFile coverImage,
-            @RequestPart(value = "galleryImages", required = false) List<MultipartFile> galleryImages
-    ) throws Exception {
+            @RequestPart(value = "galleryImages", required = false) List<MultipartFile> galleryImages)
+            throws Exception {
         // Parse JSON request
         PostProgramRequest request = objectMapper.readValue(programJson, PostProgramRequest.class);
 
@@ -74,7 +75,8 @@ public class AdminProgramController {
     }
 
     /**
-     * Create a new meditation program without images (JSON-only endpoint for backward compatibility).
+     * Create a new meditation program without images (JSON-only endpoint for
+     * backward compatibility).
      * <p>
      * POST /api/admin/program/json
      * <p>
@@ -125,25 +127,36 @@ public class AdminProgramController {
     }
 
     /**
-     * Update a meditation program (partial update).
+     * Update a meditation program (partial update) with optional image uploads.
      * <p>
      * PATCH /api/admin/programs/{programId}
      * <p>
      * Requires: ADMIN role with UPDATE_PROGRAM permission
      * <p>
-     * All fields are optional - only provided fields will be updated.
+     * Accepts multipart/form-data with:
+     * - program: JSON string of PatchProgramRequest
+     * - coverImage (optional): New cover image file (JPEG, PNG, GIF, WebP, max 5MB)
+     * - galleryImages (optional): New gallery image files (JPEG, PNG, GIF, WebP,
+     * max 5MB each)
      *
-     * @param programId The program ID
-     * @param request   Program update request
+     * @param programId     The program ID
+     * @param programJson   Program update request as JSON string
+     * @param coverImage    Optional new cover image file
+     * @param galleryImages Optional new gallery image files
      * @return 200 OK with updated program details
      */
-    @PatchMapping(EndPoints.Admin.Program.UPDATE)
+    @PatchMapping(value = EndPoints.Admin.Program.UPDATE, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasRole('ADMIN') and hasAuthority('UPDATE_PROGRAM')")
     public ResponseEntity<PatchProgramResponse> updateProgram(
             @PathVariable Long programId,
-            @Valid @RequestBody PatchProgramRequest request
-    ) {
-        PatchProgramResponse response = patchProgramUseCase.execute(programId, request);
+            @RequestPart("program") String programJson,
+            @RequestPart(value = "coverImage", required = false) MultipartFile coverImage,
+            @RequestPart(value = "galleryImages", required = false) List<MultipartFile> galleryImages)
+            throws Exception {
+        // Parse JSON request
+        PatchProgramRequest request = objectMapper.readValue(programJson, PatchProgramRequest.class);
+
+        PatchProgramResponse response = patchProgramUseCase.execute(programId, request, coverImage, galleryImages);
         return ResponseEntity.ok(response);
     }
 }

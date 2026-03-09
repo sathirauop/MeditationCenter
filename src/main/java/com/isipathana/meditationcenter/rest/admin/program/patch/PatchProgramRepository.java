@@ -115,6 +115,35 @@ public class PatchProgramRepository implements PatchProgramDataAccess {
 
         // Fetch and return updated program
         return findById(program.meditationProgramId())
-                .orElseThrow(() -> new ResourceNotFoundException("Meditation program not found with ID: " + program.meditationProgramId()));
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Meditation program not found with ID: " + program.meditationProgramId()));
+    }
+
+    @Override
+    public MeditationProgram updateImageKeys(Long programId, String coverImageKey, Set<String> galleryImageKeys) {
+        var updateStep = dslContext.update(MEDITATION_PROGRAM);
+        UpdateSetMoreStep<?> query = null;
+
+        if (coverImageKey != null) {
+            query = updateStep.set(MEDITATION_PROGRAM.COVER_IMAGE_KEY, coverImageKey);
+        }
+
+        if (galleryImageKeys != null) {
+            if (query != null) {
+                query = query.set(MEDITATION_PROGRAM.GALLERY_IMAGE_KEYS,
+                        galleryImageKeys.isEmpty() ? null : galleryImageKeys.toArray(new String[0]));
+            } else {
+                query = updateStep.set(MEDITATION_PROGRAM.GALLERY_IMAGE_KEYS,
+                        galleryImageKeys.isEmpty() ? null : galleryImageKeys.toArray(new String[0]));
+            }
+        }
+
+        if (query != null) {
+            query = query.set(MEDITATION_PROGRAM.UPDATED_AT, DSL.currentLocalDateTime());
+            query.where(MEDITATION_PROGRAM.MEDITATION_PROGRAM_ID.eq(programId)).execute();
+        }
+
+        return findById(programId)
+                .orElseThrow(() -> new ResourceNotFoundException("Meditation program not found with ID: " + programId));
     }
 }
