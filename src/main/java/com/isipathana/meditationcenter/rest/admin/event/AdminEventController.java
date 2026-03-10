@@ -52,7 +52,8 @@ public class AdminEventController {
      * Accepts multipart/form-data with:
      * - event: JSON string of PostEventRequest
      * - coverImage (optional): Cover image file (JPEG, PNG, GIF, WebP, max 5MB)
-     * - galleryImages (optional): Multiple gallery image files (JPEG, PNG, GIF, WebP, max 5MB each)
+     * - galleryImages (optional): Multiple gallery image files (JPEG, PNG, GIF,
+     * WebP, max 5MB each)
      *
      * @param eventJson     Event creation request as JSON string
      * @param coverImage    Optional cover image file
@@ -64,8 +65,8 @@ public class AdminEventController {
     public ResponseEntity<PostEventResponse> createEvent(
             @RequestPart("event") String eventJson,
             @RequestPart(value = "coverImage", required = false) MultipartFile coverImage,
-            @RequestPart(value = "galleryImages", required = false) List<MultipartFile> galleryImages
-    ) throws Exception {
+            @RequestPart(value = "galleryImages", required = false) List<MultipartFile> galleryImages)
+            throws Exception {
         // Parse JSON request
         PostEventRequest request = objectMapper.readValue(eventJson, PostEventRequest.class);
 
@@ -76,7 +77,8 @@ public class AdminEventController {
     }
 
     /**
-     * Create a new event without images (JSON-only endpoint for backward compatibility).
+     * Create a new event without images (JSON-only endpoint for backward
+     * compatibility).
      * <p>
      * POST /api/admin/event/json
      * <p>
@@ -103,30 +105,69 @@ public class AdminEventController {
     @GetMapping
     public ResponseEntity<OffsetSearchResponse<GetAdminEventsResponse>> getAdminEvents(
             @RequestParam(defaultValue = "20") int limit,
-            @RequestParam(defaultValue = "0") int offset
-    ) {
+            @RequestParam(defaultValue = "0") int offset) {
         GetAdminEventsRequest request = new GetAdminEventsRequest(limit, offset);
         OffsetSearchResponse<GetAdminEventsResponse> response = getAdminEventsUseCase.handle(request);
         return ResponseEntity.ok(response);
     }
 
     /**
-     * Update an event (partial update).
+     * Update an event with optional image uploads (partial update).
      * <p>
      * PATCH /api/admin/event/{eventId}
      * <p>
      * Requires: ADMIN role with UPDATE_EVENT permission
      * <p>
-     * All fields in the request are optional. Only provided fields will be updated.
-     * Images cannot be updated through this endpoint - use dedicated image management endpoints.
+     * Accepts multipart/form-data with:
+     * - event (optional): JSON string of PatchEventRequest (text fields to update)
+     * - coverImage (optional): New cover image file (replaces existing)
+     * - galleryImages (optional): New gallery image files (added to existing
+     * gallery)
+     * <p>
+     * At least one of the parts must be provided.
+     *
+     * @param eventId       The ID of the event to update
+     * @param eventJson     Optional event update data as JSON string
+     * @param coverImage    Optional new cover image file
+     * @param galleryImages Optional new gallery image files
+     * @return 200 OK with updated event details, or 404 Not Found if event doesn't
+     *         exist
+     */
+    @PatchMapping(value = EndPoints.Admin.Event.UPDATE, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PreAuthorize("hasRole('ADMIN') and hasAuthority('UPDATE_EVENT')")
+    public ResponseEntity<PatchEventResponse> updateEvent(
+            @PathVariable Long eventId,
+            @RequestPart(value = "event", required = false) String eventJson,
+            @RequestPart(value = "coverImage", required = false) MultipartFile coverImage,
+            @RequestPart(value = "galleryImages", required = false) List<MultipartFile> galleryImages)
+            throws Exception {
+        // Parse JSON request if provided
+        PatchEventRequest request = null;
+        if (eventJson != null && !eventJson.isEmpty()) {
+            request = objectMapper.readValue(eventJson, PatchEventRequest.class);
+        }
+
+        // Execute use case with images
+        PatchEventResponse response = patchEventUseCase.execute(eventId, request, coverImage, galleryImages);
+        return ResponseEntity.ok(response);
+    }
+
+    /**
+     * Update an event without images (JSON-only endpoint for backward
+     * compatibility).
+     * <p>
+     * PATCH /api/admin/event/{eventId} (application/json)
+     * <p>
+     * Requires: ADMIN role with UPDATE_EVENT permission
      *
      * @param eventId The ID of the event to update
      * @param request The update request with optional fields
-     * @return 200 OK with updated event details, or 404 Not Found if event doesn't exist
+     * @return 200 OK with updated event details, or 404 Not Found if event doesn't
+     *         exist
      */
-    @PatchMapping(EndPoints.Admin.Event.UPDATE)
+    @PatchMapping(value = EndPoints.Admin.Event.UPDATE, consumes = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('ADMIN') and hasAuthority('UPDATE_EVENT')")
-    public ResponseEntity<PatchEventResponse> updateEvent(
+    public ResponseEntity<PatchEventResponse> updateEventJson(
             @PathVariable Long eventId,
             @Valid @RequestBody PatchEventRequest request) {
         PatchEventResponse response = patchEventUseCase.execute(eventId, request);
@@ -141,7 +182,8 @@ public class AdminEventController {
      * Requires: ADMIN role with DELETE_EVENT permission
      * <p>
      * IMPORTANT: This is a hard delete - the operation is irreversible.
-     * The event and all associated images in R2 storage will be permanently removed.
+     * The event and all associated images in R2 storage will be permanently
+     * removed.
      * <p>
      * Deletion Process:
      * 1. Verifies event exists
@@ -150,7 +192,8 @@ public class AdminEventController {
      * 4. Permanently deletes event from database
      *
      * @param eventId The ID of the event to delete
-     * @return 200 OK with deletion confirmation, or 404 Not Found if event doesn't exist
+     * @return 200 OK with deletion confirmation, or 404 Not Found if event doesn't
+     *         exist
      */
     @DeleteMapping(EndPoints.Admin.Event.DELETE)
     @PreAuthorize("hasRole('ADMIN') and hasAuthority('DELETE_EVENT')")

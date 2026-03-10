@@ -10,48 +10,34 @@ import java.util.Set;
 
 /**
  * Response DTO for event update.
+ * Returns presigned URLs for images (not raw keys) for frontend display.
  *
  * @author Sathira Basnayake
  */
 public record PatchEventResponse(
-        @JsonProperty("event_id")
-        Long eventId,
+                @JsonProperty("event_id") Long eventId,
 
-        String name,
+                String name,
 
-        String description,
+                String description,
 
-        @JsonProperty("name_si")
-        String nameSi,
+                @JsonProperty("name_si") String nameSi,
 
-        @JsonProperty("description_si")
-        String descriptionSi,
+                @JsonProperty("description_si") String descriptionSi,
 
-        @JsonProperty("event_date")
-        @JsonFormat(pattern = "yyyy-MM-dd")
-        LocalDate eventDate,
+                @JsonProperty("event_date") @JsonFormat(pattern = "yyyy-MM-dd") LocalDate eventDate,
 
-        @JsonProperty("start_time")
-        @JsonFormat(pattern = "HH:mm")
-        LocalTime startTime,
+                @JsonProperty("start_time") @JsonFormat(pattern = "HH:mm") LocalTime startTime,
 
-        @JsonProperty("end_time")
-        @JsonFormat(pattern = "HH:mm")
-        LocalTime endTime,
+                @JsonProperty("end_time") @JsonFormat(pattern = "HH:mm") LocalTime endTime,
 
-        String location,
+                String location,
 
-        @JsonProperty("cover_image_key")
-        String coverImageKey,
+                @JsonProperty("cover_image_url") String coverImageUrl,
 
-        @JsonProperty("gallery_image_keys")
-        Set<String> galleryImageKeys,
+                @JsonProperty("gallery_image_urls") Set<String> galleryImageUrls,
 
-        @JsonProperty("is_active")
-        Boolean isActive,
+                @JsonProperty("is_active") Boolean isActive,
 
-        @JsonProperty("updated_at")
-        @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
-        LocalDateTime updatedAt
-) {
+                @JsonProperty("updated_at") @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss") LocalDateTime updatedAt) {
 }

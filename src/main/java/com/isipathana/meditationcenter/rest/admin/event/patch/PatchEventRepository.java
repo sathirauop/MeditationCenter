@@ -143,4 +143,35 @@ public class PatchEventRepository implements PatchEventDataAccess {
         return findEventById(event.eventId())
                 .orElseThrow(() -> new IllegalStateException("Event not found after update"));
     }
+
+    @Override
+    public Event updateImageKeys(Long eventId, String coverImageKey, Set<String> galleryImageKeys) {
+        log.info("Updating image keys for event ID: {}", eventId);
+
+        var updateStep = dslContext.update(EVENTS);
+        UpdateSetMoreStep<?> query = null;
+
+        if (coverImageKey != null) {
+            query = updateStep.set(EVENTS.COVER_IMAGE_KEY, coverImageKey);
+        }
+
+        if (galleryImageKeys != null) {
+            if (query != null) {
+                query = query.set(EVENTS.GALLERY_IMAGE_KEYS,
+                        galleryImageKeys.isEmpty() ? null : galleryImageKeys.toArray(new String[0]));
+            } else {
+                query = updateStep.set(EVENTS.GALLERY_IMAGE_KEYS,
+                        galleryImageKeys.isEmpty() ? null : galleryImageKeys.toArray(new String[0]));
+            }
+        }
+
+        if (query != null) {
+            query = query.set(EVENTS.UPDATED_AT, org.jooq.impl.DSL.currentLocalDateTime());
+            query.where(EVENTS.EVENT_ID.eq(eventId)).execute();
+            log.info("Successfully updated image keys for event ID: {}", eventId);
+        }
+
+        return findEventById(eventId)
+                .orElseThrow(() -> new IllegalStateException("Event not found after image key update"));
+    }
 }
